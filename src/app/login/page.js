@@ -11,8 +11,8 @@ export default function LoginPage() {
     e.preventDefault();
     // Log signin data
     console.log('Login Data:', { email, password, rememberMe });
-    // Redirect to dashboard or home
-    window.location.href = '/dashboard';
+    // Redirect to welcome page
+    window.location.href = '/welcome';
   };
 
   const handleGoogleLogin = () => {

@@ -1,0 +1,379 @@
+'use client';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
+
+const menuSections = [
+  {
+    title: 'Wealth Assets',
+    items: [
+      {
+        id: 'assets',
+        label: 'Assets',
+        icon: 'Grid',
+        href: '/dashboard/assets',
+      },
+      {
+        id: 'portfolio',
+        label: 'Portfolio',
+        icon: 'PieChart',
+        href: '/dashboard/portfolio',
+        hasSubmenu: true,
+        submenu: [
+          {
+            id: 'real-estate',
+            label: 'Real Estate',
+            href: '/dashboard/portfolio/real-estate',
+          },
+          {
+            id: 'crypto',
+            label: 'Crypto',
+            href: '/dashboard/portfolio/crypto',
+          },
+          {
+            id: 'private-equity',
+            label: 'Private Equity',
+            href: '/dashboard/portfolio/private-equity',
+          },
+          {
+            id: 'banking',
+            label: 'Banking & Cash',
+            href: '/dashboard/portfolio/banking',
+          },
+        ],
+      },
+    ],
+  },
+  {
+    title: 'Opportunities',
+    items: [
+      {
+        id: 'marketplace',
+        label: 'Marketplace',
+        icon: 'ShoppingBag',
+        href: '/dashboard/marketplace',
+      },
+    ],
+  },
+  {
+    title: 'Reports & Documents',
+    items: [
+      {
+        id: 'reports',
+        label: 'Reports',
+        icon: 'FileText',
+        href: '/dashboard/reports',
+      },
+      {
+        id: 'documents',
+        label: 'Documents',
+        icon: 'Folder',
+        href: '/dashboard/documents',
+      },
+    ],
+  },
+  {
+    title: 'Wealth Structure',
+    items: [
+      {
+        id: 'entity-structure',
+        label: 'Entity Structure',
+        icon: 'Network',
+        href: '/dashboard/entity-structure',
+      },
+      {
+        id: 'compliance',
+        label: 'Compliance',
+        icon: 'Shield',
+        href: '/dashboard/compliance',
+      },
+    ],
+  },
+  {
+    title: 'Settings',
+    items: [
+      {
+        id: 'preferences',
+        label: 'Preferences',
+        icon: 'Settings',
+        href: '/dashboard/settings',
+      },
+      {
+        id: 'logout',
+        label: 'Logout',
+        icon: 'LogOut',
+        href: '/login',
+        isLogout: true,
+      },
+      {
+        id: 'help-center',
+        label: 'Help Center',
+        icon: 'HelpCircle',
+        href: '/dashboard/support',
+      },
+    ],
+  },
+];
+
+export default function Sidebar({ isOpen, onClose }) {
+  const pathname = usePathname();
+  const [openSubmenu, setOpenSubmenu] = useState('null');
+
+  const toggleSubmenu = itemId => {
+    setOpenSubmenu(openSubmenu === itemId ? null : itemId);
+  };
+
+  return (
+    <>
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div
+          className='fixed inset-0 bg-black/50 z-40 lg:hidden'
+          onClick={onClose}
+        />
+      )}
+
+      {/* Sidebar */}
+      <aside
+        className={`
+          fixed top-0 left-0 z-50 h-screen w-64 
+          bg-[#101014] border-r border-[#FFFFFF14]
+          transition-transform duration-300 lg:translate-x-0
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        `}
+      >
+        <div className='flex flex-col h-full'>
+          {/* Logo - Fixed at top */}
+          <div className='flex items-center justify-between px-6 py-5 '>
+            <img src='/Dashboardlogo.svg' alt='Fullego' className='h-8' />
+            <button
+              onClick={onClose}
+              className='lg:hidden text-white hover:text-gray-300 transition-colors'
+            >
+              <Icon name='X' size={40} />
+            </button>
+          </div>
+
+          {/* Navigation Sections - Scrollable */}
+          <nav
+            className='flex-1 overflow-y-auto px-4 py-4 space-y-6 [&::-webkit-scrollbar]:hidden'
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            }}
+          >
+            {/* Dashboard Button - Now inside scrollable area */}
+            <div>
+              <Link
+                href='/dashboard'
+                onClick={onClose}
+                className={`
+                  flex items-center gap-3 px-4 py-3 rounded-[24px] w-[222px] h-[48px]
+                  transition-all duration-200
+                  ${
+                    pathname === '/dashboard'
+                      ? 'text-white border border-[#FFFFFF1A]'
+                      : 'text-gray-400 hover:bg-[#2B2B30]/50 hover:text-white'
+                  }
+                `}
+                style={
+                  pathname === '/dashboard'
+                    ? {
+                        background:
+                          'linear-gradient(94.02deg, #222126 0%, #111116 100%)',
+                      }
+                    : {}
+                }
+              >
+                <Icon
+                  name='Home'
+                  size={20}
+                  className={
+                    pathname === '/dashboard' ? 'brightness-0 invert' : ''
+                  }
+                  style={
+                    pathname !== '/dashboard'
+                      ? {
+                          filter:
+                            'brightness(0) saturate(100%) invert(64%) sepia(6%) saturate(449%) hue-rotate(178deg) brightness(95%) contrast(88%)',
+                        }
+                      : {}
+                  }
+                />
+                <span className='font-medium'>Dashboard</span>
+              </Link>
+            </div>
+            {menuSections.map((section, index) => (
+              <div key={index}>
+                <h3 className='text-xs font-medium text-[#57575A] uppercase tracking-wider mb-3 px-4'>
+                  {section.title}
+                </h3>
+                <div className='space-y-1'>
+                  {section.items.map(item => (
+                    <div key={item.id}>
+                      {item.hasSubmenu ? (
+                        <>
+                          <button
+                            onClick={() => toggleSubmenu(item.id)}
+                            className={`
+                              flex items-center justify-between px-4 py-2.5 rounded-[24px] w-[222px] h-[48px]
+                              transition-all duration-200
+                              ${
+                                pathname.startsWith(item.href)
+                                  ? 'text-[#FFFFFF] border border-[#FFFFFF1A]'
+                                  : 'text-gray-400 hover:text-white hover:bg-[#2B2B30]/50'
+                              }
+                            `}
+                            style={
+                              pathname.startsWith(item.href)
+                                ? {
+                                    background:
+                                      'linear-gradient(94.02deg, #222126 0%, #111116 100%)',
+                                  }
+                                : {}
+                            }
+                          >
+                            <div className='flex items-center gap-3'>
+                              <Icon
+                                name={item.icon}
+                                size={20}
+                                className={
+                                  pathname.startsWith(item.href)
+                                    ? 'brightness-0 invert'
+                                    : ''
+                                }
+                                style={
+                                  !pathname.startsWith(item.href)
+                                    ? {
+                                        filter:
+                                          'brightness(0) saturate(100%) invert(64%) sepia(6%) saturate(449%) hue-rotate(178deg) brightness(95%) contrast(88%)',
+                                      }
+                                    : {}
+                                }
+                              />
+                              <span className='font-medium'>{item.label}</span>
+                            </div>
+                            <Icon
+                              name='ChevronDown'
+                              size={16}
+                              className={`transition-transform brightness-0 invert ${
+                                openSubmenu === item.id ? 'rotate-180' : ''
+                              }`}
+                            />
+                          </button>
+                          {openSubmenu === item.id && (
+                            <div className='mt-1 ml-9 space-y-1'>
+                              {item.submenu.map(subItem => (
+                                <Link
+                                  key={subItem.id}
+                                  href={subItem.href}
+                                  onClick={onClose}
+                                  className={`
+                                    flex items-center px-4 py-2 text-sm rounded-[24px] w-[190px] h-[40px] transition-colors
+                                    ${
+                                      pathname === subItem.href
+                                        ? 'text-white border border-[#FFFFFF1A]'
+                                        : 'text-gray-400 hover:text-white hover:bg-[#2B2B30]/50'
+                                    }
+                                  `}
+                                  style={
+                                    pathname === subItem.href
+                                      ? {
+                                          background:
+                                            'linear-gradient(94.02deg, #222126 0%, #111116 100%)',
+                                        }
+                                      : {}
+                                  }
+                                >
+                                  {subItem.label}
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          onClick={onClose}
+                          className={`
+                            flex items-center gap-3 px-4 py-2.5 rounded-[24px] w-[222px] h-[48px]
+                            transition-all duration-200
+                            ${
+                              item.isLogout
+                                ? 'text-red-400 hover:text-red-300 hover:bg-red-500/10'
+                                : pathname === item.href
+                                ? 'text-white border border-[#FFFFFF1A]'
+                                : 'text-gray-400 hover:text-white hover:bg-[#2B2B30]/50'
+                            }
+                          `}
+                          style={
+                            pathname === item.href && !item.isLogout
+                              ? {
+                                  background:
+                                    'linear-gradient(94.02deg, #222126 0%, #111116 100%)',
+                                }
+                              : {}
+                          }
+                        >
+                          <Icon
+                            name={item.icon}
+                            size={20}
+                            className={
+                              pathname === item.href && !item.isLogout
+                                ? 'brightness-0 invert'
+                                : ''
+                            }
+                            style={
+                              pathname !== item.href && !item.isLogout
+                                ? {
+                                    filter:
+                                      'brightness(0) saturate(100%) invert(64%) sepia(6%) saturate(449%) hue-rotate(178deg) brightness(95%) contrast(88%)',
+                                  }
+                                : {}
+                            }
+                          />
+                          <span className='font-medium'>{item.label}</span>
+                        </Link>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </nav>
+        </div>
+      </aside>
+    </>
+  );
+}
+
+// Icon Component - Using image files
+function Icon({ name, size = 24, className = '' }) {
+  const iconPaths = {
+    Home: '/icons/home.svg',
+    Grid: '/icons/grid.svg',
+    FileText: '/icons/file-text.svg',
+    Folder: '/icons/folder.svg',
+    Network: '/icons/network.svg',
+    Shield: '/icons/shield.svg',
+    ChevronDown: '/icons/chevron-down.svg',
+    PieChart: '/icons/pie-chart.svg',
+    TrendingUp: '/icons/trending-up.svg',
+    BarChart: '/icons/bar-chart.svg',
+    ShoppingBag: '/icons/shopping-bag.svg',
+    Settings: '/icons/settings.svg',
+    HelpCircle: '/icons/help-circle.svg',
+    LogOut: '/icons/logout.svg',
+    X: '/icons/x.svg',
+  };
+
+  return iconPaths[name] ? (
+    <img
+      src={iconPaths[name]}
+      alt={name}
+      width={size}
+      height={size}
+      className={className}
+    />
+  ) : null;
+}
