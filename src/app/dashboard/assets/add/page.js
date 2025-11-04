@@ -1,0 +1,871 @@
+'use client';
+import DashboardLayout from '@/components/dashboard/DashboardLayout';
+import { useTheme } from '@/context/ThemeContext';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
+const steps = [
+  { id: 1, title: 'Basic Information' },
+  { id: 2, title: 'Upload Documents' },
+  { id: 3, title: 'Asset Valuation' },
+];
+
+const assetCategories = [
+  { id: 'all', name: 'All Assets', icon: 'AllAssets.svg' },
+  { id: 'Yachts', name: 'Yachts', icon: 'yacht.svg' },
+  { id: 'Private Jets', name: 'Private Jets', icon: 'Jets.svg' },
+  { id: 'Real Estate', name: 'Real Estate', icon: 'Realstat.svg' },
+  { id: 'Vehicles', name: 'Vehicles', icon: 'vehicels.svg' },
+  {
+    id: 'Art & Collectibles',
+    name: 'Art & Collectibles',
+    icon: 'Art_collectibles.svg',
+  },
+];
+
+const conditions = ['Excellent', 'Very Good', 'Good', 'Fair', 'Poor'];
+const ownershipTypes = ['Sole', 'Joint', 'Trust', 'Corporate'];
+
+export default function AddAssetPage() {
+  const router = useRouter();
+  const { isDarkMode } = useTheme();
+  const [currentStep, setCurrentStep] = useState(1);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  const [formData, setFormData] = useState({
+    assetName: '',
+    description: '',
+    make: '',
+    model: '',
+    year: '',
+    purchaseDate: '',
+    purchasePrice: '',
+    currentLocation: '',
+    condition: 'Excellent',
+    ownershipType: 'Sole',
+  });
+
+  const [assetPhotos, setAssetPhotos] = useState([]);
+  const [supportingDocs, setSupportingDocs] = useState([]);
+  const [isDragging, setIsDragging] = useState(false);
+  const [valuationType, setValuationType] = useState('manual');
+  const [estimatedValue, setEstimatedValue] = useState('');
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleNext = () => {
+    if (currentStep < steps.length) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      // Submit form - Step 3 is the final step
+      console.log('Form Data:', {
+        ...formData,
+        assetPhotos: assetPhotos.length,
+        supportingDocs: supportingDocs.length,
+        valuationType,
+        estimatedValue,
+      });
+      // You can add API call here to save the asset
+      router.push('/dashboard/assets');
+    }
+  };
+
+  const handleCancel = () => {
+    router.push('/dashboard/assets');
+  };
+
+  const handleFileSelect = (event, type) => {
+    const files = Array.from(event.target.files);
+    handleFiles(files, type);
+  };
+
+  const handleDragOver = e => {
+    e.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = e => {
+    e.preventDefault();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e, type) => {
+    e.preventDefault();
+    setIsDragging(false);
+    const files = Array.from(e.dataTransfer.files);
+    handleFiles(files, type);
+  };
+
+  const handleFiles = (files, type) => {
+    const validFiles = files.filter(file => {
+      const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB
+      if (type === 'photo') {
+        return isValidSize && file.type.startsWith('image/');
+      } else {
+        return isValidSize && file.type === 'application/pdf';
+      }
+    });
+
+    const newFiles = validFiles.map(file => ({
+      id: Date.now() + Math.random(),
+      file,
+      name: file.name,
+      size: (file.size / (1024 * 1024)).toFixed(2),
+      progress: 0,
+      error: null,
+    }));
+
+    if (type === 'photo') {
+      setAssetPhotos(prev => [...prev, ...newFiles]);
+      // Simulate upload progress
+      newFiles.forEach(fileObj => {
+        simulateUpload(fileObj.id, type);
+      });
+    } else {
+      setSupportingDocs(prev => [...prev, ...newFiles]);
+      newFiles.forEach(fileObj => {
+        simulateUpload(fileObj.id, type);
+      });
+    }
+  };
+
+  const simulateUpload = (fileId, type) => {
+    const interval = setInterval(() => {
+      if (type === 'photo') {
+        setAssetPhotos(prev =>
+          prev.map(file => {
+            if (file.id === fileId) {
+              const newProgress = Math.min(file.progress + 10, 100);
+              if (newProgress === 100) clearInterval(interval);
+              return { ...file, progress: newProgress };
+            }
+            return file;
+          })
+        );
+      } else {
+        setSupportingDocs(prev =>
+          prev.map(file => {
+            if (file.id === fileId) {
+              const newProgress = Math.min(file.progress + 10, 100);
+              if (newProgress === 100) clearInterval(interval);
+              return { ...file, progress: newProgress };
+            }
+            return file;
+          })
+        );
+      }
+    }, 200);
+  };
+
+  const removeFile = (fileId, type) => {
+    if (type === 'photo') {
+      setAssetPhotos(prev => prev.filter(file => file.id !== fileId));
+    } else {
+      setSupportingDocs(prev => prev.filter(file => file.id !== fileId));
+    }
+  };
+
+  const getStepStatus = stepId => {
+    if (stepId < currentStep) return 'completed';
+    if (stepId === currentStep) return 'active';
+    return 'pending';
+  };
+
+  return (
+    <DashboardLayout>
+      <div className='min-h-screen pb-20'>
+        {/* Header */}
+        <div className='mb-8'>
+          <button
+            onClick={handleCancel}
+            className='text-gray-400 hover:text-white mb-4 flex items-center gap-2 transition-colors'
+          >
+            <svg
+              width='20'
+              height='20'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke='currentColor'
+              strokeWidth='2'
+            >
+              <path d='M19 12H5M5 12l7-7M5 12l7 7' />
+            </svg>
+            Back to Assets
+          </button>
+          <h1
+            className={`text-3xl font-bold ${
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
+            Add New Asset
+          </h1>
+          <p className='text-gray-400 mt-2'>
+            Fill in the details to add a new asset to your portfolio
+          </p>
+        </div>
+
+        {/* Stepper - Desktop */}
+        <div className='hidden md:block max-w-4xl mx-auto mb-12'>
+          <div className='relative flex items-center justify-between'>
+            {steps.map((step, index) => {
+              const status = getStepStatus(step.id);
+              return (
+                <div
+                  key={step.id}
+                  className='flex-1 relative flex items-center'
+                >
+                  {/* Step Circle and Info */}
+                  <div className='flex flex-col items-center flex-1'>
+                    <div
+                      className={`w-12 h-12 rounded-full flex items-center justify-center font-semibold text-sm mb-2 transition-all ${
+                        status === 'completed'
+                          ? 'bg-gray-600 text-gray-400'
+                          : status === 'active'
+                          ? 'bg-[#F1CB68] text-[#0B0D12]'
+                          : 'bg-gray-700 text-gray-400'
+                      }`}
+                    >
+                      {status === 'completed' ? '✓' : step.id}
+                    </div>
+                    <span
+                      className={`text-sm text-nowrap text-center ${
+                        status === 'active' ? 'text-white' : 'text-gray-400'
+                      }`}
+                    >
+                      {step.title}
+                    </span>
+                  </div>
+
+                  {/* Connector Line */}
+                  {index < steps.length - 1 && (
+                    <div
+                      className='h-[2px] flex-1 mx-4'
+                      style={{
+                        background:
+                          status === 'completed'
+                            ? 'rgba(107, 114, 128, 0.5)'
+                            : status === 'active'
+                            ? '#F1CB68'
+                            : 'rgba(255, 255, 255, 0.1)',
+                      }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Stepper - Mobile */}
+        <div className='md:hidden mb-8'>
+          <div className='flex items-center justify-center gap-2'>
+            {steps.map((step, index) => {
+              const status = getStepStatus(step.id);
+              return (
+                <div key={step.id} className='flex items-center'>
+                  <div
+                    className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold ${
+                      status === 'completed'
+                        ? 'bg-gray-600 text-gray-400'
+                        : status === 'active'
+                        ? 'bg-[#F1CB68] text-[#0B0D12]'
+                        : 'bg-gray-700 text-gray-400'
+                    }`}
+                  >
+                    {status === 'completed' ? '✓' : step.id}
+                  </div>
+                  {index < steps.length - 1 && (
+                    <div
+                      className='w-6 h-[2px] mx-1'
+                      style={{
+                        background:
+                          status === 'completed'
+                            ? 'rgba(107, 114, 128, 0.5)'
+                            : status === 'active'
+                            ? '#F1CB68'
+                            : 'rgba(255, 255, 255, 0.1)',
+                      }}
+                    />
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          <p className='text-center text-sm text-gray-400 mt-2'>
+            Step {currentStep} of {steps.length}
+          </p>
+        </div>
+
+        {/* Form Content */}
+        {currentStep === 1 && (
+          <div className='max-w-4xl mx-auto'>
+            <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6 md:p-8'>
+              {/* Select Assets Category */}
+              <div className='mb-8'>
+                <label className='block text-sm font-medium text-gray-400 mb-4'>
+                  Select Assets Category
+                </label>
+                <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3'>
+                  {assetCategories.map(category => (
+                    <button
+                      key={category.id}
+                      onClick={() => setSelectedCategory(category.id)}
+                      className={`p-4 rounded-xl border-2 transition-all text-center flex flex-col items-center justify-center ${
+                        selectedCategory === category.id
+                          ? 'bg-[#F1CB68] border-[#F1CB68] text-[#0B0D12]'
+                          : 'bg-[#2A2A2D] border-[#FFFFFF14] text-white hover:border-[#F1CB68]/50'
+                      }`}
+                    >
+                      {category.icon && (
+                        <img
+                          src={`/${category.icon}`}
+                          alt={category.name}
+                          className='w-8 h-8 mb-2 object-contain'
+                        />
+                      )}
+                      <div className='text-xs font-medium whitespace-nowrap'>
+                        {category.name}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Asset Name */}
+              <div className='mb-6'>
+                <label className='block text-sm font-medium text-white mb-2'>
+                  Asset Name
+                </label>
+                <input
+                  type='text'
+                  name='assetName'
+                  value={formData.assetName}
+                  onChange={handleChange}
+                  placeholder='Enter asset Name....'
+                  className='w-full px-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white placeholder-gray-500 focus:outline-none focus:border-[#F1CB68] transition-colors'
+                />
+              </div>
+
+              {/* Description */}
+              <div className='mb-6'>
+                <label className='block text-sm font-medium text-white mb-2'>
+                  Description
+                </label>
+                <textarea
+                  name='description'
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder='Enter a brief description of asset .....'
+                  rows={5}
+                  className='w-full px-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white placeholder-gray-500 focus:outline-none focus:border-[#F1CB68] transition-colors resize-none'
+                />
+              </div>
+
+              {/* Make, Model, Year */}
+              <div className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-6'>
+                <div>
+                  <label className='block text-sm font-medium text-white mb-2'>
+                    Make
+                  </label>
+                  <input
+                    type='text'
+                    name='make'
+                    value={formData.make}
+                    onChange={handleChange}
+                    placeholder='Sunseeker'
+                    className='w-full px-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white placeholder-gray-500 focus:outline-none focus:border-[#F1CB68] transition-colors'
+                  />
+                </div>
+                <div>
+                  <label className='block text-sm font-medium text-white mb-2'>
+                    Model
+                  </label>
+                  <input
+                    type='text'
+                    name='model'
+                    value={formData.model}
+                    onChange={handleChange}
+                    placeholder='Predator 74'
+                    className='w-full px-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white placeholder-gray-500 focus:outline-none focus:border-[#F1CB68] transition-colors'
+                  />
+                </div>
+                <div>
+                  <label className='block text-sm font-medium text-white mb-2'>
+                    Year
+                  </label>
+                  <input
+                    type='text'
+                    name='year'
+                    value={formData.year}
+                    onChange={handleChange}
+                    placeholder='2025'
+                    className='w-full px-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white placeholder-gray-500 focus:outline-none focus:border-[#F1CB68] transition-colors'
+                  />
+                </div>
+              </div>
+
+              {/* Purchase Date, Purchase Price */}
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
+                <div>
+                  <label className='block text-sm font-medium text-white mb-2'>
+                    Purchase Date
+                  </label>
+                  <input
+                    type='date'
+                    name='purchaseDate'
+                    value={formData.purchaseDate}
+                    onChange={handleChange}
+                    className='w-full px-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white focus:outline-none focus:border-[#F1CB68] transition-colors'
+                  />
+                </div>
+                <div>
+                  <label className='block text-sm font-medium text-white mb-2'>
+                    Purchase Price
+                  </label>
+                  <div className='relative'>
+                    <span className='absolute left-4 top-1/2 -translate-y-1/2 text-[#F1CB68] font-semibold'>
+                      $
+                    </span>
+                    <input
+                      type='text'
+                      name='purchasePrice'
+                      value={formData.purchasePrice}
+                      onChange={handleChange}
+                      placeholder='350.0'
+                      className='w-full pl-8 pr-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white placeholder-gray-500 focus:outline-none focus:border-[#F1CB68] transition-colors'
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Current Location, Condition */}
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-6'>
+                <div>
+                  <label className='block text-sm font-medium text-white mb-2'>
+                    Current Location
+                  </label>
+                  <input
+                    type='text'
+                    name='currentLocation'
+                    value={formData.currentLocation}
+                    onChange={handleChange}
+                    placeholder='Enter your location....'
+                    className='w-full px-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white placeholder-gray-500 focus:outline-none focus:border-[#F1CB68] transition-colors'
+                  />
+                </div>
+                <div>
+                  <label className='block text-sm font-medium text-white mb-2'>
+                    Condition
+                  </label>
+                  <select
+                    name='condition'
+                    value={formData.condition}
+                    onChange={handleChange}
+                    className='w-full px-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white focus:outline-none focus:border-[#F1CB68] transition-colors appearance-none cursor-pointer'
+                  >
+                    {conditions.map(condition => (
+                      <option key={condition} value={condition}>
+                        {condition}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Ownership Type */}
+              <div className='mb-8'>
+                <label className='block text-sm font-medium text-white mb-2'>
+                  Ownership Type
+                </label>
+                <select
+                  name='ownershipType'
+                  value={formData.ownershipType}
+                  onChange={handleChange}
+                  className='w-full px-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white focus:outline-none focus:border-[#F1CB68] transition-colors appearance-none cursor-pointer'
+                >
+                  {ownershipTypes.map(type => (
+                    <option key={type} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Action Buttons */}
+              <div className='flex flex-col sm:flex-row gap-4 justify-end'>
+                <button
+                  onClick={handleCancel}
+                  className='px-6 py-3 rounded-lg border border-[#FFFFFF14] text-white hover:bg-white/5 transition-colors'
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleNext}
+                  className='px-6 py-3 rounded-lg bg-[#F1CB68] text-[#0B0D12] font-semibold hover:bg-[#d4b55a] transition-colors'
+                >
+                  Next Step
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2 - Upload Photos & Documents */}
+        {currentStep === 2 && (
+          <div className='max-w-4xl mx-auto'>
+            <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6 md:p-8'>
+              {/* Upload Section */}
+              <div className='mb-8'>
+                <h3 className='text-xl font-semibold text-white mb-2'>
+                  Upload Photos & Documents
+                </h3>
+                <p className='text-gray-400 text-sm mb-6'>
+                  Provide clear photos of proof of ownership for your asset.
+                  High-resolution images are recommended.
+                </p>
+
+                {/* Drag & Drop Area */}
+                <div
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={e => handleDrop(e, 'photo')}
+                  className={`border-2 border-dashed rounded-2xl p-8 md:p-12 text-center transition-colors ${
+                    isDragging
+                      ? 'border-[#F1CB68] bg-[#F1CB68]/5'
+                      : 'border-[#FFFFFF14] hover:border-[#F1CB68]/50'
+                  }`}
+                >
+                  <div className='flex flex-col items-center'>
+                    {/* Cloud Icon */}
+                    <div className='mb-4'>
+                      <svg
+                        width='64'
+                        height='64'
+                        viewBox='0 0 64 64'
+                        fill='none'
+                        stroke='#F1CB68'
+                        strokeWidth='2'
+                      >
+                        <path d='M32 20v24M32 20l-8 8M32 20l8 8' />
+                        <path d='M16 40c-4 0-8-4-8-8s4-8 8-8c0-8 8-16 16-16s16 8 16 16c4 0 8 4 8 8s-4 8-8 8' />
+                      </svg>
+                    </div>
+
+                    <p className='text-white text-lg mb-2'>
+                      Drag & drop files here, or click to browser
+                    </p>
+                    <p className='text-gray-400 text-sm mb-6'>
+                      Supports: JPG/PNG/PDF Max file size: 10MB
+                    </p>
+
+                    <input
+                      type='file'
+                      id='file-upload'
+                      multiple
+                      accept='image/*,application/pdf'
+                      onChange={e => handleFileSelect(e, 'photo')}
+                      className='hidden'
+                    />
+                    <label
+                      htmlFor='file-upload'
+                      className='px-6 py-3 bg-[#F1CB68] text-[#0B0D12] rounded-lg font-semibold cursor-pointer hover:bg-[#d4b55a] transition-colors'
+                    >
+                      Select files
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {/* Assets Photos Section */}
+              {assetPhotos.length > 0 && (
+                <div className='mb-8'>
+                  <h4 className='text-lg font-semibold text-white mb-4'>
+                    Assets Photos
+                  </h4>
+                  <div className='space-y-3'>
+                    {assetPhotos.map(photo => (
+                      <div
+                        key={photo.id}
+                        className='flex items-center gap-4 bg-[#2A2A2D] rounded-xl p-4'
+                      >
+                        {/* Thumbnail */}
+                        <div className='w-16 h-16 rounded-lg overflow-hidden bg-[#1a1a1d] flex-shrink-0'>
+                          <img
+                            src={URL.createObjectURL(photo.file)}
+                            alt={photo.name}
+                            className='w-full h-full object-cover'
+                          />
+                        </div>
+
+                        {/* File Info */}
+                        <div className='flex-1 min-w-0'>
+                          <p className='text-white font-medium truncate'>
+                            {photo.name}
+                          </p>
+                          <p className='text-gray-400 text-sm'>
+                            {photo.size} Mb
+                          </p>
+
+                          {/* Progress Bar */}
+                          {photo.progress < 100 ? (
+                            <div className='mt-2'>
+                              <div className='flex items-center gap-2 mb-1'>
+                                <span className='text-xs text-gray-400'>
+                                  Uploading... ({photo.progress}%)
+                                </span>
+                              </div>
+                              <div className='w-full h-1.5 bg-[#1a1a1d] rounded-full overflow-hidden'>
+                                <div
+                                  className='h-full bg-[#F1CB68] transition-all duration-300'
+                                  style={{ width: `${photo.progress}%` }}
+                                />
+                              </div>
+                            </div>
+                          ) : null}
+                        </div>
+
+                        {/* Delete Button */}
+                        <button
+                          onClick={() => removeFile(photo.id, 'photo')}
+                          className='text-red-500 hover:text-red-400 transition-colors p-2'
+                        >
+                          <svg
+                            width='20'
+                            height='20'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='2'
+                          >
+                            <path d='M3 6h18M8 6V4h8v2M19 6v14H5V6h14z' />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Supporting Documents Section */}
+              {supportingDocs.length > 0 && (
+                <div className='mb-8'>
+                  <h4 className='text-lg font-semibold text-white mb-4'>
+                    Supporting Documents
+                  </h4>
+                  <div className='space-y-3'>
+                    {supportingDocs.map(doc => (
+                      <div
+                        key={doc.id}
+                        className='flex items-center gap-4 bg-[#2A2A2D] rounded-xl p-4'
+                      >
+                        {/* PDF Icon */}
+                        <div className='w-16 h-16 rounded-lg bg-[#F1CB68]/10 flex items-center justify-center flex-shrink-0'>
+                          <svg
+                            width='32'
+                            height='32'
+                            viewBox='0 0 24 24'
+                            fill='#F1CB68'
+                          >
+                            <path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z' />
+                            <path d='M14 2v6h6' stroke='#F1CB68' fill='none' />
+                            <text
+                              x='12'
+                              y='17'
+                              fontSize='6'
+                              fill='#0B0D12'
+                              textAnchor='middle'
+                              fontWeight='bold'
+                            >
+                              PDF
+                            </text>
+                          </svg>
+                        </div>
+
+                        {/* File Info */}
+                        <div className='flex-1 min-w-0'>
+                          <p className='text-white font-medium truncate'>
+                            {doc.name}
+                          </p>
+                          <p className='text-gray-400 text-sm'>{doc.size} Mb</p>
+
+                          {/* Progress Bar or Error */}
+                          {doc.progress < 100 ? (
+                            <div className='mt-2'>
+                              <div className='flex items-center gap-2 mb-1'>
+                                <span className='text-xs text-gray-400'>
+                                  Uploading... ({doc.progress}%)
+                                </span>
+                              </div>
+                              <div className='w-full h-1.5 bg-[#1a1a1d] rounded-full overflow-hidden'>
+                                <div
+                                  className='h-full bg-[#F1CB68] transition-all duration-300'
+                                  style={{ width: `${doc.progress}%` }}
+                                />
+                              </div>
+                            </div>
+                          ) : doc.error ? (
+                            <p className='text-xs text-red-500 mt-1'>
+                              Error: File too large
+                            </p>
+                          ) : null}
+                        </div>
+
+                        {/* Delete Button */}
+                        <button
+                          onClick={() => removeFile(doc.id, 'doc')}
+                          className='text-red-500 hover:text-red-400 transition-colors p-2'
+                        >
+                          <svg
+                            width='20'
+                            height='20'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='2'
+                          >
+                            <path d='M3 6h18M8 6V4h8v2M19 6v14H5V6h14z' />
+                          </svg>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className='flex flex-col sm:flex-row gap-4 justify-end'>
+                <button
+                  onClick={() => setCurrentStep(currentStep - 1)}
+                  className='px-6 py-3 rounded-lg border border-[#FFFFFF14] text-white hover:bg-white/5 transition-colors'
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleNext}
+                  className='px-6 py-3 rounded-lg bg-[#F1CB68] text-[#0B0D12] font-semibold hover:bg-[#d4b55a] transition-colors'
+                >
+                  Next Step
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3 - Asset Valuation */}
+        {currentStep === 3 && (
+          <div className='max-w-4xl mx-auto'>
+            <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6 md:p-8'>
+              {/* Title */}
+              <div className='mb-8'>
+                <h3 className='text-2xl font-semibold text-white mb-2'>
+                  How would you like to determine the asset&apos;s value?
+                </h3>
+                <p className='text-gray-400 text-sm'>
+                  Choose one of the two options below to set the current value
+                  for your asset.
+                </p>
+              </div>
+
+              {/* Option 1: Manual Value */}
+              <div className='mb-6'>
+                <div className='bg-[#2A2A2D] rounded-2xl p-6 border-2 border-transparent hover:border-[#F1CB68]/30 transition-colors'>
+                  <h4 className='text-lg font-semibold text-white mb-2'>
+                    Enter a Manual Value
+                  </h4>
+                  <p className='text-gray-400 text-sm mb-6'>
+                    Provide your own estimated value for the asset. You can
+                    update this later.
+                  </p>
+
+                  <div>
+                    <label className='block text-sm font-medium text-gray-400 mb-2'>
+                      Current Estimated Value ($)
+                    </label>
+                    <div className='relative'>
+                      <span className='absolute left-4 top-1/2 -translate-y-1/2 text-[#F1CB68] font-semibold text-lg'>
+                        $
+                      </span>
+                      <input
+                        type='text'
+                        value={estimatedValue}
+                        onChange={e => setEstimatedValue(e.target.value)}
+                        placeholder='00.0'
+                        className='w-full pl-10 pr-4 py-3 rounded-lg bg-[#1a1a1d] border border-[#FFFFFF14] text-white text-lg placeholder-gray-600 focus:outline-none focus:border-[#F1CB68] transition-colors'
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* OR Divider */}
+              <div className='flex items-center justify-center mb-6'>
+                <div className='flex-1 h-px bg-[#FFFFFF14]'></div>
+                <span className='px-4 text-gray-500 text-sm font-medium'>
+                  OR
+                </span>
+                <div className='flex-1 h-px bg-[#FFFFFF14]'></div>
+              </div>
+
+              {/* Option 2: Professional Appraisal */}
+              <div className='mb-8'>
+                <div className='bg-[#2A2A2D] rounded-2xl p-6 border-2 border-transparent hover:border-[#F1CB68]/30 transition-colors'>
+                  <h4 className='text-lg font-semibold text-white mb-2'>
+                    Request a Professional Appraisal
+                  </h4>
+                  <p className='text-gray-400 text-sm mb-6'>
+                    Initiate a formal appraisal process with a certified expert
+                    to determine an accurate market value for your asset.
+                  </p>
+
+                  <div className='flex items-center gap-3'>
+                    <button
+                      onClick={() => setValuationType('appraisal')}
+                      className='px-6 py-3 bg-[#F1CB68] text-[#0B0D12] rounded-lg font-semibold hover:bg-[#d4b55a] transition-colors'
+                    >
+                      Request Appraisal
+                    </button>
+                    <button className='w-8 h-8 rounded-full border border-[#FFFFFF14] flex items-center justify-center text-gray-400 hover:text-white hover:border-[#F1CB68] transition-colors'>
+                      <svg
+                        width='16'
+                        height='16'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        strokeWidth='2'
+                      >
+                        <circle cx='12' cy='12' r='10' />
+                        <path d='M12 16v-4M12 8h.01' />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className='flex flex-col sm:flex-row gap-4 justify-end pt-6 border-t border-[#FFFFFF14]'>
+                <button
+                  onClick={() => setCurrentStep(currentStep - 1)}
+                  className='px-6 py-3 rounded-lg border border-[#FFFFFF14] text-white hover:bg-white/5 transition-colors'
+                >
+                  Back
+                </button>
+                <button
+                  onClick={handleNext}
+                  className='px-6 py-3 rounded-lg bg-[#F1CB68] text-[#0B0D12] font-semibold hover:bg-[#d4b55a] transition-colors'
+                >
+                  Finish
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </DashboardLayout>
+  );
+}

@@ -1,13 +1,14 @@
 'use client';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
-import { useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function AssetsPage() {
   const { isDarkMode } = useTheme();
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedAsset, setSelectedAsset] = useState(null);
-  const [showDetailModal, setShowDetailModal] = useState(false);
   const [showSellModal, setShowSellModal] = useState(false);
   const [showAppraisalModal, setShowAppraisalModal] = useState(false);
   const [sellFormData, setSellFormData] = useState({
@@ -165,7 +166,7 @@ export default function AssetsPage() {
 
   const categories = [
     { id: 'all', name: 'All Assets', icon: 'AllAssets.svg' },
-    { id: 'Yachts', name: 'Yachts', icon: '' },
+    { id: 'Yachts', name: 'Yachts', icon: 'yacht.svg' },
     { id: 'Private Jets', name: 'Private Jets', icon: 'Jets.svg' },
     { id: 'Real Estate', name: 'Real Estate', icon: 'Realstat.svg' },
     { id: 'Vehicles', name: 'Vehicles', icon: 'vehicels.svg' },
@@ -187,8 +188,7 @@ export default function AssetsPage() {
       : assets.filter(asset => asset.category === selectedCategory);
 
   const handleViewDetails = asset => {
-    setSelectedAsset(asset);
-    setShowDetailModal(true);
+    router.push(`/dashboard/assets/${asset.id}`);
   };
 
   const handleRequestSell = asset => {
@@ -242,24 +242,34 @@ export default function AssetsPage() {
           }}
         />
         <div className='relative h-full flex flex-col justify-center px-8'>
-          <h1 className={`text-3xl md:text-4xl font-bold mb-3 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>
+          <h1
+            className={`text-3xl md:text-4xl font-bold mb-3 ${
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
             Manage Your Luxury Portfolio
           </h1>
           <p className='text-gray-200 text-lg mb-6 max-w-2xl'>
             Track, monitor, and manage your high-value assets in one place
           </p>
           <div className='flex gap-4'>
-            <button className='bg-[#F1CB68]  text-[#101014] px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2'>
+            <button
+              onClick={() => router.push('/dashboard/assets/add')}
+              className='bg-[#F1CB68]  text-[#101014] px-6 py-3 rounded-lg font-semibold transition-colors flex items-center gap-2 hover:bg-[#d4b55a]'
+            >
               <span>
                 <img src='/AssestSpark.svg' alt='Add' />
               </span>{' '}
               Add New Asset
             </button>
-            <button className={`px-6 py-3 rounded-lg font-semibold transition-colors border ${
-              isDarkMode 
-                ? 'bg-white/10 hover:bg-white/20 text-white border-white/20'
-                : 'bg-gray-100 hover:bg-gray-200 text-gray-900 border-gray-300'
-            } backdrop-blur-sm`}>
+            <button
+              onClick={() => router.push('/dashboard')}
+              className={`px-6 py-3 rounded-lg font-semibold transition-colors border ${
+                isDarkMode
+                  ? 'bg-white/10 hover:bg-white/20 text-white border-white/20'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-900 border-gray-300'
+              } backdrop-blur-sm`}
+            >
               View Analytics
             </button>
           </div>
@@ -282,7 +292,7 @@ export default function AssetsPage() {
             key={category.id}
             onClick={() => setSelectedCategory(category.id)}
             className={`
-              px-4 py-2.5 rounded-lg font-medium whitespace-nowrap transition-all flex items-center gap-2 w-auto
+              px-4 py-2.5 text-sm rounded-lg font-medium whitespace-nowrap transition-all flex items-center gap-2 w-auto
               ${
                 selectedCategory === category.id
                   ? 'bg-[#D4AF37] text-[#101014]'
@@ -310,6 +320,7 @@ export default function AssetsPage() {
           <AssetCard
             key={asset.id}
             asset={asset}
+            isDarkMode={isDarkMode}
             onViewDetails={() => handleViewDetails(asset)}
             onRequestSell={() => handleRequestSell(asset)}
             onRequestAppraisal={() => handleRequestAppraisal(asset)}
@@ -317,18 +328,11 @@ export default function AssetsPage() {
         ))}
       </div>
 
-      {/* Detail Modal */}
-      {showDetailModal && selectedAsset && (
-        <DetailModal
-          asset={selectedAsset}
-          onClose={() => setShowDetailModal(false)}
-        />
-      )}
-
       {/* Sell Request Modal */}
       {showSellModal && selectedAsset && (
         <SellModal
           asset={selectedAsset}
+          isDarkMode={isDarkMode}
           formData={sellFormData}
           onChange={setSellFormData}
           onSubmit={handleSubmitSellRequest}
@@ -340,6 +344,7 @@ export default function AssetsPage() {
       {showAppraisalModal && selectedAsset && (
         <AppraisalModal
           asset={selectedAsset}
+          isDarkMode={isDarkMode}
           selectedType={appraisalType}
           onSelectType={setAppraisalType}
           onSubmit={handleSubmitAppraisal}
@@ -353,6 +358,7 @@ export default function AssetsPage() {
 // Asset Card Component
 function AssetCard({
   asset,
+  isDarkMode,
   onViewDetails,
   onRequestSell,
   onRequestAppraisal,
@@ -367,13 +373,23 @@ function AssetCard({
           className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-300'
         />
         <button className='absolute top-3 right-3 w-8 h-8 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-black/70 transition-colors'>
-          <span className={`text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>⋯</span>
+          <span
+            className={`text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}
+          >
+            ⋯
+          </span>
         </button>
       </div>
 
       {/* Content */}
       <div className='p-5'>
-        <h3 className={`font-semibold text-lg mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{asset.name}</h3>
+        <h3
+          className={`font-semibold text-lg mb-2 ${
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          }`}
+        >
+          {asset.name}
+        </h3>
         <div className='flex items-center gap-2 text-sm text-gray-400 mb-4'>
           <span>{asset.category}</span>
           <span>•</span>
@@ -405,13 +421,13 @@ function AssetCard({
           <div className='grid grid-cols-2 gap-2'>
             <button
               onClick={onRequestSell}
-              className='bg-white/5 hover:bg-white/10 text-white py-2.5 rounded-lg font-medium transition-colors border border-[#FFFFFF14]'
+              className='bg-white/5 text-sm hover:bg-white/10 text-white py-2.5 rounded-lg font-medium transition-colors border border-[#FFFFFF14]'
             >
               Request to Sell
             </button>
             <button
               onClick={onRequestAppraisal}
-              className='bg-white/5 hover:bg-white/10 text-white py-2.5 rounded-lg font-medium transition-colors border border-[#FFFFFF14]'
+              className='bg-white/5 text-sm hover:bg-white/10 text-white py-2.5 rounded-lg font-medium transition-colors border border-[#FFFFFF14]'
             >
               Request Appraisal
             </button>
@@ -422,110 +438,27 @@ function AssetCard({
   );
 }
 
-// Detail Modal Component
-function DetailModal({ asset, onClose }) {
-  return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm'>
-      <div className='bg-[#1A1A1D] border border-[#FFFFFF14] rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto'>
-        {/* Header */}
-        <div className='sticky top-0 bg-[#1A1A1D] border-b border-[#FFFFFF14] p-6 flex items-center justify-between'>
-          <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Asset Details</h2>
-          <button
-            onClick={onClose}
-            className='w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors'
-          >
-            <span className='text-gray-400 text-2xl'>×</span>
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className='p-6'>
-          {/* Image */}
-          <div className='rounded-xl overflow-hidden mb-6'>
-            <img
-              src={asset.image}
-              alt={asset.name}
-              className='w-full h-64 object-cover'
-            />
-          </div>
-
-          {/* Info Grid */}
-          <div className='grid grid-cols-2 gap-6 mb-6'>
-            <div>
-              <h3 className='text-white font-semibold text-xl mb-2'>
-                {asset.name}
-              </h3>
-              <div className='flex items-center gap-2 text-gray-400 mb-4'>
-                <span>{asset.category}</span>
-                <span>•</span>
-                <span>{asset.location}</span>
-              </div>
-            </div>
-            <div className='text-right'>
-              <p className='text-sm text-gray-500 mb-1'>Estimated Value</p>
-              <p className='text-[#D4AF37] font-bold text-2xl'>
-                {asset.estimatedValue}
-              </p>
-            </div>
-          </div>
-
-          {/* Description */}
-          <div className='mb-6'>
-            <h4 className={`font-semibold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Description</h4>
-            <p className='text-gray-400'>{asset.description}</p>
-          </div>
-
-          {/* Specifications */}
-          <div className='mb-6'>
-            <h4 className={`font-semibold mb-3 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Specifications</h4>
-            <div className='grid grid-cols-2 md:grid-cols-3 gap-4'>
-              {Object.entries(asset.specifications).map(([key, value]) => (
-                <div
-                  key={key}
-                  className='bg-white/5 border border-[#FFFFFF14] rounded-lg p-3'
-                >
-                  <p className='text-xs text-gray-500 mb-1 capitalize'>{key}</p>
-                  <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{value}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Additional Info */}
-          <div className='grid grid-cols-2 gap-4 mb-6'>
-            <div className='bg-white/5 border border-[#FFFFFF14] rounded-lg p-4'>
-              <p className='text-xs text-gray-500 mb-1'>Condition</p>
-              <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{asset.condition}</p>
-            </div>
-            <div className='bg-white/5 border border-[#FFFFFF14] rounded-lg p-4'>
-              <p className='text-xs text-gray-500 mb-1'>Last Appraisal</p>
-              <p className={`font-medium ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{asset.lastAppraisal}</p>
-            </div>
-          </div>
-
-          {/* Actions */}
-          <div className='flex gap-3'>
-            <button className='flex-1 bg-[#D4AF37] hover:bg-[#BF9B30] text-[#101014] py-3 rounded-lg font-semibold transition-colors'>
-              Edit Asset
-            </button>
-            <button className='flex-1 bg-white/5 hover:bg-white/10 text-white py-3 rounded-lg font-semibold transition-colors border border-[#FFFFFF14]'>
-              Download Report
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // Sell Request Modal Component
-function SellModal({ asset, formData, onChange, onSubmit, onClose }) {
+function SellModal({
+  asset,
+  isDarkMode,
+  formData,
+  onChange,
+  onSubmit,
+  onClose,
+}) {
   return (
     <div className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm'>
       <div className='bg-[#1A1A1D] border border-[#FFFFFF14] rounded-2xl max-w-2xl w-full'>
         {/* Header */}
         <div className='border-b border-[#FFFFFF14] p-6 flex items-center justify-between'>
-          <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Request to Sell</h2>
+          <h2
+            className={`text-2xl font-bold ${
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
+            Request to Sell
+          </h2>
           <button
             onClick={onClose}
             className='w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors'
@@ -544,11 +477,15 @@ function SellModal({ asset, formData, onChange, onSubmit, onClose }) {
             <div className='grid grid-cols-2 gap-4'>
               <div>
                 <p className='text-xs text-gray-500 mb-1'>Asset Name</p>
-                <p className={isDarkMode ? 'text-white' : 'text-gray-900'}>{asset.name}</p>
+                <p className={isDarkMode ? 'text-white' : 'text-gray-900'}>
+                  {asset.name}
+                </p>
               </div>
               <div>
                 <p className='text-xs text-gray-500 mb-1'>Category</p>
-                <p className={isDarkMode ? 'text-white' : 'text-gray-900'}>{asset.category}</p>
+                <p className={isDarkMode ? 'text-white' : 'text-gray-900'}>
+                  {asset.category}
+                </p>
               </div>
               <div>
                 <p className='text-xs text-gray-500 mb-1'>Current Value</p>
@@ -558,7 +495,9 @@ function SellModal({ asset, formData, onChange, onSubmit, onClose }) {
               </div>
               <div>
                 <p className='text-xs text-gray-500 mb-1'>Condition</p>
-                <p className={isDarkMode ? 'text-white' : 'text-gray-900'}>{asset.condition}</p>
+                <p className={isDarkMode ? 'text-white' : 'text-gray-900'}>
+                  {asset.condition}
+                </p>
               </div>
             </div>
           </div>
@@ -577,7 +516,7 @@ function SellModal({ asset, formData, onChange, onSubmit, onClose }) {
                 }
                 placeholder='Enter your target price'
                 className={`w-full rounded-lg px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] transition-colors border ${
-                  isDarkMode 
+                  isDarkMode
                     ? 'bg-white/5 border-[#FFFFFF14] text-white'
                     : 'bg-gray-50 border-gray-300 text-gray-900'
                 }`}
@@ -596,7 +535,7 @@ function SellModal({ asset, formData, onChange, onSubmit, onClose }) {
                 placeholder='Add any additional information about the sale...'
                 rows={4}
                 className={`w-full rounded-lg px-4 py-3 placeholder-gray-500 focus:outline-none focus:border-[#D4AF37] transition-colors resize-none border ${
-                  isDarkMode 
+                  isDarkMode
                     ? 'bg-white/5 border-[#FFFFFF14] text-white'
                     : 'bg-gray-50 border-gray-300 text-gray-900'
                 }`}
@@ -637,6 +576,7 @@ function SellModal({ asset, formData, onChange, onSubmit, onClose }) {
 // Appraisal Request Modal Component
 function AppraisalModal({
   asset,
+  isDarkMode,
   selectedType,
   onSelectType,
   onSubmit,
@@ -647,7 +587,13 @@ function AppraisalModal({
       <div className='bg-[#1A1A1D] border border-[#FFFFFF14] rounded-2xl max-w-2xl w-full'>
         {/* Header */}
         <div className='border-b border-[#FFFFFF14] p-6 flex items-center justify-between'>
-          <h2 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>Request Appraisal</h2>
+          <h2
+            className={`text-2xl font-bold ${
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
+            Request Appraisal
+          </h2>
           <button
             onClick={onClose}
             className='w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors'
@@ -666,7 +612,13 @@ function AppraisalModal({
               className='w-20 h-20 rounded-lg object-cover'
             />
             <div>
-              <h3 className={`font-semibold text-lg ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{asset.name}</h3>
+              <h3
+                className={`font-semibold text-lg ${
+                  isDarkMode ? 'text-white' : 'text-gray-900'
+                }`}
+              >
+                {asset.name}
+              </h3>
               <p className='text-gray-400 text-sm'>
                 {asset.category} • {asset.location}
               </p>
