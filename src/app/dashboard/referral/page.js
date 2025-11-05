@@ -1,7 +1,9 @@
 'use client';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function ReferralPage() {
+  const { isDarkMode } = useTheme();
   return (
     <DashboardLayout>
       <div className='min-h-screen'>

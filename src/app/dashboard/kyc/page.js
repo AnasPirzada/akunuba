@@ -1,8 +1,10 @@
 'use client';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import Image from 'next/image';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function KYCPage() {
+  const { isDarkMode } = useTheme();
   return (
     <DashboardLayout>
       <div className='min-h-screen'>
