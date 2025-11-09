@@ -2,7 +2,7 @@
 import { useTheme } from '@/context/ThemeContext';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const menuSections = [
   {
@@ -119,10 +119,34 @@ const menuSections = [
 export default function Sidebar({ isOpen, onClose }) {
   const pathname = usePathname();
   const [openSubmenu, setOpenSubmenu] = useState('null');
+  const [normalizedPathname, setNormalizedPathname] = useState('');
   const { isDarkMode } = useTheme();
+
+  // Normalize pathname for static export compatibility
+  useEffect(() => {
+    if (pathname) {
+      // Remove trailing slash and normalize
+      const normalized = pathname.replace(/\/$/, '') || '/';
+      setNormalizedPathname(normalized);
+    }
+  }, [pathname]);
 
   const toggleSubmenu = itemId => {
     setOpenSubmenu(openSubmenu === itemId ? null : itemId);
+  };
+
+  // Helper function to check if pathname matches href
+  const isActive = (href) => {
+    if (!normalizedPathname) return false;
+    const normalizedHref = href.replace(/\/$/, '') || '/';
+    return normalizedPathname === normalizedHref;
+  };
+
+  // Helper function to check if pathname starts with href (for submenu parents)
+  const isActiveParent = (href) => {
+    if (!normalizedPathname) return false;
+    const normalizedHref = href.replace(/\/$/, '') || '/';
+    return normalizedPathname.startsWith(normalizedHref) && normalizedPathname !== normalizedHref;
   };
 
   return (
@@ -181,7 +205,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   flex items-center gap-3 px-4 py-3 rounded-[24px] w-[222px] h-[48px]
                   transition-all duration-200
                   ${
-                    pathname === '/dashboard'
+                    isActive('/dashboard')
                       ? isDarkMode
                         ? 'text-white border border-[#FFFFFF1A]'
                         : 'text-[#101014] border border-[#F1CB68]'
@@ -191,7 +215,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   }
                 `}
                 style={
-                  pathname === '/dashboard'
+                  isActive('/dashboard')
                     ? isDarkMode
                       ? {
                           background:
@@ -208,18 +232,18 @@ export default function Sidebar({ isOpen, onClose }) {
                   name='Home'
                   size={20}
                   className={
-                    pathname === '/dashboard' && isDarkMode
+                    isActive('/dashboard') && isDarkMode
                       ? 'brightness-0 invert'
                       : ''
                   }
                   style={
-                    pathname !== '/dashboard'
+                    !isActive('/dashboard')
                       ? {
                           filter: isDarkMode
                             ? 'brightness(0) saturate(100%) invert(64%) sepia(6%) saturate(449%) hue-rotate(178deg) brightness(95%) contrast(88%)'
                             : 'brightness(0.5)',
                         }
-                      : pathname === '/dashboard' && !isDarkMode
+                      : isActive('/dashboard') && !isDarkMode
                       ? { filter: 'none' }
                       : {}
                   }
@@ -247,7 +271,7 @@ export default function Sidebar({ isOpen, onClose }) {
                               flex items-center justify-between px-4 py-2.5 rounded-[24px] w-[222px] h-[48px]
                               transition-all duration-200
                               ${
-                                pathname.startsWith(item.href)
+                                isActiveParent(item.href) || isActive(item.href)
                                   ? isDarkMode
                                     ? 'text-white border border-[#FFFFFF1A]'
                                     : 'text-[#101014] border border-[#F1CB68]'
@@ -257,7 +281,7 @@ export default function Sidebar({ isOpen, onClose }) {
                               }
                             `}
                             style={
-                              pathname.startsWith(item.href)
+                              isActiveParent(item.href) || isActive(item.href)
                                 ? isDarkMode
                                   ? {
                                       background:
@@ -276,18 +300,18 @@ export default function Sidebar({ isOpen, onClose }) {
                                 name={item.icon}
                                 size={20}
                                 className={
-                                  pathname.startsWith(item.href) && isDarkMode
+                                  (isActiveParent(item.href) || isActive(item.href)) && isDarkMode
                                     ? 'brightness-0 invert'
                                     : ''
                                 }
                                 style={
-                                  !pathname.startsWith(item.href)
+                                  !isActiveParent(item.href) && !isActive(item.href)
                                     ? {
                                         filter: isDarkMode
                                           ? 'brightness(0) saturate(100%) invert(64%) sepia(6%) saturate(449%) hue-rotate(178deg) brightness(95%) contrast(88%)'
                                           : 'brightness(0.5)',
                                       }
-                                    : pathname.startsWith(item.href) &&
+                                    : (isActiveParent(item.href) || isActive(item.href)) &&
                                       !isDarkMode
                                     ? { filter: 'none' }
                                     : {}
@@ -318,7 +342,7 @@ export default function Sidebar({ isOpen, onClose }) {
                                   className={`
                                     flex items-center px-4 py-2 text-sm rounded-[24px] w-[190px] h-[40px] transition-colors
                                     ${
-                                      pathname === subItem.href
+                                      isActive(subItem.href)
                                         ? isDarkMode
                                           ? 'text-white border border-[#FFFFFF1A]'
                                           : 'text-[#101014] border border-[#F1CB68]'
@@ -328,7 +352,7 @@ export default function Sidebar({ isOpen, onClose }) {
                                     }
                                   `}
                                   style={
-                                    pathname === subItem.href
+                                    isActive(subItem.href)
                                       ? isDarkMode
                                         ? {
                                             background:
@@ -358,7 +382,7 @@ export default function Sidebar({ isOpen, onClose }) {
                             ${
                               item.isLogout
                                 ? 'text-red-400 hover:text-red-300 hover:bg-red-500/10'
-                                : pathname === item.href
+                                : isActive(item.href)
                                 ? isDarkMode
                                   ? 'text-white border border-[#FFFFFF1A]'
                                   : 'text-[#101014] border border-[#F1CB68]'
@@ -368,7 +392,7 @@ export default function Sidebar({ isOpen, onClose }) {
                             }
                           `}
                           style={
-                            pathname === item.href && !item.isLogout
+                            isActive(item.href) && !item.isLogout
                               ? isDarkMode
                                 ? {
                                     background:
@@ -386,20 +410,20 @@ export default function Sidebar({ isOpen, onClose }) {
                             name={item.icon}
                             size={20}
                             className={
-                              pathname === item.href &&
+                              isActive(item.href) &&
                               !item.isLogout &&
                               isDarkMode
                                 ? 'brightness-0 invert'
                                 : ''
                             }
                             style={
-                              pathname !== item.href && !item.isLogout
+                              !isActive(item.href) && !item.isLogout
                                 ? {
                                     filter: isDarkMode
                                       ? 'brightness(0) saturate(100%) invert(64%) sepia(6%) saturate(449%) hue-rotate(178deg) brightness(95%) contrast(88%)'
                                       : 'brightness(0.5)',
                                   }
-                                : pathname === item.href &&
+                                : isActive(item.href) &&
                                   !item.isLogout &&
                                   !isDarkMode
                                 ? { filter: 'none' }
