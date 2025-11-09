@@ -65,6 +65,7 @@ export default function AddAssetPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedCategoryGroup, setSelectedCategoryGroup] = useState(null);
+  const [expandedGroups, setExpandedGroups] = useState({});
   const [formData, setFormData] = useState({});
   const [assetPhotos, setAssetPhotos] = useState([]);
   const [supportingDocs, setSupportingDocs] = useState([]);
@@ -86,6 +87,14 @@ export default function AddAssetPage() {
     if (!selectedCategory) return [];
     return getFormFieldsForCategory(selectedCategory);
   }, [selectedCategory]);
+
+  // Toggle category group expansion
+  const toggleGroup = groupName => {
+    setExpandedGroups(prev => ({
+      ...prev,
+      [groupName]: !prev[groupName],
+    }));
+  };
 
   // Initialize form data when category changes
   const handleCategorySelect = categoryId => {
@@ -566,44 +575,199 @@ export default function AddAssetPage() {
             <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6 md:p-8'>
               {/* Select Category Group and Category */}
               <div className='mb-8'>
-                <label className='block text-sm font-medium text-gray-400 mb-4'>
-                  Select Category Type
+                <label className='block text-sm font-medium text-white mb-4'>
+                  Select Asset Category
                 </label>
                 
-                {/* Category Groups */}
-                {categoriesByGroup.map(({ groupName, categories }) => (
-                  <div key={groupName} className='mb-6'>
-                    <h3 className='text-lg font-semibold text-white mb-3'>
-                      {groupName}
-                    </h3>
-                    <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-3'>
-                      {categories.map(category => (
+                {/* Category Groups with Dropdown */}
+                <div className='space-y-3'>
+                  {categoriesByGroup.map(({ groupName, categories }) => {
+                    const isExpanded = expandedGroups[groupName];
+                    const hasSelectedCategory = categories.some(
+                      cat => cat.id === selectedCategory
+                    );
+
+                    return (
+                      <div
+                        key={groupName}
+                        className='bg-[#2A2A2D] border border-[#FFFFFF14] rounded-xl overflow-hidden'
+                      >
+                        {/* Category Group Header */}
                         <button
-                          key={category.id}
-                          onClick={() => handleCategorySelect(category.id)}
-                          className={`p-4 rounded-xl border-2 transition-all text-center flex flex-col items-center justify-center min-h-[100px] ${
-                            selectedCategory === category.id
-                              ? 'bg-[#F1CB68] border-[#F1CB68] text-[#0B0D12]'
-                              : 'bg-[#2A2A2D] border-[#FFFFFF14] text-white hover:border-[#F1CB68]/50'
+                          onClick={() => toggleGroup(groupName)}
+                          className={`w-full px-5 py-4 flex items-center justify-between transition-colors ${
+                            hasSelectedCategory
+                              ? 'bg-[#F1CB68]/10 border-b border-[#F1CB68]/30'
+                              : 'hover:bg-[#FFFFFF08]'
                           }`}
                         >
-                          {category.iconFile ? (
-                            <img
-                              src={`/${category.iconFile}`}
-                              alt={category.name}
-                              className='w-8 h-8 mb-2 object-contain'
+                          <div className='flex items-center gap-3'>
+                            <div
+                              className={`w-2 h-2 rounded-full ${
+                                hasSelectedCategory
+                                  ? 'bg-[#F1CB68]'
+                                  : 'bg-gray-500'
+                              }`}
                             />
-                          ) : (
-                            <span className='text-2xl mb-2'>{category.icon}</span>
-                          )}
-                          <div className='text-xs font-medium text-center leading-tight'>
-                            {category.name}
+                            <h3 className='text-base font-semibold text-white'>
+                              {groupName}
+                            </h3>
+                            <span className='text-xs text-gray-400'>
+                              ({categories.length} categories)
+                            </span>
+                          </div>
+                          <div className='flex items-center gap-2'>
+                            {hasSelectedCategory && (
+                              <span className='text-xs text-[#F1CB68] font-medium px-2 py-1 bg-[#F1CB68]/20 rounded'>
+                                Selected
+                              </span>
+                            )}
+                            <svg
+                              width='20'
+                              height='20'
+                              viewBox='0 0 24 24'
+                              fill='none'
+                              stroke='currentColor'
+                              strokeWidth='2'
+                              className={`text-gray-400 transition-transform ${
+                                isExpanded ? 'rotate-180' : ''
+                              }`}
+                            >
+                              <path d='M6 9l6 6 6-6' />
+                            </svg>
                           </div>
                         </button>
-                      ))}
+
+                        {/* Sub-categories Dropdown */}
+                        {isExpanded && (
+                          <div className='p-4 bg-[#1a1a1d] border-t border-[#FFFFFF14]'>
+                            <div className='grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3'>
+                              {categories.map(category => (
+                                <button
+                                  key={category.id}
+                                  onClick={() => handleCategorySelect(category.id)}
+                                  className={`p-4 rounded-lg border-2 transition-all text-center flex flex-col items-center justify-center min-h-[90px] group ${
+                                    selectedCategory === category.id
+                                      ? 'bg-[#F1CB68] border-[#F1CB68] text-[#0B0D12] shadow-lg shadow-[#F1CB68]/20'
+                                      : 'bg-[#2A2A2D] border-[#FFFFFF14] text-white hover:border-[#F1CB68]/50 hover:bg-[#2A2A2D]/80'
+                                  }`}
+                                >
+                                  {category.iconFile ? (
+                                    <img
+                                      src={`/${category.iconFile}`}
+                                      alt={category.name}
+                                      className={`w-8 h-8 mb-2 object-contain transition-transform ${
+                                        selectedCategory === category.id
+                                          ? 'scale-110'
+                                          : 'group-hover:scale-105'
+                                      }`}
+                                    />
+                                  ) : (
+                                    <span
+                                      className={`text-2xl mb-2 ${
+                                        selectedCategory === category.id
+                                          ? 'scale-110'
+                                          : 'group-hover:scale-105'
+                                      } transition-transform`}
+                                    >
+                                      {category.icon}
+                                    </span>
+                                  )}
+                                  <div
+                                    className={`text-xs font-medium text-center leading-tight ${
+                                      selectedCategory === category.id
+                                        ? 'font-semibold'
+                                        : ''
+                                    }`}
+                                  >
+                                    {category.name}
+                                  </div>
+                                  {selectedCategory === category.id && (
+                                    <div className='mt-1'>
+                                      <svg
+                                        width='16'
+                                        height='16'
+                                        viewBox='0 0 24 24'
+                                        fill='none'
+                                        stroke='currentColor'
+                                        strokeWidth='3'
+                                        className='text-[#0B0D12]'
+                                      >
+                                        <path d='M20 6L9 17l-5-5' />
+                                      </svg>
+                                    </div>
+                                  )}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Selected Category Display */}
+                {selectedCategory && (
+                  <div className='mt-6 p-4 bg-[#F1CB68]/10 border border-[#F1CB68]/30 rounded-xl'>
+                    <div className='flex items-center gap-3'>
+                      <div className='w-10 h-10 rounded-lg bg-[#F1CB68]/20 flex items-center justify-center'>
+                        {allCategories.find(c => c.id === selectedCategory)
+                          ?.iconFile ? (
+                          <img
+                            src={`/${
+                              allCategories.find(c => c.id === selectedCategory)
+                                ?.iconFile
+                            }`}
+                            alt='Selected category'
+                            className='w-6 h-6 object-contain'
+                          />
+                        ) : (
+                          <span className='text-lg'>
+                            {allCategories.find(c => c.id === selectedCategory)
+                              ?.icon || '📦'}
+                          </span>
+                        )}
+                      </div>
+                      <div className='flex-1'>
+                        <p className='text-xs text-gray-400 mb-1'>
+                          Selected Category
+                        </p>
+                        <p className='text-white font-semibold'>
+                          {
+                            allCategories.find(c => c.id === selectedCategory)
+                              ?.name
+                          }
+                        </p>
+                        <p className='text-xs text-gray-400 mt-1'>
+                          {
+                            allCategories.find(c => c.id === selectedCategory)
+                              ?.description
+                          }
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => {
+                          setSelectedCategory(null);
+                          setSelectedCategoryGroup(null);
+                          setFormData({});
+                        }}
+                        className='text-gray-400 hover:text-white transition-colors p-2'
+                      >
+                        <svg
+                          width='20'
+                          height='20'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
+                        >
+                          <path d='M18 6L6 18M6 6l12 12' />
+                        </svg>
+                      </button>
                     </div>
                   </div>
-                ))}
+                )}
               </div>
 
               {/* Dynamic Form Fields */}
