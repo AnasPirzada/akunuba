@@ -1,21 +1,51 @@
 'use client';
 import { AnimatePresence, motion } from 'framer-motion';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { useTheme } from '@/context/ThemeContext';
 
 export default function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [normalizedPathname, setNormalizedPathname] = useState('');
   const dropdownRef = useRef(null);
   const router = useRouter();
+  const pathname = usePathname();
   const { isDarkMode } = useTheme();
 
   // Prevent hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Normalize pathname for static export compatibility
+  useEffect(() => {
+    if (pathname) {
+      // Remove trailing slash and normalize, also handle query params
+      const pathWithoutQuery = pathname.split('?')[0];
+      const normalized = pathWithoutQuery.replace(/\/$/, '') || '/';
+      setNormalizedPathname(normalized);
+    }
+  }, [pathname]);
+
+  // Helper function to check if pathname matches href
+  const isActive = (href) => {
+    if (!normalizedPathname) return false;
+    // Handle query params in href
+    const hrefWithoutQuery = href.split('?')[0];
+    const normalizedHref = hrefWithoutQuery.replace(/\/$/, '') || '/';
+    
+    // For exact match
+    if (normalizedPathname === normalizedHref) return true;
+    
+    // For hrefs with query params, check if base path matches
+    if (href.includes('?')) {
+      return normalizedPathname === normalizedHref;
+    }
+    
+    return false;
+  };
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -203,10 +233,23 @@ export default function ProfileDropdown() {
                   key={item.id}
                   onClick={() => handleMenuClick(item.href)}
                   className={`w-full flex items-center gap-3 px-6 py-3 transition-colors cursor-pointer ${
-                    isDarkMode
+                    isActive(item.href)
+                      ? isDarkMode
+                        ? 'text-white bg-white/5'
+                        : 'text-gray-900 bg-gray-100'
+                      : isDarkMode
                       ? 'text-white hover:bg-white/5'
                       : 'text-gray-900 hover:bg-gray-100'
                   }`}
+                  style={
+                    isActive(item.href)
+                      ? {
+                          borderLeft: isDarkMode
+                            ? '3px solid #D4AF37'
+                            : '3px solid #D4AF37',
+                        }
+                      : {}
+                  }
                 >
                   <Image
                     src={item.icon}
