@@ -1,11 +1,44 @@
 'use client';
-import { useState } from 'react';
+import Image from 'next/image';
+import { useEffect, useState } from 'react';
+
+const carouselSlides = [
+  {
+    title: 'Smarter Wealth.',
+    subtitle: 'Seamless Control.',
+    image:
+      '/first_crousel_images/freepik__the-style-is-3d-model-with-octane-render-volumetri__820 1.png',
+  },
+  {
+    title: 'Unified Wealth',
+    subtitle: 'Management.',
+    image:
+      '/first_crousel_images/freepik__the-style-is-3d-model-with-octane-render-volumetri__823-removebg-preview_upscaled (1) 1.png',
+  },
+  {
+    title: 'Smart Portfolio',
+    subtitle: 'Optimization.',
+    image:
+      '/first_crousel_images/freepik__the-style-is-3d-model-with-octane-render-volumetri__90775 1.png',
+  },
+];
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Auto-rotate carousel
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => (prev + 1) % carouselSlides.length);
+    }, 5000); // Change slide every 5 seconds
+
+    return () => clearInterval(timer);
+  }, []);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -192,10 +225,86 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Right Side - Space for Image */}
-      <div className='hidden lg:flex w-1/2 items-center justify-center relative bg-gradient-to-br from-gray-900/50 to-gray-800/50'>
-        <div className='text-center text-gray-500'>
-          <img src='/loginpagerightimage.png' alt='Login Illustration' />
+      {/* Right Side - Carousel (Desktop Only) */}
+      <div className='hidden lg:flex w-1/2 items-center justify-center relative'>
+        <div className='relative flex items-center justify-center h- py-12'>
+          {/* Header Badge - Positioned Above Container */}
+          <div className='absolute top-12  -translate-x-1/2 z-30'>
+            <div className='relative flex items-center justify-center'>
+              {/* Badge with border */}
+              <div className='px-8 py-4 mt-1 border z-10 bg-[#0B0D12] border-white/10 rounded-[90px]'>
+                <p className='text-white text-[18px] font-normal whitespace-nowrap'>
+                  Your Personalized Wealth Hub
+                </p>
+              </div>
+              <div className='px-8 absolute w-[364px] h-[80px] left-0 top-0 py-4 border-0 bg-[#0B0D12] border-white/10 rounded-r-[52px]'></div>
+            </div>
+          </div>
+
+          {/* Carousel Container */}
+          <div
+            className='relative w-[580px] h-[784px] border-0 overflow-hidden rounded-[24px]'
+            style={{
+              background: 'rgba(40, 40, 45, 0.3)',
+              backdropFilter: 'blur(20px)',
+            }}
+          >
+            {/* Carousel Images */}
+            {carouselSlides.map((slide, index) => (
+              <div
+                key={index}
+                className={`absolute inset-0 transition-opacity duration-700 ${
+                  currentSlide === index ? 'opacity-100' : 'opacity-0'
+                }`}
+              >
+                <div className='relative w-full h-full flex items-center justify-center '>
+                  <Image
+                    src={slide.image}
+                    alt={`${slide.title} ${slide.subtitle}`}
+                    width={100}
+                    height={100}
+                    className='object-contain w-full h-full '
+                    priority={index === 0}
+                  />
+                </div>
+              </div>
+            ))}
+
+            {/* Bottom gradient overlay */}
+            <div
+              className='absolute bottom-0 left-0 right-0 h-[280px] pointer-events-none'
+              style={{
+                background:
+                  'linear-gradient(180deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.9) 100%)',
+              }}
+            />
+
+            {/* Text Overlay */}
+            <div className='absolute bottom-20 left-6 right-6 z-10'>
+              <h2 className='text-white font-bold text-[48px] leading-[1.3] tracking-[-0.02em]'>
+                {carouselSlides[currentSlide].title}
+              </h2>
+              <h2 className='text-white font-bold text-[48px] leading-[1.3] tracking-[-0.02em]'>
+                {carouselSlides[currentSlide].subtitle}
+              </h2>
+            </div>
+
+            {/* Carousel Indicators */}
+            <div className='absolute bottom-6 left-6 flex items-center gap-3 z-20'>
+              {carouselSlides.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`rounded-full transition-all duration-300 ${
+                    currentSlide === index
+                      ? 'w-4 h-4 bg-white'
+                      : 'w-4 h-4 bg-white/20 hover:bg-white/40'
+                  }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
