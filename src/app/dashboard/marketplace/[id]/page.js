@@ -6,9 +6,25 @@ export async function generateStaticParams() {
   // IDs match the funds defined in /dashboard/marketplace/page.js
   const fundIds = [1, 2, 3, 4, 5, 6];
 
-  // Convert to string format as required by Next.js
-  return fundIds.map(id => ({
-    id: id.toString(),
+  // Also include listing IDs from Active Offers
+  const listingIds = [
+    'listing_001',
+    'listing_002',
+    'listing_003',
+    'listing_004',
+    'listing_005',
+    'listing_006',
+  ];
+
+  // Combine both numeric IDs and listing IDs
+  const allIds = [
+    ...fundIds.map(id => id.toString()),
+    ...listingIds,
+  ];
+
+  // Convert to required format
+  return allIds.map(id => ({
+    id: id,
   }));
 }
 

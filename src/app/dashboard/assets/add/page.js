@@ -1,16 +1,15 @@
 'use client';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
-import { useTheme } from '@/context/ThemeContext';
-import { useRouter } from 'next/navigation';
-import { useState, useMemo } from 'react';
 import {
   allCategories,
-  getCategoryGroup,
-  getFormFieldsForCategory,
   getCategoriesByGroup,
   getCategoryGroups,
+  getFormFieldsForCategory,
 } from '@/config/assetConfig';
+import { useTheme } from '@/context/ThemeContext';
 import { getCategoryIcon } from '@/utils/categoryIcons';
+import { useRouter } from 'next/navigation';
+import { useMemo, useState } from 'react';
 
 const steps = [
   { id: 1, title: 'Basic Information' },
@@ -36,16 +35,29 @@ const fieldNameToKey = fieldName => {
 const getFieldType = fieldName => {
   const lowerName = fieldName.toLowerCase();
   if (lowerName.includes('date')) return 'date';
-  if (lowerName.includes('price') || lowerName.includes('value') || lowerName.includes('cost') || lowerName.includes('owed')) return 'currency';
-  if (lowerName.includes('rate') || lowerName.includes('interest')) return 'percentage';
-  if (lowerName.includes('description') || lowerName.includes('notes') || lowerName.includes('purpose')) return 'textarea';
+  if (
+    lowerName.includes('price') ||
+    lowerName.includes('value') ||
+    lowerName.includes('cost') ||
+    lowerName.includes('owed')
+  )
+    return 'currency';
+  if (lowerName.includes('rate') || lowerName.includes('interest'))
+    return 'percentage';
+  if (
+    lowerName.includes('description') ||
+    lowerName.includes('notes') ||
+    lowerName.includes('purpose')
+  )
+    return 'textarea';
   if (lowerName.includes('image')) return 'file';
   if (lowerName.includes('condition')) return 'select';
   if (lowerName.includes('ownership type')) return 'select';
   if (lowerName.includes('risk level')) return 'select';
   if (lowerName.includes('payment frequency')) return 'select';
   if (lowerName.includes('currency')) return 'select';
-  if (lowerName.includes('type') && !lowerName.includes('ownership')) return 'select';
+  if (lowerName.includes('type') && !lowerName.includes('ownership'))
+    return 'select';
   return 'text';
 };
 
@@ -281,7 +293,10 @@ export default function AddAssetPage() {
     // Handle special fields
     if (fieldName === 'Make/Model/Year') {
       return (
-        <div key={fieldKey} className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-6'>
+        <div
+          key={fieldKey}
+          className='grid grid-cols-1 md:grid-cols-3 gap-4 mb-6'
+        >
           <div>
             <label className='block text-sm font-medium text-white mb-2'>
               Make
@@ -334,7 +349,11 @@ export default function AddAssetPage() {
           </label>
           <input
             type='text'
-            value={selectedCategory ? allCategories.find(c => c.id === selectedCategory)?.name || '' : ''}
+            value={
+              selectedCategory
+                ? allCategories.find(c => c.id === selectedCategory)?.name || ''
+                : ''
+            }
             readOnly
             className='w-full px-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-gray-400 cursor-not-allowed'
           />
@@ -594,13 +613,13 @@ export default function AddAssetPage() {
         {currentStep === 1 && (
           <div className='max-w-7xl mx-auto'>
             {/* Header Section */}
-              <div className='mb-8'>
+            <div className='mb-8'>
               <h2 className='text-4xl md:text-5xl font-bold text-white mb-2 leading-tight'>
                 Discover More.
                 <br />
                 Browse Smarter.
               </h2>
-              
+
               {/* Search Bar and Add Button */}
               <div className='flex flex-col sm:flex-row gap-4 mt-6'>
                 <div className='flex-1 relative'>
@@ -625,7 +644,7 @@ export default function AddAssetPage() {
                     className='w-full pl-12 pr-4 py-3 rounded-xl bg-[#2A2A2D] border border-[#FFFFFF14] text-white placeholder-gray-500 focus:outline-none focus:border-[#F1CB68] transition-colors'
                   />
                 </div>
-                <button className='px-6 py-3 rounded-xl bg-[#F1CB68] text-[#0B0D12] font-semibold hover:bg-[#d4b55a] transition-colors flex items-center gap-2 justify-center'>
+                <button className='px-6 hidden py-3 rounded-xl bg-[#F1CB68] text-[#0B0D12] font-semibold hover:bg-[#d4b55a] transition-colors flex items-center gap-2 justify-center'>
                   <svg
                     width='20'
                     height='20'
@@ -642,103 +661,108 @@ export default function AddAssetPage() {
             </div>
 
             {/* Main Content Container */}
-            <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6 md:p-8 max-h-[calc(100vh-300px)] overflow-y-auto custom-scrollbar'>
+            <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6 md:p-8 max-h-[calc(200vh-300px)] overflow-y-auto custom-scrollbar'>
               {/* Category Groups */}
               {filteredCategoriesByGroup.map(({ groupName, categories }) => {
                 const isExpanded = expandedGroups[groupName] ?? true; // Default to expanded
-                    const hasSelectedCategory = categories.some(
-                      cat => cat.id === selectedCategory
-                    );
+                const hasSelectedCategory = categories.some(
+                  cat => cat.id === selectedCategory
+                );
 
                 // Get group display name
-                const getGroupDisplayName = (name) => {
+                const getGroupDisplayName = name => {
                   const groupMap = {
-                    'Assets': 'Physical, Alternative, Lifestyle',
-                    'Portfolio': 'Financial, Digital, Structured',
-                    'Liabilities': 'Liabilities & Debts',
+                    Assets: 'Physical, Alternative, Lifestyle',
+                    Portfolio: 'Financial, Digital, Structured',
+                    Liabilities: 'Liabilities & Debts',
                     'Shadow Wealth': 'Shadow & Anticipated Wealth',
-                    'Philanthropy': 'Philanthropy & Impact',
-                    'Lifestyle': 'Lifestyle & Concierge',
-                    'Governance': 'Compliance & Governance',
+                    Philanthropy: 'Philanthropy & Impact',
+                    Lifestyle: 'Lifestyle & Concierge',
+                    Governance: 'Compliance & Governance',
                   };
                   return groupMap[name] || name;
                 };
 
-                    return (
+                return (
                   <div key={groupName} className='mb-8 last:mb-0'>
                     {/* Group Header */}
                     <div className='flex items-center justify-between mb-4'>
-                          <div className='flex items-center gap-3'>
+                      <div className='flex items-center gap-3'>
                         <h3 className='text-2xl font-bold text-white'>
-                              {groupName}
-                            </h3>
+                          {groupName}
+                        </h3>
                         <span className='text-sm text-gray-400'>
                           {getGroupDisplayName(groupName)}
-                            </span>
-                          </div>
+                        </span>
+                      </div>
                       <button
                         onClick={() => toggleGroup(groupName)}
                         className='text-gray-400 hover:text-white transition-colors p-1'
                       >
-                            <svg
-                              width='20'
-                              height='20'
-                              viewBox='0 0 24 24'
-                              fill='none'
-                              stroke='currentColor'
-                              strokeWidth='2'
+                        <svg
+                          width='20'
+                          height='20'
+                          viewBox='0 0 24 24'
+                          fill='none'
+                          stroke='currentColor'
+                          strokeWidth='2'
                           className={`transition-transform ${
-                                isExpanded ? 'rotate-180' : ''
-                              }`}
-                            >
-                              <path d='M6 9l6 6 6-6' />
-                            </svg>
-                        </button>
+                            isExpanded ? 'rotate-180' : ''
+                          }`}
+                        >
+                          <path d='M6 9l6 6 6-6' />
+                        </svg>
+                      </button>
                     </div>
 
                     {/* Category Cards Grid */}
-                        {isExpanded && (
+                    {isExpanded && (
                       <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4'>
-                              {categories.map(category => (
-                                <button
-                                  key={category.id}
-                                  onClick={() => handleCategorySelect(category.id)}
+                        {categories.map(category => (
+                          <button
+                            key={category.id}
+                            onClick={() => handleCategorySelect(category.id)}
                             className={`group relative p-6 rounded-xl border-2 transition-all text-left ${
-                                    selectedCategory === category.id
+                              selectedCategory === category.id
                                 ? 'bg-[#2A2A2D] border-[#F1CB68] shadow-lg shadow-[#F1CB68]/20'
                                 : 'bg-[#2A2A2D] border-[#FFFFFF14] hover:border-[#F1CB68]/50 hover:bg-[#2A2A2D]/80'
-                                  }`}
-                                >
+                            }`}
+                          >
                             {/* Icon - Yellow icon at top center */}
                             <div className='flex justify-center mb-4'>
-                                  {category.iconFile ? (
-                                    <img
-                                      src={`/${category.iconFile}`}
-                                      alt={category.name}
+                              {category.iconFile ? (
+                                <img
+                                  src={`/${category.iconFile}`}
+                                  alt={category.name}
                                   className='w-12 h-12 object-contain'
                                   style={{
-                                    filter: 'brightness(0) saturate(100%) invert(77%) sepia(48%) saturate(1352%) hue-rotate(358deg) brightness(101%) contrast(96%)',
+                                    filter:
+                                      'brightness(0) saturate(100%) invert(77%) sepia(48%) saturate(1352%) hue-rotate(358deg) brightness(101%) contrast(96%)',
                                   }}
-                                    />
-                                  ) : (
+                                />
+                              ) : (
                                 <div className='w-12 h-12 flex items-center justify-center text-[#F1CB68] transition-transform group-hover:scale-110'>
                                   {(() => {
-                                    const IconComponent = getCategoryIcon(category.id);
-                                    return <IconComponent className='w-12 h-12' />;
+                                    const IconComponent = getCategoryIcon(
+                                      category.id
+                                    );
+                                    return (
+                                      <IconComponent className='w-12 h-12' />
+                                    );
                                   })()}
                                 </div>
-                                  )}
+                              )}
                             </div>
 
                             {/* Category Title */}
                             <h4
                               className={`text-lg font-bold mb-2 ${
-                                      selectedCategory === category.id
+                                selectedCategory === category.id
                                   ? 'text-[#F1CB68]'
                                   : 'text-white'
-                                    }`}
-                                  >
-                                    {category.name}
+                              }`}
+                            >
+                              {category.name}
                             </h4>
 
                             {/* Description */}
@@ -747,29 +771,29 @@ export default function AddAssetPage() {
                             </p>
 
                             {/* Selected Indicator */}
-                                  {selectedCategory === category.id && (
+                            {selectedCategory === category.id && (
                               <div className='absolute top-4 right-4'>
                                 <div className='w-6 h-6 rounded-full bg-[#F1CB68] flex items-center justify-center'>
-                                      <svg
+                                  <svg
                                     width='14'
                                     height='14'
-                                        viewBox='0 0 24 24'
-                                        fill='none'
+                                    viewBox='0 0 24 24'
+                                    fill='none'
                                     stroke='#0B0D12'
-                                        strokeWidth='3'
-                                      >
-                                        <path d='M20 6L9 17l-5-5' />
-                                      </svg>
+                                    strokeWidth='3'
+                                  >
+                                    <path d='M20 6L9 17l-5-5' />
+                                  </svg>
                                 </div>
-                                    </div>
-                                  )}
-                                </button>
-                              ))}
-                          </div>
-                        )}
+                              </div>
+                            )}
+                          </button>
+                        ))}
                       </div>
-                    );
-                  })}
+                    )}
+                  </div>
+                );
+              })}
 
               {/* No Results Message */}
               {filteredCategoriesByGroup.length === 0 && (
@@ -785,15 +809,17 @@ export default function AddAssetPage() {
                   </button>
                 </div>
               )}
-                </div>
+            </div>
 
-                {/* Selected Category Display */}
-                {selectedCategory && (
-                  <div className='mt-6 p-4 bg-[#F1CB68]/10 border border-[#F1CB68]/30 rounded-xl'>
-                    <div className='flex items-center gap-3'>
-                      <div className='w-10 h-10 rounded-lg bg-[#F1CB68]/20 flex items-center justify-center'>
+            {/* Selected Category Display */}
+            {selectedCategory && (
+              <div className='mt-6 p-4 bg-[#F1CB68]/10 border border-[#F1CB68]/30 rounded-xl'>
+                <div className='flex items-center gap-3'>
+                  <div className='w-10 h-10 rounded-lg bg-[#F1CB68]/20 flex items-center justify-center'>
                     {(() => {
-                      const category = allCategories.find(c => c.id === selectedCategory);
+                      const category = allCategories.find(
+                        c => c.id === selectedCategory
+                      );
                       if (category?.iconFile) {
                         return (
                           <img
@@ -804,79 +830,78 @@ export default function AddAssetPage() {
                         );
                       } else {
                         const IconComponent = getCategoryIcon(selectedCategory);
-                        return <IconComponent className='w-6 h-6 text-[#F1CB68]' />;
+                        return (
+                          <IconComponent className='w-6 h-6 text-[#F1CB68]' />
+                        );
                       }
                     })()}
-                      </div>
-                      <div className='flex-1'>
-                        <p className='text-xs text-gray-400 mb-1'>
-                          Selected Category
-                        </p>
-                        <p className='text-white font-semibold'>
-                          {
-                            allCategories.find(c => c.id === selectedCategory)
-                              ?.name
-                          }
-                        </p>
-                        <p className='text-xs text-gray-400 mt-1'>
-                          {
-                            allCategories.find(c => c.id === selectedCategory)
-                              ?.description
-                          }
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => {
-                          setSelectedCategory(null);
-                          setSelectedCategoryGroup(null);
-                          setFormData({});
-                        }}
-                        className='text-gray-400 hover:text-white transition-colors p-2'
-                      >
-                        <svg
-                          width='20'
-                          height='20'
-                          viewBox='0 0 24 24'
-                          fill='none'
-                          stroke='currentColor'
-                          strokeWidth='2'
-                        >
-                          <path d='M18 6L6 18M6 6l12 12' />
-                        </svg>
-                      </button>
-                    </div>
                   </div>
-                )}
-
-              {/* Dynamic Form Fields */}
-              {selectedCategory && formFields.length > 0 && (
-              <div className='mt-8 bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6 md:p-8'>
-                  <h3 className='text-xl font-semibold text-white mb-6'>
-                    Asset Details
-                  </h3>
-                  {formFields.map(field => renderFormField(field))}
-
-              {/* Action Buttons */}
-              <div className='flex flex-col sm:flex-row gap-4 justify-end mt-8'>
-                <button
-                  onClick={handleCancel}
-                  className='px-6 py-3 rounded-lg border border-[#FFFFFF14] text-white hover:bg-white/5 transition-colors'
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleNext}
-                  disabled={!selectedCategory}
-                  className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
-                    selectedCategory
-                      ? 'bg-[#F1CB68] text-[#0B0D12] hover:bg-[#d4b55a]'
-                      : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                  }`}
-                >
-                  Next Step
-                </button>
+                  <div className='flex-1'>
+                    <p className='text-xs text-gray-400 mb-1'>
+                      Selected Category
+                    </p>
+                    <p className='text-white font-semibold'>
+                      {allCategories.find(c => c.id === selectedCategory)?.name}
+                    </p>
+                    <p className='text-xs text-gray-400 mt-1'>
+                      {
+                        allCategories.find(c => c.id === selectedCategory)
+                          ?.description
+                      }
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setSelectedCategory(null);
+                      setSelectedCategoryGroup(null);
+                      setFormData({});
+                    }}
+                    className='text-gray-400 hover:text-white transition-colors p-2'
+                  >
+                    <svg
+                      width='20'
+                      height='20'
+                      viewBox='0 0 24 24'
+                      fill='none'
+                      stroke='currentColor'
+                      strokeWidth='2'
+                    >
+                      <path d='M18 6L6 18M6 6l12 12' />
+                    </svg>
+                  </button>
+                </div>
               </div>
-            </div>
+            )}
+
+            {/* Dynamic Form Fields */}
+            {selectedCategory && formFields.length > 0 && (
+              <div className='mt-8 bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6 md:p-8'>
+                <h3 className='text-xl font-semibold text-white mb-6'>
+                  Asset Details
+                </h3>
+                {formFields.map(field => renderFormField(field))}
+
+                {/* Action Buttons */}
+                <div className='flex flex-col sm:flex-row gap-4 justify-end mt-8'>
+                  <button
+                    onClick={handleCancel}
+                    className='px-6 py-3 rounded-lg border border-[#FFFFFF14] text-white hover:bg-white/5 transition-colors'
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    disabled={!selectedCategory}
+                    className={`px-6 py-3 rounded-lg font-semibold transition-colors ${
+                      selectedCategory
+                        ? 'bg-[#F1CB68] text-[#0B0D12] hover:bg-[#d4b55a]'
+                        : 'bg-gray-600 text-gray-400 cursor-not-allowed'
+                    }`}
+                  >
+                    Next Step
+                  </button>
+                </div>
+              </div>
             )}
 
             {/* Action Buttons - Show when no category selected */}

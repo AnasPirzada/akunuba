@@ -1,0 +1,345 @@
+'use client';
+import DashboardLayout from '@/components/dashboard/DashboardLayout';
+import { useTheme } from '@/context/ThemeContext';
+import Link from 'next/link';
+import { useState } from 'react';
+
+export default function StrategiesPage() {
+  const { isDarkMode } = useTheme();
+  const [strategiesFilter, setStrategiesFilter] = useState('all');
+  const [openSourceOnly, setOpenSourceOnly] = useState(false);
+
+  // Investment Strategies Data
+  const strategies = [
+    {
+      id: 'lanz-strategy-6',
+      title: 'LANZ Strategy 6.0',
+      description:
+        '◆LANZ Strategy 6.0 — Precision Backtesting Based on 09:00 NY Candle, Dynamic SL/TP, and Lot Size per Trade. LANZ Strategy 6.0 is the simulation version of the original LANZ',
+      author: 'rau_u_lanz',
+      date: 'Jul 21',
+      comments: 53,
+      boosts: 53,
+      image: '/images/strategy-lanz.png', // Placeholder - you can add actual images
+      chartType: 'candlestick',
+    },
+    {
+      id: 'ny-liquidity-reversal',
+      title: 'NY Liquidity Reversal - Debug',
+      description:
+        '70 percent 1 rate strategy, no red folder news, trades from only 730 to noon, 20 EMA plus voluntarily breakout, 1 and one entry per direction per session per asset',
+      author: 'Shervoo',
+      date: '21 hours ago',
+      comments: 53,
+      boosts: 53,
+      image: '/images/strategy-ny.png',
+      chartType: 'line',
+    },
+    {
+      id: 'sweep-liquidity',
+      title: 'Sweep &',
+      description:
+        'liquidity and boom, easy 2rr babyyy price always always reverse after LQ.sweep',
+      author: 'anuragfx1',
+      date: '20 hours ago',
+      comments: 53,
+      boosts: 53,
+      image: '/images/strategy-sweep.png',
+      chartType: 'candlestick',
+    },
+    {
+      id: 'adx-supertrend',
+      title: 'ADX + Supertrend Persistent Entry',
+      description:
+        'buy condition should match below condition below. ADX DI plus should above of DI minuse. Supertrend should be bullish',
+      author: 'rkthakur2610',
+      date: 'Jul 21',
+      comments: 53,
+      boosts: 53,
+      image: '/images/strategy-adx.png',
+      chartType: 'candlestick',
+    },
+  ];
+
+  return (
+    <DashboardLayout>
+      <div>
+        {/* Header */}
+        <div className='mb-8'>
+          <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6'>
+            <div>
+              <h1
+                className={`text-3xl md:text-4xl font-bold mb-3 ${
+                  isDarkMode ? 'text-white' : 'text-gray-900'
+                }`}
+              >
+                Investment Strategies
+              </h1>
+              <p className='text-gray-400 text-sm md:text-base'>
+                For browsing your stocks, Bonds, ETFs, etc.
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className='flex items-center gap-3'>
+              {/* Add Strategy Button */}
+              <button
+                className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center transition-all ${
+                  isDarkMode
+                    ? 'border-[#F1CB68] hover:bg-[#F1CB68]/10'
+                    : 'border-[#F1CB68] hover:bg-[#F1CB68]/10'
+                }`}
+              >
+                <svg
+                  width='20'
+                  height='20'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke={isDarkMode ? '#F1CB68' : '#F1CB68'}
+                  strokeWidth='2'
+                >
+                  <path d='M12 5v14M5 12h14' />
+                </svg>
+              </button>
+
+              {/* Strategies Filter Dropdown */}
+              <div className='relative'>
+                <button
+                  onClick={() => setStrategiesFilter(strategiesFilter === 'all' ? 'my' : 'all')}
+                  className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all flex items-center gap-2 ${
+                    isDarkMode
+                      ? 'border-[#F1CB68] text-black bg-[#F1CB68] hover:bg-[#F1CB68]/90'
+                      : 'border-[#F1CB68] text-black bg-[#F1CB68] hover:bg-[#F1CB68]/90'
+                  }`}
+                >
+                  Strategies
+                  <svg
+                    width='16'
+                    height='16'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke='currentColor'
+                    strokeWidth='2'
+                  >
+                    <path d='M19 9l-7 7-7-7' />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Open-source Only Toggle */}
+              <button
+                onClick={() => setOpenSourceOnly(!openSourceOnly)}
+                className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all flex items-center gap-2 ${
+                  openSourceOnly
+                    ? isDarkMode
+                      ? 'border-[#F1CB68] text-black bg-[#F1CB68]'
+                      : 'border-[#F1CB68] text-black bg-[#F1CB68]'
+                    : isDarkMode
+                    ? 'border-[#F1CB68] text-black bg-[#F1CB68] hover:bg-[#F1CB68]/90'
+                    : 'border-[#F1CB68] text-black bg-[#F1CB68] hover:bg-[#F1CB68]/90'
+                }`}
+              >
+                <svg
+                  width='16'
+                  height='16'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                >
+                  <rect x='3' y='11' width='18' height='11' rx='2' ry='2' />
+                  <path d='M7 11V7a5 5 0 0110 0v4' />
+                </svg>
+                Open-source only
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Strategies Grid */}
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+          {strategies.map((strategy, index) => (
+            <Link
+              key={strategy.id}
+              href={`/dashboard/investment/strategies/${strategy.id}`}
+            >
+              <StrategyCard strategy={strategy} isDarkMode={isDarkMode} />
+            </Link>
+          ))}
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}
+
+// Strategy Card Component
+function StrategyCard({ strategy, isDarkMode }) {
+  return (
+    <div
+      className={`rounded-2xl border overflow-hidden transition-all cursor-pointer hover:scale-[1.02] ${
+        isDarkMode
+          ? 'bg-[#1C1C1E] border-[#FFFFFF14] hover:border-[#F1CB68]/50'
+          : 'bg-white border-gray-200 hover:border-[#F1CB68]'
+      }`}
+    >
+      {/* Chart Image */}
+      <div
+        className={`w-full h-48 ${
+          isDarkMode ? 'bg-[#0A0A0A]' : 'bg-gray-100'
+        } flex items-center justify-center relative overflow-hidden`}
+      >
+        {/* Placeholder Chart - You can replace with actual images */}
+        <div className='w-full h-full flex items-center justify-center'>
+          <svg
+            width='100%'
+            height='100%'
+            viewBox='0 0 400 200'
+            className='absolute inset-0'
+          >
+            {/* Chart Background */}
+            <rect width='400' height='200' fill={isDarkMode ? '#0A0A0A' : '#FFFFFF'} />
+            
+            {/* Sample Chart Lines */}
+            {strategy.chartType === 'candlestick' ? (
+              <>
+                {/* Candlesticks */}
+                {[50, 100, 150, 200, 250, 300, 350].map((x, i) => (
+                  <g key={i}>
+                    <line
+                      x1={x}
+                      y1={100 - i * 10}
+                      x2={x}
+                      y2={100 + i * 5}
+                      stroke={isDarkMode ? '#8B5CF6' : '#6366F1'}
+                      strokeWidth='2'
+                    />
+                    <rect
+                      x={x - 8}
+                      y={100 - i * 10}
+                      width='16'
+                      height={i * 15}
+                      fill={isDarkMode ? '#F1CB68' : '#F1CB68'}
+                    />
+                  </g>
+                ))}
+              </>
+            ) : (
+              <>
+                {/* Line Chart */}
+                <polyline
+                  points='50,150 100,120 150,100 200,80 250,70 300,60 350,50'
+                  fill='none'
+                  stroke={isDarkMode ? '#3B82F6' : '#2563EB'}
+                  strokeWidth='2'
+                />
+                <polyline
+                  points='50,100 100,90 150,85 200,75 250,70 300,65 350,60'
+                  fill='none'
+                  stroke={isDarkMode ? '#EF4444' : '#DC2626'}
+                  strokeWidth='2'
+                />
+              </>
+            )}
+          </svg>
+        </div>
+      </div>
+
+      {/* Card Content */}
+      <div className='p-6'>
+        {/* Title */}
+        <h3
+          className={`text-xl font-bold mb-3 ${
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          }`}
+        >
+          {strategy.title}
+        </h3>
+
+        {/* Description */}
+        <p
+          className={`text-sm mb-4 line-clamp-3 ${
+            isDarkMode ? 'text-gray-300' : 'text-gray-700'
+          }`}
+        >
+          {strategy.description}
+        </p>
+
+        {/* Author and Date */}
+        <div className='flex items-center justify-between mb-4'>
+          <div className='flex items-center gap-2'>
+            <span
+              className={`text-xs ${
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}
+            >
+              by
+            </span>
+            <span
+              className={`text-xs font-medium ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}
+            >
+              {strategy.author}
+            </span>
+            <span
+              className={`text-xs ${
+                isDarkMode ? 'text-gray-500' : 'text-gray-500'
+              }`}
+            >
+              •
+            </span>
+            <span
+              className={`text-xs ${
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}
+            >
+              {strategy.date}
+            </span>
+          </div>
+        </div>
+
+        {/* Engagement Metrics */}
+        <div className='flex items-center gap-4'>
+          <div className='flex items-center gap-2'>
+            <svg
+              width='16'
+              height='16'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke={isDarkMode ? '#9CA3AF' : '#6B7280'}
+              strokeWidth='2'
+            >
+              <path d='M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z' />
+            </svg>
+            <span
+              className={`text-sm ${
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}
+            >
+              {strategy.comments}
+            </span>
+          </div>
+          <div className='flex items-center gap-2'>
+            <svg
+              width='16'
+              height='16'
+              viewBox='0 0 24 24'
+              fill='none'
+              stroke={isDarkMode ? '#9CA3AF' : '#6B7280'}
+              strokeWidth='2'
+            >
+              <path d='M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13' />
+            </svg>
+            <span
+              className={`text-sm ${
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}
+            >
+              {strategy.boosts}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

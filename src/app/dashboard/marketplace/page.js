@@ -2,12 +2,27 @@
 import Navbar from '@/components/dashboard/Navbar';
 import Sidebar from '@/components/dashboard/Sidebar';
 import { useTheme } from '@/context/ThemeContext';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { Line, LineChart, ResponsiveContainer } from 'recharts';
 
 export default function MarketplacePage() {
   const { isDarkMode } = useTheme();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  // Initialize active tab based on pathname
+  const getInitialTab = () => {
+    if (typeof window !== 'undefined') {
+      const currentPath = pathname || window.location.pathname;
+      return currentPath?.includes('/active-offers')
+        ? 'active-offers'
+        : 'browse';
+    }
+    return 'browse';
+  };
+
+  const [activeTab, setActiveTab] = useState(getInitialTab);
   const [activeCategory, setActiveCategory] = useState('All');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -22,6 +37,20 @@ export default function MarketplacePage() {
   });
   const [priceRange, setPriceRange] = useState([100, 10000]);
   const [returnRange, setReturnRange] = useState([1, 30]);
+
+  // Set active tab based on pathname changes
+  useEffect(() => {
+    const currentPath =
+      pathname ||
+      (typeof window !== 'undefined' ? window.location.pathname : '');
+    const newTab = currentPath?.includes('/active-offers')
+      ? 'active-offers'
+      : 'browse';
+    // Only update if tab actually changed
+    if (newTab !== activeTab) {
+      setActiveTab(newTab);
+    }
+  }, [pathname, activeTab]);
 
   const categories = [
     'All',
@@ -207,216 +236,296 @@ export default function MarketplacePage() {
         {/* Page Content */}
         <main className='flex-1 overflow-y-auto'>
           <div>
-            {/* Hero Section */}
-            <HeroSection isDarkMode={isDarkMode} />
+            {/* Hero Section - Only show for Browse tab */}
+            {activeTab === 'browse' && <HeroSection isDarkMode={isDarkMode} />}
 
             {/* Main Content */}
             <div className='p-3 md:p-4'>
-              {/* Category Tabs - Full Width */}
-              <div className='relative'>
-                <div className='flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide'>
-                  {categories.map(category => (
-                    <button
-                      key={category}
-                      onClick={() => setActiveCategory(category)}
-                      className={`whitespace-nowrap px-6 py-1.5 text-xs font-medium transition-all rounded-full ${
-                        activeCategory === category
-                          ? isDarkMode
-                            ? 'text-white'
-                            : 'text-black'
-                          : isDarkMode
-                          ? 'text-gray-400 hover:text-white bg-white/5'
-                          : 'text-gray-600 hover:text-gray-900 bg-gray-100'
-                      }`}
-                      style={
-                        activeCategory === category
-                          ? isDarkMode
-                            ? {
-                                background:
-                                  'linear-gradient(94.02deg, #222126 0%, #111116 100%)',
-                              }
-                            : {
-                                background: 'rgba(241, 203, 104, 0.2)',
-                              }
-                          : {}
-                      }
-                    >
-                      {category}
-                    </button>
-                  ))}
-                  <div className='ml-auto relative'>
-                    <button
-                      onClick={() => setIsFilterOpen(!isFilterOpen)}
-                      className={`p-2 rounded-lg shrink-0 transition-all ${
-                        isFilterOpen
-                          ? 'bg-[#F1CB68] text-white'
-                          : isDarkMode
-                          ? 'bg-white/5 text-gray-400 hover:text-white'
-                          : 'bg-gray-100 text-gray-600 hover:text-gray-900'
-                      }`}
-                    >
-                      <img
-                        src='/icons/menuicons.svg'
-                        alt='Filter'
-                        className={`transition-transform duration-300 ${
-                          isFilterOpen ? 'rotate-90' : ''
-                        }`}
-                      />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Filter Panel */}
-                <FilterPanel
-                  isOpen={isFilterOpen}
-                  onClose={() => setIsFilterOpen(false)}
-                  isDarkMode={isDarkMode}
-                  sortBy={sortBy}
-                  setSortBy={setSortBy}
-                  assetTypes={assetTypes}
-                  toggleAssetType={toggleAssetType}
-                  priceRange={priceRange}
-                  setPriceRange={setPriceRange}
-                  returnRange={returnRange}
-                  setReturnRange={setReturnRange}
-                />
-              </div>
-
-              <div className='flex flex-col lg:flex-row gap-4'>
-                {/* Left Section - Cards */}
-                <div className='flex-1'>
-                  {/* Investment Cards Grid */}
-                  <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3'>
-                    {investmentFunds.map(fund => (
-                      <InvestmentCard
-                        key={fund.id}
-                        fund={fund}
-                        isDarkMode={isDarkMode}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Right Sidebar - Watchlist */}
-                <div className='lg:w-72'>
-                  {/* Market Highlights - Full Width */}
-                  <div
-                    className={`rounded-2xl border p-4 mb-4 ${
-                      isDarkMode
-                        ? 'bg-[#1A1A1D] border-[#FFFFFF14]'
-                        : 'bg-white border-gray-200'
+              {/* Main Tabs - Browse and Active Offers */}
+              <div className='mb-6'>
+                <div
+                  className={`flex gap-2 border-b ${
+                    isDarkMode ? 'border-[#FFFFFF14]' : 'border-gray-200'
+                  }`}
+                >
+                  <button
+                    onClick={() => {
+                      setActiveTab('browse');
+                      router.push('/dashboard/marketplace');
+                    }}
+                    className={`px-6 py-3 text-sm font-medium transition-all relative ${
+                      activeTab === 'browse'
+                        ? isDarkMode
+                          ? 'text-white'
+                          : 'text-black'
+                        : isDarkMode
+                        ? 'text-gray-400 hover:text-white'
+                        : 'text-gray-600 hover:text-gray-900'
                     }`}
                   >
-                    <div className='flex items-center justify-between mb-4'>
-                      <h3
-                        className={`text-base font-semibold ${
-                          isDarkMode ? 'text-white' : 'text-gray-900'
-                        }`}
-                      >
-                        Market Highlights
-                      </h3>
-                      <button className='text-[#F1CB68] text-sm'>→</button>
+                    Browse
+                    {activeTab === 'browse' && (
+                      <div
+                        className='absolute bottom-0 left-0 right-0 h-0.5'
+                        style={{
+                          background: isDarkMode
+                            ? 'linear-gradient(90deg, #F1CB68 0%, #F1CB68 100%)'
+                            : '#F1CB68',
+                        }}
+                      />
+                    )}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setActiveTab('active-offers');
+                      router.push('/dashboard/marketplace/active-offers');
+                    }}
+                    className={`px-6 py-3 text-sm font-medium transition-all relative ${
+                      activeTab === 'active-offers'
+                        ? isDarkMode
+                          ? 'text-white'
+                          : 'text-black'
+                        : isDarkMode
+                        ? 'text-gray-400 hover:text-white'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Active Offers
+                    {activeTab === 'active-offers' && (
+                      <div
+                        className='absolute bottom-0 left-0 right-0 h-0.5'
+                        style={{
+                          background: isDarkMode
+                            ? 'linear-gradient(90deg, #F1CB68 0%, #F1CB68 100%)'
+                            : '#F1CB68',
+                        }}
+                      />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Browse Tab Content */}
+              {activeTab === 'browse' && (
+                <>
+                  {/* Category Tabs - Full Width */}
+                  <div className='relative'>
+                    <div className='flex gap-2 mb-4 overflow-x-auto pb-2 scrollbar-hide'>
+                      {categories.map(category => (
+                        <button
+                          key={category}
+                          onClick={() => setActiveCategory(category)}
+                          className={`whitespace-nowrap px-6 py-1.5 text-xs font-medium transition-all rounded-full ${
+                            activeCategory === category
+                              ? isDarkMode
+                                ? 'text-white'
+                                : 'text-black'
+                              : isDarkMode
+                              ? 'text-gray-400 hover:text-white bg-white/5'
+                              : 'text-gray-600 hover:text-gray-900 bg-gray-100'
+                          }`}
+                          style={
+                            activeCategory === category
+                              ? isDarkMode
+                                ? {
+                                    background:
+                                      'linear-gradient(94.02deg, #222126 0%, #111116 100%)',
+                                  }
+                                : {
+                                    background: 'rgba(241, 203, 104, 0.2)',
+                                  }
+                              : {}
+                          }
+                        >
+                          {category}
+                        </button>
+                      ))}
+                      <div className='ml-auto relative'>
+                        <button
+                          onClick={() => setIsFilterOpen(!isFilterOpen)}
+                          className={`p-2 rounded-lg shrink-0 transition-all ${
+                            isFilterOpen
+                              ? 'bg-[#F1CB68] text-white'
+                              : isDarkMode
+                              ? 'bg-white/5 text-gray-400 hover:text-white'
+                              : 'bg-gray-100 text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          <img
+                            src='/icons/menuicons.svg'
+                            alt='Filter'
+                            className={`transition-transform duration-300 ${
+                              isFilterOpen ? 'rotate-90' : ''
+                            }`}
+                          />
+                        </button>
+                      </div>
                     </div>
 
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                      {/* Market Data */}
-                      <div className='space-y-3'>
-                        {marketData.map((item, index) => (
-                          <div
-                            key={index}
-                            className='flex items-center justify-between'
-                          >
-                            <span
-                              className={`text-sm ${
-                                isDarkMode ? 'text-gray-300' : 'text-gray-700'
-                              }`}
-                            >
-                              {item.name}
-                            </span>
-                            <span
-                              className={`text-sm font-semibold ${
-                                item.isPositive
-                                  ? 'text-green-500'
-                                  : 'text-red-500'
-                              }`}
-                            >
-                              {item.value}
-                            </span>
-                          </div>
+                    {/* Filter Panel */}
+                    <FilterPanel
+                      isOpen={isFilterOpen}
+                      onClose={() => setIsFilterOpen(false)}
+                      isDarkMode={isDarkMode}
+                      sortBy={sortBy}
+                      setSortBy={setSortBy}
+                      assetTypes={assetTypes}
+                      toggleAssetType={toggleAssetType}
+                      priceRange={priceRange}
+                      setPriceRange={setPriceRange}
+                      returnRange={returnRange}
+                      setReturnRange={setReturnRange}
+                    />
+                  </div>
+
+                  <div className='flex flex-col lg:flex-row gap-4'>
+                    {/* Left Section - Cards */}
+                    <div className='flex-1'>
+                      {/* Investment Cards Grid */}
+                      <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3'>
+                        {investmentFunds.map(fund => (
+                          <InvestmentCard
+                            key={fund.id}
+                            fund={fund}
+                            isDarkMode={isDarkMode}
+                          />
                         ))}
                       </div>
+                    </div>
 
-                      {/* Chart */}
-                      <div className='h-24'>
-                        <ResponsiveContainer width='100%' height='100%'>
-                          <LineChart data={chartData}>
-                            <Line
-                              type='monotone'
-                              dataKey='value'
-                              stroke='#F1CB68'
-                              strokeWidth={2}
-                              dot={false}
-                            />
-                          </LineChart>
-                        </ResponsiveContainer>
+                    {/* Right Sidebar - Watchlist */}
+                    <div className='lg:w-72'>
+                      {/* Market Highlights - Full Width */}
+                      <div
+                        className={`rounded-2xl border p-4 mb-4 ${
+                          isDarkMode
+                            ? 'bg-[#1A1A1D] border-[#FFFFFF14]'
+                            : 'bg-white border-gray-200'
+                        }`}
+                      >
+                        <div className='flex items-center justify-between mb-4'>
+                          <h3
+                            className={`text-base font-semibold ${
+                              isDarkMode ? 'text-white' : 'text-gray-900'
+                            }`}
+                          >
+                            Market Highlights
+                          </h3>
+                          <button className='text-[#F1CB68] text-sm'>→</button>
+                        </div>
+
+                        <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                          {/* Market Data */}
+                          <div className='space-y-3'>
+                            {marketData.map((item, index) => (
+                              <div
+                                key={index}
+                                className='flex items-center justify-between'
+                              >
+                                <span
+                                  className={`text-sm ${
+                                    isDarkMode
+                                      ? 'text-gray-300'
+                                      : 'text-gray-700'
+                                  }`}
+                                >
+                                  {item.name}
+                                </span>
+                                <span
+                                  className={`text-sm font-semibold ${
+                                    item.isPositive
+                                      ? 'text-green-500'
+                                      : 'text-red-500'
+                                  }`}
+                                >
+                                  {item.value}
+                                </span>
+                              </div>
+                            ))}
+                          </div>
+
+                          {/* Chart */}
+                          <div className='h-24'>
+                            <ResponsiveContainer width='100%' height='100%'>
+                              <LineChart data={chartData}>
+                                <Line
+                                  type='monotone'
+                                  dataKey='value'
+                                  stroke='#F1CB68'
+                                  strokeWidth={2}
+                                  dot={false}
+                                />
+                              </LineChart>
+                            </ResponsiveContainer>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Your Watchlist */}
+                      <div
+                        className={`rounded-2xl border p-4 ${
+                          isDarkMode
+                            ? 'bg-[#1A1A1D] border-[#FFFFFF14]'
+                            : 'bg-white border-gray-200'
+                        }`}
+                      >
+                        <div className='flex items-center justify-between mb-3'>
+                          <h3
+                            className={`text-base font-semibold ${
+                              isDarkMode ? 'text-white' : 'text-gray-900'
+                            }`}
+                          >
+                            Your Watchlist
+                          </h3>
+                          <button className='text-[#F1CB68] text-sm'>→</button>
+                        </div>
+
+                        <div className='space-y-3'>
+                          {watchlistItems.map((item, index) => (
+                            <div
+                              key={index}
+                              className='flex items-center justify-between'
+                            >
+                              <div className='flex items-center gap-2'>
+                                <span className='text-yellow-500'>
+                                  {item.icon}
+                                </span>
+                                <span
+                                  className={`text-sm ${
+                                    isDarkMode
+                                      ? 'text-gray-300'
+                                      : 'text-gray-700'
+                                  }`}
+                                >
+                                  {item.name}
+                                </span>
+                              </div>
+                              <button
+                                className={`${
+                                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                                }`}
+                              >
+                                <svg
+                                  width='16'
+                                  height='16'
+                                  viewBox='0 0 24 24'
+                                  fill='currentColor'
+                                >
+                                  <circle cx='12' cy='12' r='2' />
+                                </svg>
+                              </button>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
-                  {/* Your Watchlist */}
-                  <div
-                    className={`rounded-2xl border p-4 ${
-                      isDarkMode
-                        ? 'bg-[#1A1A1D] border-[#FFFFFF14]'
-                        : 'bg-white border-gray-200'
-                    }`}
-                  >
-                    <div className='flex items-center justify-between mb-3'>
-                      <h3
-                        className={`text-base font-semibold ${
-                          isDarkMode ? 'text-white' : 'text-gray-900'
-                        }`}
-                      >
-                        Your Watchlist
-                      </h3>
-                      <button className='text-[#F1CB68] text-sm'>→</button>
-                    </div>
+                </>
+              )}
 
-                    <div className='space-y-3'>
-                      {watchlistItems.map((item, index) => (
-                        <div
-                          key={index}
-                          className='flex items-center justify-between'
-                        >
-                          <div className='flex items-center gap-2'>
-                            <span className='text-yellow-500'>{item.icon}</span>
-                            <span
-                              className={`text-sm ${
-                                isDarkMode ? 'text-gray-300' : 'text-gray-700'
-                              }`}
-                            >
-                              {item.name}
-                            </span>
-                          </div>
-                          <button
-                            className={`${
-                              isDarkMode ? 'text-gray-400' : 'text-gray-600'
-                            }`}
-                          >
-                            <svg
-                              width='16'
-                              height='16'
-                              viewBox='0 0 24 24'
-                              fill='currentColor'
-                            >
-                              <circle cx='12' cy='12' r='2' />
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              {/* Active Offers Tab Content */}
+              {activeTab === 'active-offers' && (
+                <ActiveOffersContent isDarkMode={isDarkMode} router={router} />
+              )}
             </div>
           </div>
         </main>
@@ -464,6 +573,769 @@ export default function MarketplacePage() {
         }
       `}</style>
     </div>
+  );
+}
+
+// Mock data for active offers
+const mockOffers = [
+  {
+    id: 1,
+    assetName: 'Gulfstream G700 Jet',
+    assetThumbnail:
+      'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400',
+    category: 'Jet',
+    offerAmount: '$45,000,000',
+    offerAmountValue: 45000000,
+    currency: 'USD',
+    offerStatus: 'Pending',
+    role: 'Buyer',
+    counterparty: 'John D.',
+    counterpartyId: 'user_123',
+    dateUpdated: '2024-01-15T10:30:00Z',
+    listingId: 'listing_001',
+  },
+  {
+    id: 2,
+    assetName: 'Luxury Yacht Ocean Breeze',
+    assetThumbnail:
+      'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=400',
+    category: 'Yacht',
+    offerAmount: '$12,500,000',
+    offerAmountValue: 12500000,
+    currency: 'USD',
+    offerStatus: 'Countered',
+    role: 'Seller',
+    counterparty: 'Sarah M.',
+    counterpartyId: 'user_456',
+    dateUpdated: '2024-01-14T15:20:00Z',
+    listingId: 'listing_002',
+  },
+  {
+    id: 3,
+    assetName: 'Picasso Original Painting',
+    assetThumbnail:
+      'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400',
+    category: 'Art',
+    offerAmount: '€8,750,000',
+    offerAmountValue: 8750000,
+    currency: 'EUR',
+    offerStatus: 'Accepted',
+    role: 'Lister',
+    counterparty: 'Art Gallery Inc.',
+    counterpartyId: 'user_789',
+    dateUpdated: '2024-01-13T09:15:00Z',
+    listingId: 'listing_003',
+  },
+  {
+    id: 4,
+    assetName: 'Private Island Paradise',
+    assetThumbnail:
+      'https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=400',
+    category: 'Real Estate',
+    offerAmount: '$25,000,000',
+    offerAmountValue: 25000000,
+    currency: 'USD',
+    offerStatus: 'Pending',
+    role: 'Buyer',
+    counterparty: 'Michael R.',
+    counterpartyId: 'user_321',
+    dateUpdated: '2024-01-12T14:45:00Z',
+    listingId: 'listing_004',
+  },
+  {
+    id: 5,
+    assetName: 'Vintage Ferrari Collection',
+    assetThumbnail:
+      'https://images.unsplash.com/photo-1492144534655-ae79c2c03457?w=400',
+    category: 'Collectibles',
+    offerAmount: '$15,200,000',
+    offerAmountValue: 15200000,
+    currency: 'USD',
+    offerStatus: 'Rejected',
+    role: 'Seller',
+    counterparty: 'David L.',
+    counterpartyId: 'user_654',
+    dateUpdated: '2024-01-11T11:30:00Z',
+    listingId: 'listing_005',
+  },
+  {
+    id: 6,
+    assetName: 'Commercial Office Complex',
+    assetThumbnail:
+      'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=400',
+    category: 'Real Estate',
+    offerAmount: '$85,000,000',
+    offerAmountValue: 85000000,
+    currency: 'USD',
+    offerStatus: 'Expired',
+    role: 'Lister',
+    counterparty: 'Real Estate Group',
+    counterpartyId: 'user_987',
+    dateUpdated: '2024-01-10T16:00:00Z',
+    listingId: 'listing_006',
+  },
+];
+
+// Active Offers Content Component
+function ActiveOffersContent({ isDarkMode, router }) {
+  const [activeFilter, setActiveFilter] = useState('My Offers'); // Default filter
+  const [viewMode, setViewMode] = useState('card'); // 'card' or 'table'
+
+  // Filter offers based on active filter
+  const getFilteredOffers = () => {
+    switch (activeFilter) {
+      case 'My Listings':
+        return mockOffers.filter(offer => offer.role === 'Lister');
+      case 'My Offers':
+        return mockOffers.filter(offer => offer.role === 'Buyer');
+      case 'Received Offers':
+        return mockOffers.filter(offer => offer.role === 'Seller');
+      default:
+        return mockOffers;
+    }
+  };
+
+  const filteredOffers = getFilteredOffers();
+
+  // Format date
+  const formatDate = dateString => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  };
+
+  // Get status color
+  const getStatusColor = status => {
+    switch (status) {
+      case 'Pending':
+        return 'text-yellow-500 bg-yellow-500/10 border-yellow-500/20';
+      case 'Accepted':
+        return 'text-green-500 bg-green-500/10 border-green-500/20';
+      case 'Rejected':
+        return 'text-red-500 bg-red-500/10 border-red-500/20';
+      case 'Countered':
+        return 'text-blue-500 bg-blue-500/10 border-blue-500/20';
+      case 'Expired':
+        return 'text-gray-500 bg-gray-500/10 border-gray-500/20';
+      default:
+        return 'text-gray-400 bg-gray-400/10 border-gray-400/20';
+    }
+  };
+
+  // Get role badge color
+  const getRoleColor = role => {
+    switch (role) {
+      case 'Buyer':
+        return 'text-blue-400 bg-blue-500/10 border-blue-500/20';
+      case 'Seller':
+        return 'text-purple-400 bg-purple-500/10 border-purple-500/20';
+      case 'Lister':
+        return 'text-[#F1CB68] bg-[#F1CB68]/10 border-[#F1CB68]/20';
+      default:
+        return 'text-gray-400 bg-gray-400/10 border-gray-400/20';
+    }
+  };
+
+  return (
+    <div>
+      {/* Filters */}
+      <div className='mb-6'>
+        <div className='flex flex-wrap gap-2 mb-4'>
+          {['My Listings', 'My Offers', 'Received Offers'].map(filter => (
+            <button
+              key={filter}
+              onClick={() => setActiveFilter(filter)}
+              className={`px-4 py-2 text-sm font-medium rounded-full transition-all ${
+                activeFilter === filter
+                  ? isDarkMode
+                    ? 'text-white'
+                    : 'text-black'
+                  : isDarkMode
+                  ? 'text-gray-400 hover:text-white bg-white/5'
+                  : 'text-gray-600 hover:text-gray-900 bg-gray-100'
+              }`}
+              style={
+                activeFilter === filter
+                  ? isDarkMode
+                    ? {
+                        background:
+                          'linear-gradient(94.02deg, #222126 0%, #111116 100%)',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                      }
+                    : {
+                        background: 'rgba(241, 203, 104, 0.2)',
+                        border: '1px solid rgba(241, 203, 104, 0.3)',
+                      }
+                  : {}
+              }
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+
+        {/* View Mode Toggle */}
+        <div className='flex items-center justify-between'>
+          <p
+            className={`text-sm ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}
+          >
+            {filteredOffers.length} offer
+            {filteredOffers.length !== 1 ? 's' : ''} found
+          </p>
+          <div className='flex gap-2'>
+            <button
+              onClick={() => setViewMode('card')}
+              className={`p-2 rounded-lg transition-all ${
+                viewMode === 'card'
+                  ? 'bg-[#F1CB68] text-white'
+                  : isDarkMode
+                  ? 'bg-white/5 text-gray-400 hover:text-white'
+                  : 'bg-gray-100 text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <svg
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+              >
+                <rect x='3' y='3' width='7' height='7' />
+                <rect x='14' y='3' width='7' height='7' />
+                <rect x='3' y='14' width='7' height='7' />
+                <rect x='14' y='14' width='7' height='7' />
+              </svg>
+            </button>
+            <button
+              onClick={() => setViewMode('table')}
+              className={`p-2 rounded-lg transition-all ${
+                viewMode === 'table'
+                  ? 'bg-[#F1CB68] text-white'
+                  : isDarkMode
+                  ? 'bg-white/5 text-gray-400 hover:text-white'
+                  : 'bg-gray-100 text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <svg
+                width='20'
+                height='20'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+              >
+                <path d='M3 3h18v18H3z' />
+                <path d='M3 9h18' />
+                <path d='M3 15h18' />
+                <path d='M9 3v18' />
+                <path d='M15 3v18' />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Content - Card View */}
+      {viewMode === 'card' && (
+        <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4'>
+          {filteredOffers.map(offer => (
+            <OfferCard
+              key={offer.id}
+              offer={offer}
+              isDarkMode={isDarkMode}
+              formatDate={formatDate}
+              getStatusColor={getStatusColor}
+              getRoleColor={getRoleColor}
+              router={router}
+            />
+          ))}
+        </div>
+      )}
+
+      {/* Content - Table View */}
+      {viewMode === 'table' && (
+        <div
+          className={`rounded-xl border overflow-hidden ${
+            isDarkMode
+              ? 'bg-[#1A1A1D] border-[#FFFFFF14]'
+              : 'bg-white border-gray-200'
+          }`}
+        >
+          <div className='overflow-x-auto'>
+            <table className='w-full'>
+              <thead>
+                <tr
+                  className={`border-b ${
+                    isDarkMode ? 'border-[#FFFFFF14]' : 'border-gray-200'
+                  }`}
+                >
+                  <th
+                    className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider ${
+                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                  >
+                    Asset
+                  </th>
+                  <th
+                    className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider ${
+                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                  >
+                    Category
+                  </th>
+                  <th
+                    className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider ${
+                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                  >
+                    Offer Amount
+                  </th>
+                  <th
+                    className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider ${
+                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                  >
+                    Status
+                  </th>
+                  <th
+                    className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider ${
+                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                  >
+                    Role
+                  </th>
+                  <th
+                    className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider ${
+                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                  >
+                    Counterparty
+                  </th>
+                  <th
+                    className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider ${
+                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                  >
+                    Date Updated
+                  </th>
+                  <th
+                    className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider ${
+                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                  >
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredOffers.map(offer => (
+                  <OfferTableRow
+                    key={offer.id}
+                    offer={offer}
+                    isDarkMode={isDarkMode}
+                    formatDate={formatDate}
+                    getStatusColor={getStatusColor}
+                    getRoleColor={getRoleColor}
+                    router={router}
+                  />
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {filteredOffers.length === 0 && (
+        <div
+          className={`rounded-xl border p-12 text-center ${
+            isDarkMode
+              ? 'bg-[#1A1A1D] border-[#FFFFFF14]'
+              : 'bg-white border-gray-200'
+          }`}
+        >
+          <p
+            className={`text-lg font-medium mb-2 ${
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
+            No offers found
+          </p>
+          <p
+            className={`text-sm ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}
+          >
+            {activeFilter === 'My Offers'
+              ? "You haven't made any offers yet."
+              : activeFilter === 'My Listings'
+              ? "You don't have any active listings."
+              : "You haven't received any offers yet."}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Offer Card Component
+function OfferCard({
+  offer,
+  isDarkMode,
+  formatDate,
+  getStatusColor,
+  getRoleColor,
+  router,
+}) {
+  const getActions = () => {
+    const actions = [];
+    actions.push({
+      label: 'View Listing',
+      onClick: () => router.push(`/dashboard/marketplace/${offer.listingId}`),
+      primary: false,
+    });
+
+    if (offer.role === 'Buyer' && offer.offerStatus === 'Pending') {
+      actions.push({
+        label: 'Withdraw',
+        onClick: () => console.log('Withdraw offer', offer.id),
+        primary: false,
+        danger: true,
+      });
+    }
+
+    if (offer.role === 'Seller' && offer.offerStatus === 'Pending') {
+      actions.push(
+        {
+          label: 'Accept',
+          onClick: () => console.log('Accept offer', offer.id),
+          primary: true,
+        },
+        {
+          label: 'Counter Offer',
+          onClick: () => console.log('Counter offer', offer.id),
+          primary: false,
+        },
+        {
+          label: 'Reject',
+          onClick: () => console.log('Reject offer', offer.id),
+          primary: false,
+          danger: true,
+        }
+      );
+    }
+
+    if (offer.offerStatus === 'Countered') {
+      actions.push({
+        label: 'View Counter',
+        onClick: () => console.log('View counter offer', offer.id),
+        primary: true,
+      });
+    }
+
+    return actions;
+  };
+
+  const actions = getActions();
+
+  return (
+    <div
+      className={`rounded-xl border p-4 transition-all hover:shadow-lg ${
+        isDarkMode
+          ? 'bg-[#1A1A1D] border-[#FFFFFF14] hover:border-[#F1CB68]'
+          : 'bg-white border-gray-200 hover:border-[#F1CB68]'
+      }`}
+    >
+      {/* Asset Thumbnail & Name */}
+      <div className='flex items-start gap-3 mb-4'>
+        <img
+          src={offer.assetThumbnail}
+          alt={offer.assetName}
+          className='w-16 h-16 rounded-lg object-cover'
+        />
+        <div className='flex-1 min-w-0'>
+          <h3
+            className={`text-sm font-semibold mb-1 truncate ${
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
+            {offer.assetName}
+          </h3>
+          <span
+            className={`text-xs px-2 py-0.5 rounded ${
+              isDarkMode
+                ? 'bg-white/5 text-gray-300'
+                : 'bg-gray-100 text-gray-700'
+            }`}
+          >
+            {offer.category}
+          </span>
+        </div>
+      </div>
+
+      {/* Offer Details */}
+      <div className='space-y-2 mb-4'>
+        <div className='flex items-center justify-between'>
+          <span
+            className={`text-xs ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}
+          >
+            Offer Amount
+          </span>
+          <span
+            className={`text-sm font-semibold ${
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
+            {offer.offerAmount}
+          </span>
+        </div>
+
+        <div className='flex items-center justify-between'>
+          <span
+            className={`text-xs ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}
+          >
+            Status
+          </span>
+          <span
+            className={`text-xs px-2 py-1 rounded border ${getStatusColor(
+              offer.offerStatus
+            )}`}
+          >
+            {offer.offerStatus}
+          </span>
+        </div>
+
+        <div className='flex items-center justify-between'>
+          <span
+            className={`text-xs ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}
+          >
+            Role
+          </span>
+          <span
+            className={`text-xs px-2 py-1 rounded border ${getRoleColor(
+              offer.role
+            )}`}
+          >
+            {offer.role}
+          </span>
+        </div>
+
+        <div className='flex items-center justify-between'>
+          <span
+            className={`text-xs ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}
+          >
+            Counterparty
+          </span>
+          <span
+            className={`text-xs font-medium ${
+              isDarkMode ? 'text-gray-300' : 'text-gray-700'
+            }`}
+          >
+            {offer.counterparty}
+          </span>
+        </div>
+
+        <div className='flex items-center justify-between'>
+          <span
+            className={`text-xs ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}
+          >
+            Updated
+          </span>
+          <span
+            className={`text-xs ${
+              isDarkMode ? 'text-gray-300' : 'text-gray-700'
+            }`}
+          >
+            {formatDate(offer.dateUpdated)}
+          </span>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className='flex flex-wrap gap-2 pt-4 border-t border-[#FFFFFF14]'>
+        {actions.map((action, index) => (
+          <button
+            key={index}
+            onClick={action.onClick}
+            className={`flex-1 min-w-[100px] px-3 py-1.5 text-xs rounded-lg font-medium transition-all ${
+              action.primary
+                ? 'bg-[#F1CB68] text-white hover:bg-[#F1CB68]/80'
+                : action.danger
+                ? 'text-red-400 border border-red-400/20 hover:bg-red-400/10'
+                : isDarkMode
+                ? 'border border-white/20 text-white hover:bg-white/5'
+                : 'border border-gray-300 text-gray-900 hover:bg-gray-50'
+            }`}
+          >
+            {action.label}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// Offer Table Row Component
+function OfferTableRow({
+  offer,
+  isDarkMode,
+  formatDate,
+  getStatusColor,
+  getRoleColor,
+  router,
+}) {
+  const getActions = () => {
+    const actions = [];
+    actions.push({
+      label: 'View',
+      onClick: () => router.push(`/dashboard/marketplace/${offer.listingId}`),
+    });
+
+    if (offer.role === 'Buyer' && offer.offerStatus === 'Pending') {
+      actions.push({
+        label: 'Withdraw',
+        onClick: () => console.log('Withdraw offer', offer.id),
+      });
+    }
+
+    if (offer.role === 'Seller' && offer.offerStatus === 'Pending') {
+      actions.push(
+        {
+          label: 'Accept',
+          onClick: () => console.log('Accept offer', offer.id),
+        },
+        {
+          label: 'Counter',
+          onClick: () => console.log('Counter offer', offer.id),
+        }
+      );
+    }
+
+    return actions;
+  };
+
+  const actions = getActions();
+
+  return (
+    <tr
+      className={`border-b ${
+        isDarkMode
+          ? 'border-[#FFFFFF14] hover:bg-white/5'
+          : 'border-gray-200 hover:bg-gray-50'
+      }`}
+    >
+      <td className='px-4 py-3'>
+        <div className='flex items-center gap-3'>
+          <img
+            src={offer.assetThumbnail}
+            alt={offer.assetName}
+            className='w-12 h-12 rounded-lg object-cover'
+          />
+          <span
+            className={`text-sm font-medium ${
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            }`}
+          >
+            {offer.assetName}
+          </span>
+        </div>
+      </td>
+      <td className='px-4 py-3'>
+        <span
+          className={`text-xs px-2 py-1 rounded ${
+            isDarkMode
+              ? 'bg-white/5 text-gray-300'
+              : 'bg-gray-100 text-gray-700'
+          }`}
+        >
+          {offer.category}
+        </span>
+      </td>
+      <td className='px-4 py-3'>
+        <span
+          className={`text-sm font-semibold ${
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          }`}
+        >
+          {offer.offerAmount}
+        </span>
+      </td>
+      <td className='px-4 py-3'>
+        <span
+          className={`text-xs px-2 py-1 rounded border ${getStatusColor(
+            offer.offerStatus
+          )}`}
+        >
+          {offer.offerStatus}
+        </span>
+      </td>
+      <td className='px-4 py-3'>
+        <span
+          className={`text-xs px-2 py-1 rounded border ${getRoleColor(
+            offer.role
+          )}`}
+        >
+          {offer.role}
+        </span>
+      </td>
+      <td className='px-4 py-3'>
+        <span
+          className={`text-sm ${
+            isDarkMode ? 'text-gray-300' : 'text-gray-700'
+          }`}
+        >
+          {offer.counterparty}
+        </span>
+      </td>
+      <td className='px-4 py-3'>
+        <span
+          className={`text-xs ${
+            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          }`}
+        >
+          {formatDate(offer.dateUpdated)}
+        </span>
+      </td>
+      <td className='px-4 py-3'>
+        <div className='flex gap-2'>
+          {actions.map((action, index) => (
+            <button
+              key={index}
+              onClick={action.onClick}
+              className={`px-2 py-1 text-xs rounded transition-all ${
+                action.label === 'Accept'
+                  ? 'bg-green-500/10 text-green-400 hover:bg-green-500/20'
+                  : action.label === 'Withdraw'
+                  ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20'
+                  : isDarkMode
+                  ? 'bg-white/5 text-white hover:bg-white/10'
+                  : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+              }`}
+            >
+              {action.label}
+            </button>
+          ))}
+        </div>
+      </td>
+    </tr>
   );
 }
 

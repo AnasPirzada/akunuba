@@ -23,6 +23,7 @@ export default function SettingsPage() {
   const tabs = [
     { id: 'profile', label: 'Profile Settings' },
     { id: 'linked', label: 'Linked Accounts' },
+    { id: 'payment', label: 'Payment and billing' },
   ];
 
   return (
@@ -39,6 +40,8 @@ export default function SettingsPage() {
           {activeTab === 'profile' && 'Manage your account preferences'}
           {activeTab === 'linked' &&
             'Connect external platforms to manage your assets, payments, or identity.'}
+          {activeTab === 'payment' &&
+            'Manage your payment methods and billing information.'}
         </p>
       </div>
 
@@ -74,6 +77,7 @@ export default function SettingsPage() {
         />
       )}
       {activeTab === 'linked' && <LinkedAccounts isDarkMode={isDarkMode} />}
+      {activeTab === 'payment' && <PaymentBilling isDarkMode={isDarkMode} />}
     </DashboardLayout>
   );
 }
@@ -459,6 +463,32 @@ function ServiceCard({ service, isDarkMode }) {
         <button className='px-4 py-2 text-red-400 hover:text-red-300 font-medium transition-colors'>
           Disconnect
         </button>
+      </div>
+    </div>
+  );
+}
+
+// Payment and Billing Tab
+function PaymentBilling({ isDarkMode }) {
+  return (
+    <div className='space-y-6'>
+      <div
+        className={`rounded-2xl p-8 border ${
+          isDarkMode
+            ? 'bg-[#1A1A1D] border-[#FFFFFF14]'
+            : 'bg-white border-gray-200'
+        }`}
+      >
+        <h2
+          className={`text-xl font-semibold mb-4 ${
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          }`}
+        >
+          Payment and Billing
+        </h2>
+        <p className={`text-lg ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+          Coming soon...
+        </p>
       </div>
     </div>
   );

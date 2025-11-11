@@ -540,15 +540,25 @@ export default function Marketplace() {
                   whileTap={{ scale: 0.95 }}
                   className={`whitespace-nowrap px-4 py-2.5 text-sm font-medium transition-all rounded-lg flex items-center gap-2 ${
                     activeCategory === category.id
-                      ? 'text-white bg-[#F1CB68]'
-                      : 'text-gray-400 hover:text-white bg-white/5 border border-[#FFFFFF14]'
+                      ? 'text-black bg-[#F1CB68]'
+                      : 'text-gray-400 bg-white/5 border border-[#FFFFFF14]'
                   }`}
                 >
                   {category.icon && (
                     <img
                       src={`/icons/${category.icon}`}
                       alt={category.name}
-                      className="w-5 h-5"
+                      className={`w-5 h-5 transition-all ${
+                        activeCategory === category.id
+                          ? 'brightness(0)'
+                          : 'brightness(0) saturate(100%) invert(60%)'
+                      }`}
+                      style={{
+                        filter:
+                          activeCategory === category.id
+                            ? 'brightness(0)'
+                            : 'brightness(0) saturate(100%) invert(60%)',
+                      }}
                     />
                   )}
                   <span>{category.name}</span>

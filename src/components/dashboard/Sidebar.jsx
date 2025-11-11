@@ -18,7 +18,7 @@ const menuSections = [
         id: 'portfolio',
         label: 'Portfolio',
         icon: 'PieChart',
-        href: '/dashboard/portfolio',
+        href: '/dashboard/portfolio/Overview',
         hasSubmenu: true,
         submenu: [
           {
@@ -43,6 +43,30 @@ const menuSections = [
           },
         ],
       },
+      {
+        id: 'investment',
+        label: 'Investment',
+        icon: 'TrendingUp',
+        href: '/dashboard/investment',
+        hasSubmenu: true,
+        submenu: [
+          {
+            id: 'overview',
+            label: 'Overview',
+            href: '/dashboard/investment/overview',
+          },
+          {
+            id: 'goals-tracker',
+            label: 'Goals Tracker',
+            href: '/dashboard/investment/goals-tracker',
+          },
+          {
+            id: 'strategies',
+            label: 'Strategies',
+            href: '/dashboard/investment/strategies',
+          },
+        ],
+      },
     ],
   },
   {
@@ -53,6 +77,14 @@ const menuSections = [
         label: 'Marketplace',
         icon: 'ShoppingBag',
         href: '/dashboard/marketplace',
+        hasSubmenu: true,
+        submenu: [
+          {
+            id: 'active-offers',
+            label: 'Active Offers',
+            href: '/dashboard/marketplace/active-offers',
+          },
+        ],
       },
     ],
   },
@@ -60,16 +92,33 @@ const menuSections = [
     title: 'Reports & Documents',
     items: [
       {
-        id: 'reports',
-        label: 'Reports',
-        icon: 'FileText',
-        href: '/dashboard/reports',
-      },
-      {
-        id: 'documents',
-        label: 'Documents',
-        icon: 'Folder',
-        href: '/dashboard/documents',
+        id: 'crm-dashboard',
+        label: 'CRM Dashboard',
+        icon: 'BarChart',
+        href: '/dashboard/reports/crm',
+        hasSubmenu: true,
+        submenu: [
+          {
+            id: 'crm-report',
+            label: 'Report',
+            href: '/dashboard/reports/crm',
+          },
+          {
+            id: 'crm-documents',
+            label: 'Documents',
+            href: '/dashboard/documents',
+          },
+          {
+            id: 'crm-support',
+            label: 'Support ticket',
+            href: '/dashboard/Support',
+          },
+          {
+            id: 'crm-concierge',
+            label: 'Concierge Service',
+            href: '/dashboard/concierge',
+          },
+        ],
       },
     ],
   },
@@ -118,8 +167,25 @@ const menuSections = [
 
 export default function Sidebar({ isOpen, onClose }) {
   const pathname = usePathname();
-  const [openSubmenu, setOpenSubmenu] = useState('null');
   const { isDarkMode } = useTheme();
+
+  // Initialize openSubmenu based on current pathname
+  const getInitialOpenSubmenu = () => {
+    const currentPath =
+      pathname ||
+      (typeof window !== 'undefined' ? window.location.pathname : '');
+    if (currentPath.startsWith('/dashboard/investment')) return 'investment';
+    if (currentPath.startsWith('/dashboard/portfolio')) return 'portfolio';
+    if (currentPath.startsWith('/dashboard/marketplace')) return 'marketplace';
+    if (currentPath.startsWith('/dashboard/reports/crm')) return 'crm-dashboard';
+    if (currentPath.startsWith('/dashboard/documents')) return 'crm-dashboard';
+    if (currentPath.startsWith('/dashboard/Support')) return 'crm-dashboard';
+    if (currentPath.startsWith('/dashboard/concierge')) return 'crm-dashboard';
+    if (currentPath.startsWith('/dashboard/reports') && !currentPath.startsWith('/dashboard/reports/crm')) return null;
+    return null;
+  };
+
+  const [openSubmenu, setOpenSubmenu] = useState(getInitialOpenSubmenu());
 
   // Track previous pathname to detect changes
   const prevPathnameRef = useRef(pathname);
@@ -240,6 +306,7 @@ export default function Sidebar({ isOpen, onClose }) {
                   : 'text-[#101014] hover:text-[#101014]/70'
               }`}
             >
+              image.png
               <Icon name='X' size={40} />
             </button>
           </div>
@@ -321,10 +388,18 @@ export default function Sidebar({ isOpen, onClose }) {
                     <div key={item.id}>
                       {item.hasSubmenu ? (
                         <>
-                          <button
-                            onClick={() => toggleSubmenu(item.id)}
+                          <div className='flex items-center gap-1 w-[222px]'>
+                            <Link
+                              href={item.href}
+                              onClick={() => {
+                                onClose();
+                                // Auto-open submenu when clicking parent item if it's closed
+                                if (item.hasSubmenu && openSubmenu !== item.id) {
+                                  setOpenSubmenu(item.id);
+                                }
+                              }}
                             className={`
-                              flex items-center justify-between px-4 py-2.5 rounded-[24px] w-[222px] h-[48px]
+                                flex items-center gap-3 px-4 py-2.5 rounded-[24px] flex-1 h-[48px]
                               transition-all duration-200
                               ${
                                 isActiveParent(item.href) || isActive(item.href)
@@ -351,7 +426,6 @@ export default function Sidebar({ isOpen, onClose }) {
                                 : {}
                             }
                           >
-                            <div className='flex items-center gap-3'>
                               <Icon
                                 name={item.icon}
                                 size={20}
@@ -368,17 +442,36 @@ export default function Sidebar({ isOpen, onClose }) {
                                     ? {
                                         filter: isDarkMode
                                           ? 'brightness(0) saturate(100%) invert(64%) sepia(6%) saturate(449%) hue-rotate(178deg) brightness(95%) contrast(88%)'
-                                          : 'brightness(0.5)',
+                                          : 'brightness(0) saturate(100%) invert(0.45)',
+                                        opacity: isDarkMode ? 1 : 0.7,
                                       }
                                     : (isActiveParent(item.href) ||
                                         isActive(item.href)) &&
                                       !isDarkMode
-                                    ? { filter: 'none' }
+                                    ? { filter: 'none', opacity: 1 }
+                                    : (isActiveParent(item.href) ||
+                                        isActive(item.href)) &&
+                                      isDarkMode
+                                    ? {
+                                        filter: 'brightness(0) invert(1)',
+                                        opacity: 1,
+                                      }
                                     : {}
                                 }
                               />
                               <span className='font-medium'>{item.label}</span>
-                            </div>
+                            </Link>
+                            <button
+                              onClick={(e) => {
+                                e.preventDefault();
+                                toggleSubmenu(item.id);
+                              }}
+                              className={`p-2 rounded-lg transition-all ${
+                                isDarkMode
+                                  ? 'text-gray-400 hover:text-white'
+                                  : 'text-gray-600 hover:text-gray-900'
+                              }`}
+                            >
                             <Icon
                               name='ChevronDown'
                               size={16}
@@ -392,6 +485,7 @@ export default function Sidebar({ isOpen, onClose }) {
                               }}
                             />
                           </button>
+                          </div>
                           {openSubmenu === item.id && (
                             <div className='mt-1 ml-9 space-y-1'>
                               {item.submenu.map(subItem => (
@@ -506,7 +600,7 @@ export default function Sidebar({ isOpen, onClose }) {
 }
 
 // Icon Component - Using image files
-function Icon({ name, size = 24, className = '' }) {
+function Icon({ name, size = 24, className = '', style = {} }) {
   const iconPaths = {
     Home: '/icons/home.svg',
     Grid: '/icons/grid.svg',
@@ -532,6 +626,7 @@ function Icon({ name, size = 24, className = '' }) {
       width={size}
       height={size}
       className={className}
+      style={style}
     />
   ) : null;
 }

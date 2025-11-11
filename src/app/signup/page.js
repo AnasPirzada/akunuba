@@ -256,13 +256,13 @@ export default function SignupPage() {
                   currentSlide === index ? 'opacity-100' : 'opacity-0'
                 }`}
               >
-                <div className='relative w-full h-full flex items-center justify-center px-12'>
+                <div className='relative w-full h-full flex items-center justify-center '>
                   <Image
                     src={slide.image}
                     alt={`${slide.title} ${slide.subtitle}`}
-                    width={600}
-                    height={600}
-                    className='object-contain w-full h-auto max-h-[600px]'
+                    width={100}
+                    height={100}
+                    className='object-contain w-full h-full '
                     priority={index === 0}
                   />
                 </div>

@@ -108,6 +108,12 @@ export default function ProfileDropdown() {
       href: '/dashboard',
     },
     {
+      id: 'profile',
+      label: 'Profile',
+      icon: '/icons/user-icon.svg',
+      href: '/settings?tab=basic',
+    },
+    {
       id: 'kyc',
       label: 'KYC Verification',
       icon: '/icons/user-check.svg',
@@ -118,12 +124,6 @@ export default function ProfileDropdown() {
       label: 'Referral',
       icon: '/icons/users.svg',
       href: '/dashboard/referral',
-    },
-    {
-      id: 'support',
-      label: 'Support',
-      icon: '/icons/headphones.svg',
-      href: '/settings?tab=support',
     },
   ];
 

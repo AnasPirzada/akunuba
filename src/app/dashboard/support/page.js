@@ -1,318 +1,476 @@
 'use client';
+import NewTicketModal from '@/components/dashboard/NewTicketModal';
+import Navbar from '@/components/dashboard/Navbar';
+import Sidebar from '@/components/dashboard/Sidebar';
 import { useTheme } from '@/context/ThemeContext';
-import DashboardLayout from '@/components/dashboard/DashboardLayout';
+import Image from 'next/image';
+import { useState } from 'react';
 
 export default function SupportPage() {
   const { isDarkMode } = useTheme();
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [ticketFilter, setTicketFilter] = useState('all');
+  const [isNewTicketModalOpen, setIsNewTicketModalOpen] = useState(false);
 
-  const helpSections = [
-    {
-      title: 'Account',
-      items: [
+  const tickets = [
         {
-          id: 'kyc-review',
-          title: 'Request KYC Review',
+      id: 'TKT-2023-8762',
+      subject: 'Payment issue with recent subscription renewal',
           description:
-            'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
-          icon: 'KYCReview',
+        'I was charged twice for my subscription renewal this month.',
+      status: 'open',
+      created: 'Nov 15, 2023',
+      updated: 'Nov 18, 2023',
         },
         {
-          id: 'unconfirmed-deposit',
-          title: 'Unconfirmed Deposit',
+      id: 'TKT-2023-8721',
+      subject: 'Cannot access premium features after upgrade',
           description:
-            'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
-          icon: 'UnconfirmedDeposit',
+        "I upgraded to the Business plan yesterday, but I still don't have access.",
+      status: 'inprogress',
+      created: 'Nov 12, 2023',
+      updated: 'Nov 16, 2023',
         },
         {
-          id: 'recover-account',
-          title: 'Recover my Account',
-          description:
-            'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
-          icon: 'RecoverAccount',
+      id: 'TKT-2023-8695',
+      subject: 'Request for custom integration documentation',
+      description: 'My development team needs more detailed API documentation.',
+      status: 'inprogress',
+      created: 'Nov 10, 2023',
+      updated: 'Nov 15, 2023',
         },
-      ],
+        {
+      id: 'TKT-2023-8674',
+      subject: 'Issues with data export functionality',
+          description:
+        'When I try to export my report data to CSV, some of the data is missing.',
+      status: 'resolved',
+      created: 'Nov 7, 2023',
+      updated: 'Nov 12, 2023',
     },
-    {
-      title: 'Trading',
-      items: [
         {
-          id: 'real-trading',
-          title: 'Fulle go Real Tradeing',
+      id: 'TKT-2023-8642',
+      subject: 'Account login verification problems',
           description:
-            'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
-          icon: 'RealTrading',
+        "I'm not receiving the SMS verification code when trying to log in.",
+      status: 'closed',
+      created: 'Nov 4, 2023',
+      updated: 'Nov 9, 2023',
         },
         {
-          id: 'trading-bots',
-          title: 'Smart Trading Bots for Every Strategy',
+      id: 'TKT-2023-8621',
+      subject: 'Feature request: Dark mode for dashboard',
           description:
-            'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
-          icon: 'TradingBots',
-        },
-        {
-          id: 'trading-skills',
-          title: 'Essential Skills for Future Trading',
-          description:
-            'Risk management, market analysis, discipline, and strategic planning drive success',
-          icon: 'TradingSkills',
-        },
-      ],
-    },
-    {
-      title: 'Platform',
-      items: [
-        {
-          id: 'earn-trade',
-          title: 'Earn While You Trade',
-          description:
-            'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
-          icon: 'EarnTrade',
-        },
-        {
-          id: 'wallet-control',
-          title: 'Your Wallet, Your Keys, Your Control',
-          description:
-            'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
-          icon: 'WalletControl',
-        },
-        {
-          id: 'market-insights',
-          title: 'Real-Time Market Insights',
-          description:
-            'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum',
-          icon: 'MarketInsights',
-        },
-      ],
+        'Would it be possible to implement a dark mode for the main dashboard?',
+      status: 'closed',
+      created: 'Nov 2, 2023',
+      updated: 'Nov 8, 2023',
     },
   ];
 
+  const filteredTickets =
+    ticketFilter === 'all'
+      ? tickets
+      : tickets.filter(t => t.status === ticketFilter);
+
+  const getStatusBadge = status => {
+    const statusConfig = {
+      open: { bg: 'rgba(241, 203, 104, 0.2)', color: '#F1CB68', text: 'Open' },
+      inprogress: {
+        bg: 'rgba(59, 130, 246, 0.2)',
+        color: '#3B82F6',
+        text: 'In Progress',
+      },
+      resolved: {
+        bg: 'rgba(34, 197, 94, 0.2)',
+        color: '#22C55E',
+        text: 'Resolved',
+      },
+      closed: {
+        bg: 'rgba(107, 114, 128, 0.2)',
+        color: '#6B7280',
+        text: 'Closed',
+      },
+    };
+    const config = statusConfig[status] || statusConfig.open;
+    return (
+      <span
+        className='px-3 py-1 rounded-full text-xs font-medium'
+        style={{ background: config.bg, color: config.color }}
+      >
+        {config.text}
+      </span>
+    );
+  };
+
   return (
-    <DashboardLayout>
+    <div
+      className={`flex h-screen ${isDarkMode ? 'bg-brand-bg' : 'bg-gray-50'}`}
+    >
+      {/* Sidebar */}
+      <Sidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} />
+
+      {/* Main Content */}
+      <div className='flex-1 flex flex-col overflow-hidden lg:ml-64'>
+        {/* Navbar */}
+        <Navbar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)} />
+
+        {/* Page Content */}
+        <main className='flex-1 overflow-y-auto'>
       <div className='p-4 md:p-6 lg:p-8'>
-        {/* Page Header */}
-        <div className='mb-8'>
+            {/* Header */}
+            <div className='flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 md:mb-8'>
+              <div>
           <h1
-            className={`text-3xl md:text-4xl font-bold mb-2 ${
+                  className={`text-2xl md:text-3xl font-bold mb-2 ${
               isDarkMode ? 'text-white' : 'text-gray-900'
             }`}
           >
-            Help Center
+                  Support Ticket Center
           </h1>
+                <p
+                  className={`text-xs md:text-sm ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}
+                >
+                  Manage your requests and support conversations.
+                </p>
         </div>
-
-        {/* Help Sections */}
-        <div className='space-y-12'>
-          {helpSections.map((section, sectionIndex) => (
-            <div key={sectionIndex}>
-              {/* Section Title */}
-              <h2
-                className={`text-xl font-semibold mb-6 ${
-                  isDarkMode ? 'text-white' : 'text-gray-900'
-                }`}
+              <button
+                onClick={() => setIsNewTicketModalOpen(true)}
+                className='px-4 md:px-6 py-2.5 md:py-3 rounded-full text-xs md:text-sm font-bold transition-all hover:opacity-90 cursor-pointer flex items-center justify-center gap-2 whitespace-nowrap'
+                style={{
+                  background:
+                    'linear-gradient(90deg, #FFFFFF 0%, #F1CB68 100%)',
+                  color: '#000000',
+                }}
               >
-                {section.title}
-              </h2>
+                <span className='text-base md:text-lg'>+</span>
+                New Ticket
+              </button>
+            </div>
 
-              {/* Cards Grid */}
-              <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-                {section.items.map(item => (
-                  <HelpCard key={item.id} item={item} isDarkMode={isDarkMode} />
+            {/* Search and Filters */}
+            <div className='mb-6 space-y-4'>
+              {/* Search Bar */}
+              <div className='relative'>
+                <div className='absolute inset-y-0 left-0 pl-3 md:pl-4 flex items-center pointer-events-none'>
+                  <Image
+                    src='/icons/search.svg'
+                    alt='Search'
+                    width={18}
+                    height={18}
+                    style={{
+                      filter: isDarkMode
+                        ? 'brightness(0) invert(1)'
+                        : 'brightness(0.5)',
+                    }}
+                  />
+                </div>
+                <input
+                  type='text'
+                  placeholder='Search by keyword or ticket ID'
+                  className={`w-full pl-10 md:pl-12 pr-4 py-2.5 md:py-3 rounded-lg text-sm border transition-colors ${
+                    isDarkMode
+                      ? 'bg-transparent border-white/10 text-white placeholder-gray-500 focus:border-[#F1CB68]'
+                      : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#F1CB68]'
+                  } focus:outline-none`}
+                />
+              </div>
+
+              {/* Filter Tabs */}
+              <div className='flex items-center gap-2 md:gap-3 overflow-x-auto pb-2 scrollbar-hide'>
+                {[
+                  { id: 'all', label: 'All Tickets' },
+                  { id: 'open', label: 'Open' },
+                  { id: 'inprogress', label: 'In Progress' },
+                  { id: 'resolved', label: 'Resolved' },
+                  { id: 'closed', label: 'Closed' },
+                ].map(filter => (
+                  <button
+                    key={filter.id}
+                    onClick={() => setTicketFilter(filter.id)}
+                    className={`px-3 md:px-4 py-2 rounded-full text-xs md:text-sm font-medium transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                      ticketFilter === filter.id
+                        ? 'text-black'
+                        : isDarkMode
+                        ? 'text-gray-400'
+                        : 'text-gray-600'
+                    }`}
+                    style={{
+                      background:
+                        ticketFilter === filter.id
+                          ? 'linear-gradient(90deg, #FFFFFF 0%, #F1CB68 100%)'
+                          : 'transparent',
+                      border:
+                        ticketFilter === filter.id
+                          ? 'none'
+                          : isDarkMode
+                          ? '1px solid rgba(255, 255, 255, 0.1)'
+                          : '1px solid rgba(0, 0, 0, 0.1)',
+                    }}
+                  >
+                    {filter.label}
+                  </button>
                 ))}
               </div>
             </div>
-          ))}
-        </div>
-      </div>
-    </DashboardLayout>
-  );
-}
 
-// Help Card Component
-function HelpCard({ item, isDarkMode }) {
-  return (
-    <div
-      className={`rounded-2xl border p-6 transition-all hover:shadow-lg ${
+            {/* Tickets Table - Desktop */}
+            <div
+              className={`hidden md:block rounded-2xl overflow-hidden ${
+                isDarkMode
+                  ? 'bg-gradient-to-br from-[#1E1E23] to-[#141419] border border-white/10'
+                  : 'bg-white border border-gray-200'
+              }`}
+            >
+              <div className='overflow-x-auto'>
+                <table className='w-full'>
+                  <thead>
+                    <tr
+                      className={`border-b ${
+                        isDarkMode
+                          ? 'border-white/10 bg-white/5'
+                          : 'border-gray-200 bg-gray-50'
+                      }`}
+                    >
+                      <th
+                        className={`text-left px-6 py-4 text-xs font-semibold uppercase ${
+                          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        Subject
+                      </th>
+                      <th
+                        className={`text-left px-6 py-4 text-xs font-semibold uppercase ${
+                          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        Status
+                      </th>
+                      <th
+                        className={`text-left px-6 py-4 text-xs font-semibold uppercase ${
+                          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        Created
+                      </th>
+                      <th
+                        className={`text-left px-6 py-4 text-xs font-semibold uppercase ${
+                          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        Updated
+                      </th>
+                      <th
+                        className={`text-left px-6 py-4 text-xs font-semibold uppercase ${
+                          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        ID
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredTickets.map((ticket, index) => (
+                      <tr
+                        key={ticket.id}
+                        className={`border-b transition-colors cursor-pointer ${
+                          isDarkMode
+                            ? 'border-white/5 hover:bg-white/5'
+                            : 'border-gray-200 hover:bg-gray-50'
+                        } ${index === filteredTickets.length - 1 ? 'border-0' : ''}`}
+                      >
+                        <td className='px-6 py-4'>
+                          <div>
+                            <p
+                              className={`font-medium mb-1 ${
+                                isDarkMode ? 'text-white' : 'text-gray-900'
+                              }`}
+                            >
+                              {ticket.subject}
+                            </p>
+                            <p
+                              className={`text-sm ${
+                                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                              }`}
+                            >
+                              {ticket.description}
+                            </p>
+                          </div>
+                        </td>
+                        <td className='px-6 text-nowrap py-4'>
+                          {getStatusBadge(ticket.status)}
+                        </td>
+                        <td
+                          className={`px-6 py-4 text-sm ${
+                            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                          }`}
+                        >
+                          {ticket.created}
+                        </td>
+                        <td
+                          className={`px-6 py-4 text-sm ${
+                            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                          }`}
+                        >
+                          {ticket.updated}
+                        </td>
+                        <td
+                          className={`px-6 py-4 text-sm font-mono ${
+                            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                          }`}
+                        >
+                          {ticket.id}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+      </div>
+
+              {/* Pagination */}
+              <div
+                className={`flex items-center justify-between px-6 py-4 border-t ${
+                  isDarkMode ? 'border-white/10' : 'border-gray-200'
+                }`}
+              >
+                <p
+                  className={`text-sm ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}
+                >
+                  Showing 1-6 of 24 tickets
+                </p>
+                <div className='flex items-center gap-2'>
+                  <button
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
         isDarkMode
-          ? 'bg-[#1A1A1D] border-[#FFFFFF14] hover:border-[#F1CB68]/50'
-          : 'bg-white border-gray-200 hover:border-[#F1CB68]/50'
+                        ? 'text-gray-400 hover:text-white'
+                        : 'text-gray-600 hover:text-gray-900'
       }`}
     >
-      {/* Icon */}
-      <div className='mb-4'>
-        <HelpIcon name={item.icon} isDarkMode={isDarkMode} />
+                    Previous
+                  </button>
+                  <button
+                    className='px-4 py-2 rounded-lg text-sm font-medium transition-all'
+                    style={{
+                      background: 'rgba(241, 203, 104, 0.2)',
+                      color: '#F1CB68',
+                    }}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
       </div>
 
-      {/* Title */}
+            {/* Tickets List - Mobile */}
+            <div className='md:hidden space-y-3'>
+              {filteredTickets.map(ticket => (
+                <div
+                  key={ticket.id}
+                  className={`rounded-2xl p-4 cursor-pointer hover:opacity-90 transition-opacity ${
+                    isDarkMode
+                      ? 'bg-gradient-to-br from-[#1E1E23] to-[#141419] border border-white/10'
+                      : 'bg-white border border-gray-200'
+                  }`}
+                >
+                  <div className='flex items-start justify-between gap-3 mb-3'>
       <h3
-        className={`text-lg font-semibold mb-3 ${
+                      className={`font-medium text-sm flex-1 ${
           isDarkMode ? 'text-white' : 'text-gray-900'
         }`}
       >
-        {item.title}
+                      {ticket.subject}
       </h3>
+                    {getStatusBadge(ticket.status)}
+                  </div>
+                  <p
+                    className={`text-xs mb-3 ${
+                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}
+                  >
+                    {ticket.description}
+                  </p>
+                  <div className='flex items-center justify-between text-xs'>
+                    <div className='flex items-center gap-3'>
+                      <span
+                        className={
+                          isDarkMode ? 'text-gray-500' : 'text-gray-500'
+                        }
+                      >
+                        Created:{' '}
+                        <span
+                          className={
+                            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                          }
+                        >
+                          {ticket.created}
+                        </span>
+                      </span>
+                    </div>
+                    <span
+                      className={`font-mono ${
+                        isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                      }`}
+                    >
+                      {ticket.id}
+                    </span>
+                  </div>
+                </div>
+              ))}
 
-      {/* Description */}
-      <p
-        className={`text-sm mb-4 leading-relaxed ${
+              {/* Pagination - Mobile */}
+              <div className='flex items-center justify-between pt-4'>
+                <p
+                  className={`text-xs ${
           isDarkMode ? 'text-gray-400' : 'text-gray-600'
         }`}
       >
-        {item.description}
-      </p>
+                  Showing 1-6 of 24
+                </p>
+                <div className='flex items-center gap-2'>
+                  <button
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                      isDarkMode
+                        ? 'text-gray-400 hover:text-white'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    Previous
+                  </button>
+                  <button
+                    className='px-3 py-1.5 rounded-lg text-xs font-medium transition-all'
+                    style={{
+                      background: 'rgba(241, 203, 104, 0.2)',
+                      color: '#F1CB68',
+                    }}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
 
-      {/* Learn More Link */}
-      <a
-        href='#'
-        className='text-[#F1CB68] text-sm font-medium hover:text-[#E5C158] transition-colors inline-flex items-center gap-1'
-      >
-        Learn more{' '}
-        <svg
-          width='16'
-          height='16'
-          viewBox='0 0 24 24'
-          fill='none'
-          stroke='currentColor'
-          strokeWidth='2'
-        >
-          <path d='M5 12h14M12 5l7 7-7 7' />
-        </svg>
-      </a>
+      {/* New Ticket Modal */}
+      <NewTicketModal
+        isOpen={isNewTicketModalOpen}
+        setIsOpen={setIsNewTicketModalOpen}
+      />
+
+      <style jsx global>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
-}
-
-// Help Icon Component
-function HelpIcon({ name, isDarkMode }) {
-  const iconColor = isDarkMode ? '#FFFFFF' : '#1F2937';
-  const iconSize = 48;
-
-  const icons = {
-    KYCReview: (
-      <svg
-        width={iconSize}
-        height={iconSize}
-        viewBox='0 0 24 24'
-        fill='none'
-        stroke={iconColor}
-        strokeWidth='1.5'
-      >
-        <circle cx='12' cy='8' r='4' />
-        <path d='M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2' />
-        <path d='M16 11h4M18 9v4' />
-      </svg>
-    ),
-    UnconfirmedDeposit: (
-      <svg
-        width={iconSize}
-        height={iconSize}
-        viewBox='0 0 24 24'
-        fill='none'
-        stroke={iconColor}
-        strokeWidth='1.5'
-      >
-        <path d='M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z' />
-        <path d='M14 2v6h6M12 18v-6M9 15l3-3 3 3' />
-      </svg>
-    ),
-    RecoverAccount: (
-      <svg
-        width={iconSize}
-        height={iconSize}
-        viewBox='0 0 24 24'
-        fill='none'
-        stroke={iconColor}
-        strokeWidth='1.5'
-      >
-        <circle cx='12' cy='8' r='4' />
-        <path d='M6 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2' />
-        <rect x='8' y='12' width='8' height='4' rx='1' />
-        <path d='M10 12v-2M14 12v-2' />
-      </svg>
-    ),
-    RealTrading: (
-      <svg
-        width={iconSize}
-        height={iconSize}
-        viewBox='0 0 24 24'
-        fill='none'
-        stroke={iconColor}
-        strokeWidth='1.5'
-      >
-        <circle cx='12' cy='12' r='3' />
-        <path d='M12 1v6M12 17v6M5.64 5.64l4.24 4.24M14.12 14.12l4.24 4.24M1 12h6M17 12h6M5.64 18.36l4.24-4.24M14.12 9.88l4.24-4.24' />
-        <path d='M12 8v2M12 14v2M8 12h2M14 12h2' />
-      </svg>
-    ),
-    TradingBots: (
-      <svg
-        width={iconSize}
-        height={iconSize}
-        viewBox='0 0 24 24'
-        fill='none'
-        stroke={iconColor}
-        strokeWidth='1.5'
-      >
-        <rect x='3' y='3' width='18' height='18' rx='2' />
-        <circle cx='9' cy='9' r='2' />
-        <circle cx='15' cy='9' r='2' />
-        <path d='M9 15h6M12 12v6' />
-      </svg>
-    ),
-    TradingSkills: (
-      <svg
-        width={iconSize}
-        height={iconSize}
-        viewBox='0 0 24 24'
-        fill='none'
-        stroke={iconColor}
-        strokeWidth='1.5'
-      >
-        <path d='M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5' />
-        <path d='M12 8v4M12 14v4' />
-      </svg>
-    ),
-    EarnTrade: (
-      <svg
-        width={iconSize}
-        height={iconSize}
-        viewBox='0 0 24 24'
-        fill='none'
-        stroke={iconColor}
-        strokeWidth='1.5'
-      >
-        <path d='M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' />
-        <path d='M12 6l3-3M12 18l3 3' />
-      </svg>
-    ),
-    WalletControl: (
-      <svg
-        width={iconSize}
-        height={iconSize}
-        viewBox='0 0 24 24'
-        fill='none'
-        stroke={iconColor}
-        strokeWidth='1.5'
-      >
-        <rect x='2' y='7' width='20' height='14' rx='2' />
-        <path d='M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16' />
-        <path d='M12 11h.01' />
-      </svg>
-    ),
-    MarketInsights: (
-      <svg
-        width={iconSize}
-        height={iconSize}
-        viewBox='0 0 24 24'
-        fill='none'
-        stroke={iconColor}
-        strokeWidth='1.5'
-      >
-        <path d='M3 3v18h18' />
-        <path d='M7 16l4-4 4 4 6-6' />
-        <path d='M21 12h-6' />
-      </svg>
-    ),
-  };
-
-  return icons[name] || null;
 }

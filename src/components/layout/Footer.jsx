@@ -19,8 +19,8 @@ const footerLinks = {
   ],
   Support: [
     { label: 'Help Center', href: '/help-center' },
-    { label: 'Status', href: '/status' },
-    { label: 'API Documentation', href: '/api-docs' },
+    // { label: 'Status', href: '/status' },
+    // { label: 'API Documentation', href: '/api-docs' },
   ],
 };
 
