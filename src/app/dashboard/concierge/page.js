@@ -1028,6 +1028,7 @@ function AppraisalDetailModal({
             </div>
           </div>
         </div>
+        </div>
       </div>
     </>
   );
