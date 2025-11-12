@@ -4,7 +4,13 @@ import Footer from '@/components/layout/Footer';
 import Navbar from '@/components/layout/Navbar';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-import { MdMenuBook, MdAccountCircle, MdAssignment, MdTrendingUp, MdSettings } from 'react-icons/md';
+import {
+  MdAccountCircle,
+  MdAssignment,
+  MdMenuBook,
+  MdSettings,
+  MdTrendingUp,
+} from 'react-icons/md';
 
 const supportCategories = [
   {

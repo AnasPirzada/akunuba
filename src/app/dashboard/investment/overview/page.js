@@ -118,7 +118,9 @@ export default function InvestmentOverviewPage() {
             >
               Investment Overview
             </h1>
-            <p className='text-gray-400 text-sm md:text-base'>
+            <p className={`text-sm md:text-base ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>
               For browsing your stocks, Bonds, ETFs, etc.
             </p>
           </div>

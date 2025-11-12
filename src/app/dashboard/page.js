@@ -23,7 +23,9 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       {/* Header Section */}
-      <div className='mb-8 border border-[#1A1A1A] rounded-2xl p-6'>
+      <div className={`mb-8 border rounded-2xl p-6 ${
+        isDarkMode ? 'border-[#1A1A1A]' : 'border-gray-200'
+      }`}>
         <h1
           className={`text-3xl md:text-4xl font-bold mb-3 ${
             isDarkMode ? 'text-white' : 'text-black'
@@ -31,14 +33,18 @@ export default function DashboardPage() {
         >
           Good morning, Olivia.
         </h1>
-        <p className='text-gray-400 text-lg mb-8'>
+        <p className={`text-lg mb-8 ${
+          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+        }`}>
           Here&apos;s a 360° view of your financial position.
         </p>
 
         {/* Top Stats */}
         <div className='grid grid-cols-1 md:grid-cols-3 gap-8 mb-8'>
           <div>
-            <p className='text-gray-400 text-sm mb-2'>Net Worth</p>
+            <p className={`text-sm mb-2 ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>Net Worth</p>
             <div className='flex items-center gap-3'>
               <h2
                 className={`text-3xl font-bold ${
@@ -53,7 +59,9 @@ export default function DashboardPage() {
             </div>
           </div>
           <div>
-            <p className='text-gray-400 text-sm mb-2'>Asset Allocation</p>
+            <p className={`text-sm mb-2 ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>Asset Allocation</p>
             <h2
               className={`text-3xl font-bold ${
                 isDarkMode ? 'text-white' : 'text-black'
@@ -63,7 +71,9 @@ export default function DashboardPage() {
             </h2>
           </div>
           <div>
-            <p className='text-gray-400 text-sm mb-2'>Available Liquidity</p>
+            <p className={`text-sm mb-2 ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>Available Liquidity</p>
             <h2
               className={`text-3xl font-bold ${
                 isDarkMode ? 'text-white' : 'text-black'
@@ -168,7 +178,9 @@ function NetWorthCard() {
       </div>
 
       {/* Footer */}
-      <p className='text-gray-500 text-xs'>Last 6 months</p>
+      <p className={`text-xs ${
+        isDarkMode ? 'text-gray-500' : 'text-gray-600'
+      }`}>Last 6 months</p>
     </div>
   );
 }
@@ -232,7 +244,9 @@ function AssetAllocationCard() {
                   className='w-1.5 h-1.5 rounded-full shrink-0'
                   style={{ backgroundColor: item.color }}
                 />
-                <span className='text-gray-400 text-[10px]'>{item.name}</span>
+                <span className={`text-[10px] ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}>{item.name}</span>
               </div>
               <span
                 className={`text-[10px] font-medium ml-1 ${
@@ -290,7 +304,9 @@ function LiabilitiesCard() {
         {liabilities.map((item, index) => (
           <div key={index}>
             <div className='flex items-center justify-between mb-1.5'>
-              <span className='text-gray-400 text-xs'>{item.name}</span>
+              <span className={`text-xs ${
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}>{item.name}</span>
               <span
                 className={`text-xs font-medium ${
                   isDarkMode ? 'text-white' : 'text-black'
@@ -299,7 +315,9 @@ function LiabilitiesCard() {
                 {item.amount}
               </span>
             </div>
-            <div className='w-full h-1.5 bg-[#2A2A2D] rounded-full overflow-hidden'>
+            <div className={`w-full h-1.5 rounded-full overflow-hidden ${
+              isDarkMode ? 'bg-[#2A2A2D]' : 'bg-gray-200'
+            }`}>
               <div
                 className='h-full bg-[#F1CB68] rounded-full'
                 style={{ width: `${item.percentage}%` }}
@@ -345,10 +363,14 @@ function AvailableLiquidityCard() {
       <div className='space-y-2 flex-1'>
         {/* Cash & Cash Equivalents */}
         <div>
-          <p className='text-gray-400 text-xs mb-1.5'>
+          <p className={`text-xs mb-1.5 ${
+            isDarkMode ? 'text-gray-400' : 'text-gray-600'
+          }`}>
             Cash & Cash Equivalents
           </p>
-          <div className='w-full h-1.5 bg-[#2A2A2D] rounded-full overflow-hidden'>
+          <div className={`w-full h-1.5 rounded-full overflow-hidden ${
+            isDarkMode ? 'bg-[#2A2A2D]' : 'bg-gray-200'
+          }`}>
             <div className='h-full bg-[#F1CB68] rounded-full w-[70%]' />
           </div>
         </div>
@@ -356,7 +378,9 @@ function AvailableLiquidityCard() {
         {/* Liquidity Target */}
         <div className='bg-[#F1CB681A] rounded-lg p-2'>
           <div className='flex items-center justify-between mb-0.5'>
-            <span className='text-gray-400 text-xs'>Liquidity Target:</span>
+            <span className={`text-xs ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>Liquidity Target:</span>
             <span
               className={`text-xs font-medium ${
                 isDarkMode ? 'text-white' : 'text-black'
@@ -365,7 +389,9 @@ function AvailableLiquidityCard() {
               70% of target
             </span>
           </div>
-          <p className='text-gray-500 text-[10px]'>$2.5M</p>
+          <p className={`text-[10px] ${
+            isDarkMode ? 'text-gray-500' : 'text-gray-600'
+          }`}>$2.5M</p>
         </div>
 
         {/* Credit Available */}
@@ -455,11 +481,15 @@ function PerformanceAnalyticsCard() {
           <div className='flex items-center gap-4'>
             <div className='flex items-center gap-2'>
               <div className='w-8 h-1 bg-[#F1CB68] rounded' />
-              <span className='text-gray-400 text-sm'>Your Portfolio</span>
+              <span className={`text-sm ${
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}>Your Portfolio</span>
             </div>
             <div className='flex items-center gap-2'>
               <div className='w-8 h-1 bg-[#666666] rounded' />
-              <span className='text-gray-400 text-sm'>S&P 500</span>
+              <span className={`text-sm ${
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}>S&P 500</span>
             </div>
           </div>
 
@@ -505,20 +535,26 @@ function PerformanceAnalyticsCard() {
       <div className='h-64'>
         <ResponsiveContainer width='100%' height='100%'>
           <LineChart data={data}>
-            <CartesianGrid strokeDasharray='3 3' stroke='#2A2A2D' />
+            <CartesianGrid 
+              strokeDasharray='3 3' 
+              stroke={isDarkMode ? '#2A2A2D' : '#E5E7EB'} 
+            />
             <XAxis
               dataKey='time'
-              stroke='#666666'
+              stroke={isDarkMode ? '#666666' : '#9CA3AF'}
               style={{ fontSize: '12px' }}
             />
-            <YAxis stroke='#666666' style={{ fontSize: '12px' }} />
+            <YAxis 
+              stroke={isDarkMode ? '#666666' : '#9CA3AF'} 
+              style={{ fontSize: '12px' }} 
+            />
             <Tooltip
               contentStyle={{
-                backgroundColor: '#1A1A1D',
-                border: '1px solid #FFFFFF14',
+                backgroundColor: isDarkMode ? '#1A1A1D' : '#FFFFFF',
+                border: isDarkMode ? '1px solid #FFFFFF14' : '1px solid #E5E7EB',
                 borderRadius: '8px',
               }}
-              labelStyle={{ color: '#fff' }}
+              labelStyle={{ color: isDarkMode ? '#fff' : '#111827' }}
             />
             <Line
               type='monotone'

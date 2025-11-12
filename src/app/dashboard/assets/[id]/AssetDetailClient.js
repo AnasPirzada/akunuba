@@ -86,30 +86,42 @@ export default function AssetDetailClient() {
         <div className='mb-6 flex items-center gap-2 text-sm'>
           <button
             onClick={() => router.push('/dashboard/assets')}
-            className='text-gray-400 hover:text-white transition-colors'
+            className={`transition-colors ${
+              isDarkMode 
+                ? 'text-gray-400 hover:text-white' 
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
           >
             Assets
           </button>
-          <span className='text-gray-600'>›</span>
+          <span className={isDarkMode ? 'text-gray-600' : 'text-gray-400'}>›</span>
           <button
             onClick={() => router.push('/dashboard/assets')}
-            className='text-gray-400 hover:text-white transition-colors'
+            className={`transition-colors ${
+              isDarkMode 
+                ? 'text-gray-400 hover:text-white' 
+                : 'text-gray-600 hover:text-gray-900'
+            }`}
           >
             Real Estate
           </button>
-          <span className='text-gray-600'>›</span>
-          <span className='text-white'>Urban Residential Property</span>
+          <span className={isDarkMode ? 'text-gray-600' : 'text-gray-400'}>›</span>
+          <span className={isDarkMode ? 'text-white' : 'text-gray-900'}>Urban Residential Property</span>
         </div>
 
         {/* Header */}
         <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6'>
           <div>
-            <h1 className='text-3xl font-bold text-white mb-2'>{asset.name}</h1>
+            <h1 className={`text-3xl font-bold mb-2 ${
+              isDarkMode ? 'text-white' : 'text-gray-900'
+            }`}>{asset.name}</h1>
             <div className='flex items-center gap-3'>
               <span className='px-3 py-1 bg-green-500/10 text-green-500 text-xs font-medium rounded-full'>
                 {asset.status}
               </span>
-              <span className='text-gray-400 text-sm'>{asset.lastUpdated}</span>
+              <span className={`text-sm ${
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}>{asset.lastUpdated}</span>
             </div>
           </div>
           <div className='flex gap-3'>
@@ -121,7 +133,11 @@ export default function AssetDetailClient() {
             </button>
             <button
               onClick={() => setShowAppraisalModal(true)}
-              className='px-6 py-3 bg-transparent border border-[#FFFFFF14] text-white rounded-lg font-semibold hover:bg-white/5 transition-colors'
+              className={`px-6 py-3 bg-transparent border rounded-lg font-semibold transition-colors ${
+                isDarkMode
+                  ? 'border-[#FFFFFF14] text-white hover:bg-white/5'
+                  : 'border-gray-300 text-gray-900 hover:bg-gray-100'
+              }`}
             >
               Request Appraisal
             </button>
@@ -133,7 +149,11 @@ export default function AssetDetailClient() {
           {/* Left Column - Images and Details */}
           <div className='lg:col-span-2 space-y-6'>
             {/* Image Gallery */}
-            <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl overflow-hidden'>
+            <div className={`border rounded-2xl overflow-hidden ${
+              isDarkMode
+                ? 'bg-gradient-to-r from-[#222126] to-[#111116] border-[#FFFFFF14]'
+                : 'bg-white border-gray-300'
+            }`}>
               {/* Main Image */}
               <div className='relative aspect-video bg-black'>
                 <img
@@ -173,7 +193,9 @@ export default function AssetDetailClient() {
                   </svg>
                 </button>
                 {/* Image Counter */}
-                <div className='absolute bottom-4 right-4 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-lg text-white text-sm'>
+                <div className={`absolute bottom-4 right-4 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-lg text-sm ${
+                  isDarkMode ? 'text-white' : 'text-white'
+                }`}>
                   {currentImageIndex + 1}/{asset.images.length}
                 </div>
               </div>
@@ -201,45 +223,81 @@ export default function AssetDetailClient() {
             </div>
 
             {/* Property Details */}
-            <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6'>
-              <h3 className='text-xl font-semibold text-white mb-6'>
+            <div className={`border rounded-2xl p-6 ${
+              isDarkMode
+                ? 'bg-gradient-to-r from-[#222126] to-[#111116] border-[#FFFFFF14]'
+                : 'bg-white border-gray-300'
+            }`}>
+              <h3 className={`text-xl font-semibold mb-6 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
                 Property Details
               </h3>
               <div className='grid grid-cols-2 gap-6'>
                 <div>
-                  <p className='text-sm text-gray-400 mb-1'>Property Type</p>
-                  <p className='text-white font-semibold'>
+                  <p className={`text-sm mb-1 ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>Property Type</p>
+                  <p className={`font-semibold ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>
                     {asset.propertyType}
                   </p>
                 </div>
                 <div>
-                  <p className='text-sm text-gray-400 mb-1'>Address</p>
-                  <p className='text-white font-semibold'>{asset.address}</p>
+                  <p className={`text-sm mb-1 ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>Address</p>
+                  <p className={`font-semibold ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>{asset.address}</p>
                 </div>
                 <div>
-                  <p className='text-sm text-gray-400 mb-1'>Acquisition Date</p>
-                  <p className='text-white font-semibold'>
+                  <p className={`text-sm mb-1 ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>Acquisition Date</p>
+                  <p className={`font-semibold ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>
                     {asset.acquisitionDate}
                   </p>
                 </div>
                 <div>
-                  <p className='text-sm text-gray-400 mb-1'>Size</p>
-                  <p className='text-white font-semibold'>{asset.size}</p>
+                  <p className={`text-sm mb-1 ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>Size</p>
+                  <p className={`font-semibold ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>{asset.size}</p>
                 </div>
                 <div>
-                  <p className='text-sm text-gray-400 mb-1'>Year Built</p>
-                  <p className='text-white font-semibold'>{asset.yearBuilt}</p>
+                  <p className={`text-sm mb-1 ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>Year Built</p>
+                  <p className={`font-semibold ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>{asset.yearBuilt}</p>
                 </div>
                 <div>
-                  <p className='text-sm text-gray-400 mb-1'>Ownership</p>
-                  <p className='text-white font-semibold'>{asset.ownership}</p>
+                  <p className={`text-sm mb-1 ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>Ownership</p>
+                  <p className={`font-semibold ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>{asset.ownership}</p>
                 </div>
               </div>
             </div>
 
             {/* Value History Chart */}
-            <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6'>
-              <h3 className='text-xl font-semibold text-white mb-6'>
+            <div className={`border rounded-2xl p-6 ${
+              isDarkMode
+                ? 'bg-gradient-to-r from-[#222126] to-[#111116] border-[#FFFFFF14]'
+                : 'bg-white border-gray-300'
+            }`}>
+              <h3 className={`text-xl font-semibold mb-6 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
                 Value History
               </h3>
               <div className='relative h-64'>
@@ -280,7 +338,9 @@ export default function AssetDetailClient() {
                   />
                 </svg>
                 {/* Axis labels */}
-                <div className='absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-400 mt-2'>
+                <div className={`absolute bottom-0 left-0 right-0 flex justify-between text-xs mt-2 ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}>
                   <span>Jan</span>
                   <span>Feb</span>
                   <span>Mar</span>
@@ -292,15 +352,25 @@ export default function AssetDetailClient() {
             </div>
 
             {/* Associated Documents */}
-            <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6'>
-              <h3 className='text-xl font-semibold text-white mb-6'>
+            <div className={`border rounded-2xl p-6 ${
+              isDarkMode
+                ? 'bg-gradient-to-r from-[#222126] to-[#111116] border-[#FFFFFF14]'
+                : 'bg-white border-gray-300'
+            }`}>
+              <h3 className={`text-xl font-semibold mb-6 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
                 Associated Documents
               </h3>
               <div className='grid grid-cols-1 sm:grid-cols-2 gap-4'>
                 {asset.documents.map((doc, index) => (
                   <div
                     key={index}
-                    className='flex items-center gap-4 p-4 bg-[#2A2A2D] rounded-xl hover:bg-[#3A3A3D] transition-colors cursor-pointer'
+                    className={`flex items-center gap-4 p-4 rounded-xl transition-colors cursor-pointer ${
+                      isDarkMode
+                        ? 'bg-[#2A2A2D] hover:bg-[#3A3A3D]'
+                        : 'bg-gray-50 hover:bg-gray-100'
+                    }`}
                   >
                     <div className='w-10 h-10 bg-[#F1CB68]/10 rounded-lg flex items-center justify-center flex-shrink-0'>
                       <img
@@ -310,12 +380,20 @@ export default function AssetDetailClient() {
                       />
                     </div>
                     <div className='flex-1 min-w-0'>
-                      <p className='text-white font-medium truncate'>
+                      <p className={`font-medium truncate ${
+                        isDarkMode ? 'text-white' : 'text-gray-900'
+                      }`}>
                         {doc.name}
                       </p>
-                      <p className='text-gray-400 text-sm'>{doc.date}</p>
+                      <p className={`text-sm ${
+                        isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                      }`}>{doc.date}</p>
                     </div>
-                    <button className='text-gray-400 hover:text-white transition-colors'>
+                    <button className={`transition-colors ${
+                      isDarkMode
+                        ? 'text-gray-400 hover:text-white'
+                        : 'text-gray-500 hover:text-gray-900'
+                    }`}>
                       <svg
                         width='20'
                         height='20'
@@ -336,35 +414,57 @@ export default function AssetDetailClient() {
           {/* Right Column - Valuation and Actions */}
           <div className='space-y-6'>
             {/* Current Valuation */}
-            <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6'>
-              <h3 className='text-lg font-semibold text-white mb-4'>
+            <div className={`border rounded-2xl p-6 ${
+              isDarkMode
+                ? 'bg-gradient-to-r from-[#222126] to-[#111116] border-[#FFFFFF14]'
+                : 'bg-white border-gray-300'
+            }`}>
+              <h3 className={`text-lg font-semibold mb-4 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
                 Current Valuation
               </h3>
               <div className='mb-4'>
-                <p className='text-3xl font-bold text-white mb-2'>
+                <p className={`text-3xl font-bold mb-2 ${
+                  isDarkMode ? 'text-white' : 'text-gray-900'
+                }`}>
                   {asset.currentValue}
                 </p>
                 <div className='flex items-center gap-2'>
                   <span className='text-green-500 font-semibold'>
                     {asset.valueChange}
                   </span>
-                  <span className='text-gray-400 text-sm'>
+                  <span className={`text-sm ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
                     {asset.valueChangeLabel}
                   </span>
                 </div>
               </div>
-              <p className='text-gray-400 text-sm'>
+              <p className={`text-sm ${
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}>
                 Last Appraisal: {asset.lastAppraisal}
               </p>
             </div>
 
             {/* Quick Actions */}
-            <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6'>
-              <h3 className='text-lg font-semibold text-white mb-4'>
+            <div className={`border rounded-2xl p-6 ${
+              isDarkMode
+                ? 'bg-gradient-to-r from-[#222126] to-[#111116] border-[#FFFFFF14]'
+                : 'bg-white border-gray-300'
+            }`}>
+              <h3 className={`text-lg font-semibold mb-4 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
                 Quick Actions
               </h3>
               <div className='space-y-3'>
-                <button className='w-full p-3 bg-[#2A2A2D] rounded-lg text-white hover:bg-[#3A3A3D] transition-colors flex items-center justify-between'>
+                <button className={`w-full p-3 rounded-lg transition-colors flex items-center justify-between ${
+                  isDarkMode
+                    ? 'bg-[#2A2A2D] text-white hover:bg-[#3A3A3D]'
+                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                }`}>
                   <span>Transfer Ownership</span>
                   <svg
                     width='16'
@@ -377,7 +477,11 @@ export default function AssetDetailClient() {
                     <path d='M5 12h14M12 5l7 7-7 7' />
                   </svg>
                 </button>
-                <button className='w-full p-3 bg-[#2A2A2D] rounded-lg text-white hover:bg-[#3A3A3D] transition-colors flex items-center justify-between'>
+                <button className={`w-full p-3 rounded-lg transition-colors flex items-center justify-between ${
+                  isDarkMode
+                    ? 'bg-[#2A2A2D] text-white hover:bg-[#3A3A3D]'
+                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                }`}>
                   <span>Share Asset Details</span>
                   <svg
                     width='16'
@@ -391,7 +495,11 @@ export default function AssetDetailClient() {
                     <path d='M16 6l-4-4-4 4M12 2v13' />
                   </svg>
                 </button>
-                <button className='w-full p-3 bg-[#2A2A2D] rounded-lg text-white hover:bg-[#3A3A3D] transition-colors flex items-center justify-between'>
+                <button className={`w-full p-3 rounded-lg transition-colors flex items-center justify-between ${
+                  isDarkMode
+                    ? 'bg-[#2A2A2D] text-white hover:bg-[#3A3A3D]'
+                    : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                }`}>
                   <span>Generate Report</span>
                   <svg
                     width='16'
@@ -409,32 +517,50 @@ export default function AssetDetailClient() {
             </div>
 
             {/* Financial Summary */}
-            <div className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl p-6'>
-              <h3 className='text-lg font-semibold text-white mb-4'>
+            <div className={`border rounded-2xl p-6 ${
+              isDarkMode
+                ? 'bg-gradient-to-r from-[#222126] to-[#111116] border-[#FFFFFF14]'
+                : 'bg-white border-gray-300'
+            }`}>
+              <h3 className={`text-lg font-semibold mb-4 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}>
                 Financial Summary
               </h3>
               <div className='space-y-4'>
                 <div>
-                  <p className='text-sm text-gray-400 mb-1'>
+                  <p className={`text-sm mb-1 ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
                     Monthly Rental Income
                   </p>
-                  <p className='text-white font-semibold text-lg'>
+                  <p className={`font-semibold text-lg ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>
                     {asset.monthlyRentalIncome}
                   </p>
                 </div>
                 <div>
-                  <p className='text-sm text-gray-400 mb-1'>
+                  <p className={`text-sm mb-1 ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
                     Annual Property Tax
                   </p>
-                  <p className='text-white font-semibold text-lg'>
+                  <p className={`font-semibold text-lg ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>
                     {asset.annualPropertyTax}
                   </p>
                 </div>
                 <div>
-                  <p className='text-sm text-gray-400 mb-1'>
+                  <p className={`text-sm mb-1 ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>
                     Maintenance Costs (YTD)
                   </p>
-                  <p className='text-white font-semibold text-lg'>
+                  <p className={`font-semibold text-lg ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>
                     {asset.maintenanceCosts}
                   </p>
                 </div>
@@ -450,19 +576,31 @@ export default function AssetDetailClient() {
             onClick={() => setShowSellModal(false)}
           >
             <div
-              className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl w-full max-w-md sm:max-w-2xl my-8 max-h-[90vh] flex flex-col'
+              className={`border rounded-2xl w-full max-w-md sm:max-w-2xl my-8 max-h-[90vh] flex flex-col ${
+                isDarkMode
+                  ? 'bg-gradient-to-r from-[#222126] to-[#111116] border-[#FFFFFF14]'
+                  : 'bg-white border-gray-300'
+              }`}
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
-              <div className='border-b border-[#FFFFFF14] p-3 sm:p-6 flex items-center justify-between flex-shrink-0'>
-                <h2 className='text-lg sm:text-2xl font-bold text-white'>
+              <div className={`border-b p-3 sm:p-6 flex items-center justify-between flex-shrink-0 ${
+                isDarkMode ? 'border-[#FFFFFF14]' : 'border-gray-200'
+              }`}>
+                <h2 className={`text-lg sm:text-2xl font-bold ${
+                  isDarkMode ? 'text-white' : 'text-gray-900'
+                }`}>
                   Request to Sell
                 </h2>
                 <button
                   onClick={() => setShowSellModal(false)}
-                  className='w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors'
+                  className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
+                    isDarkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
+                  }`}
                 >
-                  <span className='text-gray-400 text-2xl'>×</span>
+                  <span className={`text-2xl ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>×</span>
                 </button>
               </div>
 
@@ -472,7 +610,9 @@ export default function AssetDetailClient() {
                 className='p-3 sm:p-6 overflow-y-auto custom-scrollbar flex-1'
               >
                 {/* Asset Preview */}
-                <div className='bg-[#2A2A2D] rounded-xl p-3 sm:p-4 mb-4 sm:mb-6'>
+                <div className={`rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 ${
+                  isDarkMode ? 'bg-[#2A2A2D]' : 'bg-gray-50'
+                }`}>
                   <div className='flex flex-col sm:flex-row items-start sm:items-center gap-3'>
                     <img
                       src={asset.images[0]}
@@ -480,19 +620,29 @@ export default function AssetDetailClient() {
                       className='w-20 h-20 sm:w-24 sm:h-24 rounded-lg object-cover mx-auto sm:mx-0'
                     />
                     <div className='flex-1 min-w-0 text-center sm:text-left'>
-                      <h3 className='text-white font-semibold mb-2 text-base sm:text-lg truncate'>
+                      <h3 className={`font-semibold mb-2 text-base sm:text-lg truncate ${
+                        isDarkMode ? 'text-white' : 'text-gray-900'
+                      }`}>
                         {asset.name}
                       </h3>
                       <div className='grid grid-cols-2 gap-2'>
                         <div>
-                          <p className='text-xs text-gray-500'>Current Value</p>
-                          <p className='text-white text-sm font-semibold'>
+                          <p className={`text-xs ${
+                            isDarkMode ? 'text-gray-500' : 'text-gray-600'
+                          }`}>Current Value</p>
+                          <p className={`text-sm font-semibold ${
+                            isDarkMode ? 'text-white' : 'text-gray-900'
+                          }`}>
                             {asset.currentValue}
                           </p>
                         </div>
                         <div>
-                          <p className='text-xs text-gray-500'>Category</p>
-                          <p className='text-white text-sm'>
+                          <p className={`text-xs ${
+                            isDarkMode ? 'text-gray-500' : 'text-gray-600'
+                          }`}>Category</p>
+                          <p className={`text-sm ${
+                            isDarkMode ? 'text-white' : 'text-gray-900'
+                          }`}>
                             {asset.propertyType}
                           </p>
                         </div>
@@ -504,7 +654,9 @@ export default function AssetDetailClient() {
                 {/* Form Fields */}
                 <div className='space-y-4'>
                   <div>
-                    <label className='block text-sm font-medium text-white mb-2'>
+                    <label className={`block text-sm font-medium mb-2 ${
+                      isDarkMode ? 'text-white' : 'text-gray-900'
+                    }`}>
                       Target Price
                     </label>
                     <div className='relative'>
@@ -521,13 +673,19 @@ export default function AssetDetailClient() {
                           })
                         }
                         placeholder='Enter your target price'
-                        className='w-full pl-8 pr-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white placeholder-gray-500 focus:outline-none focus:border-[#F1CB68] transition-colors text-sm sm:text-base'
+                        className={`w-full pl-8 pr-4 py-3 rounded-lg border placeholder-gray-500 focus:outline-none focus:border-[#F1CB68] transition-colors text-sm sm:text-base ${
+                          isDarkMode
+                            ? 'bg-[#2A2A2D] border-[#FFFFFF14] text-white'
+                            : 'bg-gray-50 border-gray-300 text-gray-900'
+                        }`}
                       />
                     </div>
                   </div>
 
                   <div>
-                    <label className='block text-sm font-medium text-white mb-2'>
+                    <label className={`block text-sm font-medium mb-2 ${
+                      isDarkMode ? 'text-white' : 'text-gray-900'
+                    }`}>
                       Sale Notes (Optional)
                     </label>
                     <textarea
@@ -540,7 +698,11 @@ export default function AssetDetailClient() {
                       }
                       placeholder='Add any additional notes or requirements for the sale...'
                       rows={3}
-                      className='w-full px-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white placeholder-gray-500 focus:outline-none focus:border-[#F1CB68] transition-colors resize-none text-sm sm:text-base'
+                      className={`w-full px-4 py-3 rounded-lg border placeholder-gray-500 focus:outline-none focus:border-[#F1CB68] transition-colors resize-none text-sm sm:text-base ${
+                        isDarkMode
+                          ? 'bg-[#2A2A2D] border-[#FFFFFF14] text-white'
+                          : 'bg-gray-50 border-gray-300 text-gray-900'
+                      }`}
                     />
                   </div>
                 </div>
@@ -550,7 +712,11 @@ export default function AssetDetailClient() {
                   <button
                     type='button'
                     onClick={() => setShowSellModal(false)}
-                    className='w-full sm:w-auto flex-1 px-4 sm:px-6 py-3 bg-transparent border border-[#FFFFFF14] text-white rounded-lg font-semibold hover:bg-white/5 transition-colors text-sm sm:text-base'
+                    className={`w-full sm:w-auto flex-1 px-4 sm:px-6 py-3 bg-transparent border rounded-lg font-semibold transition-colors text-sm sm:text-base ${
+                      isDarkMode
+                        ? 'border-[#FFFFFF14] text-white hover:bg-white/5'
+                        : 'border-gray-300 text-gray-900 hover:bg-gray-100'
+                    }`}
                   >
                     Cancel
                   </button>
@@ -573,19 +739,31 @@ export default function AssetDetailClient() {
             onClick={() => setShowAppraisalModal(false)}
           >
             <div
-              className='bg-gradient-to-r from-[#222126] to-[#111116] border border-[#FFFFFF14] rounded-2xl max-w-2xl w-full my-8 max-h-[90vh] flex flex-col'
+              className={`border rounded-2xl max-w-2xl w-full my-8 max-h-[90vh] flex flex-col ${
+                isDarkMode
+                  ? 'bg-gradient-to-r from-[#222126] to-[#111116] border-[#FFFFFF14]'
+                  : 'bg-white border-gray-300'
+              }`}
               onClick={e => e.stopPropagation()}
             >
               {/* Header */}
-              <div className='border-b border-[#FFFFFF14] p-4 sm:p-6 flex items-center justify-between flex-shrink-0'>
-                <h2 className='text-xl sm:text-2xl font-bold text-white'>
+              <div className={`border-b p-4 sm:p-6 flex items-center justify-between flex-shrink-0 ${
+                isDarkMode ? 'border-[#FFFFFF14]' : 'border-gray-200'
+              }`}>
+                <h2 className={`text-xl sm:text-2xl font-bold ${
+                  isDarkMode ? 'text-white' : 'text-gray-900'
+                }`}>
                   Request Appraisal
                 </h2>
                 <button
                   onClick={() => setShowAppraisalModal(false)}
-                  className='w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors'
+                  className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors ${
+                    isDarkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
+                  }`}
                 >
-                  <span className='text-gray-400 text-2xl'>×</span>
+                  <span className={`text-2xl ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}>×</span>
                 </button>
               </div>
 
@@ -602,10 +780,14 @@ export default function AssetDetailClient() {
                     className='w-16 h-16 sm:w-20 sm:h-20 rounded-lg object-cover'
                   />
                   <div className='flex-1 min-w-0'>
-                    <h3 className='text-white font-semibold text-base sm:text-lg mb-1 truncate'>
+                    <h3 className={`font-semibold text-base sm:text-lg mb-1 truncate ${
+                      isDarkMode ? 'text-white' : 'text-gray-900'
+                    }`}>
                       {asset.name}
                     </h3>
-                    <p className='text-gray-400 text-xs sm:text-sm truncate'>
+                    <p className={`text-xs sm:text-sm truncate ${
+                      isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                    }`}>
                       {asset.propertyType} • {asset.address}
                     </p>
                   </div>
@@ -613,7 +795,9 @@ export default function AssetDetailClient() {
 
                 {/* Appraisal Type Selection */}
                 <div className='mb-4 sm:mb-6'>
-                  <label className='block text-sm font-medium text-white mb-3'>
+                  <label className={`block text-sm font-medium mb-3 ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>
                     Select Appraisal Type
                   </label>
                   <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
@@ -622,14 +806,20 @@ export default function AssetDetailClient() {
                       onClick={() => setAppraisalType('standard')}
                       className={`p-3 sm:p-4 rounded-xl border-2 text-left transition-all ${
                         appraisalType === 'standard'
-                          ? 'border-[#F1CB68] bg-gradient-to-r from-[#222126] to-[#111116]'
-                          : 'border-[#FFFFFF14] hover:border-[#F1CB68]/50'
+                          ? 'border-[#F1CB68] bg-[#F1CB68]/10'
+                          : isDarkMode
+                          ? 'border-[#FFFFFF14] hover:border-[#F1CB68]/50 bg-white/5'
+                          : 'border-gray-300 hover:border-[#F1CB68]/50 bg-gray-50'
                       }`}
                     >
-                      <h4 className='text-white font-semibold mb-1 text-sm sm:text-base'>
+                      <h4 className={`font-semibold mb-1 text-sm sm:text-base ${
+                        isDarkMode ? 'text-white' : 'text-gray-900'
+                      }`}>
                         Standard Appraisal
                       </h4>
-                      <p className='text-gray-400 text-xs sm:text-sm mb-1.5'>
+                      <p className={`text-xs sm:text-sm mb-1.5 ${
+                        isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                      }`}>
                         Basic valuation report within 5-7 business days
                       </p>
                       <p className='text-[#F1CB68] font-semibold text-sm'>
@@ -642,14 +832,20 @@ export default function AssetDetailClient() {
                       onClick={() => setAppraisalType('comprehensive')}
                       className={`p-3 sm:p-4 rounded-xl border-2 text-left transition-all ${
                         appraisalType === 'comprehensive'
-                          ? 'border-[#F1CB68] bg-gradient-to-r from-[#222126] to-[#111116]'
-                          : 'border-[#FFFFFF14] hover:border-[#F1CB68]/50'
+                          ? 'border-[#F1CB68] bg-[#F1CB68]/10'
+                          : isDarkMode
+                          ? 'border-[#FFFFFF14] hover:border-[#F1CB68]/50 bg-white/5'
+                          : 'border-gray-300 hover:border-[#F1CB68]/50 bg-gray-50'
                       }`}
                     >
-                      <h4 className='text-white font-semibold mb-1 text-sm sm:text-base'>
+                      <h4 className={`font-semibold mb-1 text-sm sm:text-base ${
+                        isDarkMode ? 'text-white' : 'text-gray-900'
+                      }`}>
                         Comprehensive Appraisal
                       </h4>
-                      <p className='text-gray-400 text-xs sm:text-sm mb-1.5'>
+                      <p className={`text-xs sm:text-sm mb-1.5 ${
+                        isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                      }`}>
                         Detailed valuation with market analysis
                       </p>
                       <p className='text-[#F1CB68] font-semibold text-sm'>
@@ -663,13 +859,19 @@ export default function AssetDetailClient() {
                       className={`p-3 sm:p-4 rounded-xl border-2 text-left transition-all ${
                         appraisalType === 'expedited'
                           ? 'border-[#F1CB68] bg-[#F1CB68]/10'
-                          : 'border-[#FFFFFF14] hover:border-[#F1CB68]/50'
+                          : isDarkMode
+                          ? 'border-[#FFFFFF14] hover:border-[#F1CB68]/50 bg-white/5'
+                          : 'border-gray-300 hover:border-[#F1CB68]/50 bg-gray-50'
                       }`}
                     >
-                      <h4 className='text-white font-semibold mb-1 text-sm sm:text-base'>
+                      <h4 className={`font-semibold mb-1 text-sm sm:text-base ${
+                        isDarkMode ? 'text-white' : 'text-gray-900'
+                      }`}>
                         Expedited Appraisal
                       </h4>
-                      <p className='text-gray-400 text-xs sm:text-sm mb-1.5'>
+                      <p className={`text-xs sm:text-sm mb-1.5 ${
+                        isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                      }`}>
                         Fast-track service within 48 hours
                       </p>
                       <p className='text-[#F1CB68] font-semibold text-sm'>
@@ -683,13 +885,19 @@ export default function AssetDetailClient() {
                       className={`p-3 sm:p-4 rounded-xl border-2 text-left transition-all ${
                         appraisalType === 'insurance'
                           ? 'border-[#F1CB68] bg-[#F1CB68]/10'
-                          : 'border-[#FFFFFF14] hover:border-[#F1CB68]/50'
+                          : isDarkMode
+                          ? 'border-[#FFFFFF14] hover:border-[#F1CB68]/50 bg-white/5'
+                          : 'border-gray-300 hover:border-[#F1CB68]/50 bg-gray-50'
                       }`}
                     >
-                      <h4 className='text-white font-semibold mb-1 text-sm sm:text-base'>
+                      <h4 className={`font-semibold mb-1 text-sm sm:text-base ${
+                        isDarkMode ? 'text-white' : 'text-gray-900'
+                      }`}>
                         Insurance Appraisal
                       </h4>
-                      <p className='text-gray-400 text-xs sm:text-sm mb-1.5'>
+                      <p className={`text-xs sm:text-sm mb-1.5 ${
+                        isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                      }`}>
                         Specialized for insurance purposes
                       </p>
                       <p className='text-[#F1CB68] font-semibold text-sm'>
@@ -702,7 +910,9 @@ export default function AssetDetailClient() {
                 {/* Info Notice */}
                 {appraisalType && (
                   <div className='mb-4 sm:mb-6 p-3 sm:p-4 rounded-lg bg-[#F1CB68]/10 border border-[#F1CB68]/30'>
-                    <p className='text-xs sm:text-sm text-gray-300'>
+                    <p className={`text-xs sm:text-sm ${
+                      isDarkMode ? 'text-gray-300' : 'text-gray-700'
+                    }`}>
                       <span className='text-[#F1CB68] font-semibold'>
                         Note:
                       </span>{' '}
@@ -718,7 +928,11 @@ export default function AssetDetailClient() {
                   <button
                     type='button'
                     onClick={() => setShowAppraisalModal(false)}
-                    className='flex-1 px-4 sm:px-6 py-2.5 sm:py-3 bg-transparent border border-[#FFFFFF14] text-white rounded-lg font-semibold hover:bg-white/5 transition-colors text-sm'
+                    className={`flex-1 px-4 sm:px-6 py-2.5 sm:py-3 bg-transparent border rounded-lg font-semibold transition-colors text-sm ${
+                      isDarkMode
+                        ? 'border-[#FFFFFF14] text-white hover:bg-white/5'
+                        : 'border-gray-300 text-gray-900 hover:bg-gray-100'
+                    }`}
                   >
                     Cancel
                   </button>

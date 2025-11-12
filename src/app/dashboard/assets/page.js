@@ -510,14 +510,30 @@ function AssetCard({
 
     return (
       <div key={fieldName} className='mb-2'>
-        <p className='text-xs text-gray-500 mb-1'>{fieldName}</p>
-        <p className='text-white font-semibold text-sm'>{displayValue}</p>
+        <p
+          className={`text-xs mb-1 ${
+            isDarkMode ? 'text-gray-500' : 'text-gray-600'
+          }`}
+        >
+          {fieldName}
+        </p>
+        <p
+          className={`font-semibold text-sm ${
+            isDarkMode ? 'text-white' : 'text-gray-900'
+          }`}
+        >
+          {displayValue}
+        </p>
       </div>
     );
   };
 
   return (
-    <div className='bg-transparent border border-[#FFFFFF14] rounded-2xl overflow-hidden hover:border-[#F1CB68]/50 transition-all group'>
+    <div
+      className={`bg-transparent border rounded-2xl overflow-hidden hover:border-[#F1CB68]/50 transition-all group ${
+        isDarkMode ? 'border-[#FFFFFF14]' : 'border-gray-300'
+      }`}
+    >
       {/* Image */}
       <div className='relative h-48 overflow-hidden'>
         {asset.image ? (
@@ -527,8 +543,18 @@ function AssetCard({
             className='w-full h-full object-cover group-hover:scale-110 transition-transform duration-300'
           />
         ) : (
-          <div className='w-full h-full bg-gradient-to-br from-[#2A2A2D] to-[#1a1a1d] flex items-center justify-center'>
-            <span className='text-4xl text-gray-600'>
+          <div
+            className={`w-full h-full flex items-center justify-center ${
+              isDarkMode
+                ? 'bg-gradient-to-br from-[#2A2A2D] to-[#1a1a1d]'
+                : 'bg-gradient-to-br from-gray-200 to-gray-300'
+            }`}
+          >
+            <span
+              className={`text-4xl ${
+                isDarkMode ? 'text-gray-600' : 'text-gray-500'
+              }`}
+            >
               {allCategories.find(c => c.id === asset.category)?.icon || '📦'}
             </span>
           </div>
@@ -587,8 +613,18 @@ function AssetCard({
 
             return (
               <div key={field} className='flex justify-between items-center'>
-                <p className='text-xs text-gray-500'>{field}:</p>
-                <p className='text-white font-semibold text-sm text-right'>
+                <p
+                  className={`text-xs ${
+                    isDarkMode ? 'text-gray-500' : 'text-gray-600'
+                  }`}
+                >
+                  {field}:
+                </p>
+                <p
+                  className={`font-semibold text-sm text-right ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}
+                >
                   {displayValue}
                 </p>
               </div>
@@ -608,13 +644,21 @@ function AssetCard({
             <div className='grid grid-cols-2 gap-2'>
               <button
                 onClick={onRequestSell}
-                className='bg-white/5 text-sm hover:bg-white/10 text-white py-2.5 rounded-lg font-medium transition-colors border border-[#FFFFFF14]'
+                className={`text-sm py-2.5 rounded-lg font-medium transition-colors border ${
+                  isDarkMode
+                    ? 'bg-white/5 hover:bg-white/10 text-white border-[#FFFFFF14]'
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-900 border-gray-300'
+                }`}
               >
                 Request to Sell
               </button>
               <button
                 onClick={onRequestAppraisal}
-                className='bg-white/5 text-sm hover:bg-white/10 text-white py-2.5 rounded-lg font-medium transition-colors border border-[#FFFFFF14]'
+                className={`text-sm py-2.5 rounded-lg font-medium transition-colors border ${
+                  isDarkMode
+                    ? 'bg-white/5 hover:bg-white/10 text-white border-[#FFFFFF14]'
+                    : 'bg-gray-100 hover:bg-gray-200 text-gray-900 border-gray-300'
+                }`}
               >
                 Request Appraisal
               </button>
@@ -656,9 +700,19 @@ function SellModal({
           scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
         }
       `}</style>
-      <div className='bg-[#1A1A1D] border border-[#FFFFFF14] rounded-2xl max-w-2xl w-full my-auto max-h-[95vh] sm:max-h-[90vh] flex flex-col'>
+      <div
+        className={`border rounded-2xl max-w-2xl w-full my-auto max-h-[95vh] sm:max-h-[90vh] flex flex-col ${
+          isDarkMode
+            ? 'bg-[#1A1A1D] border-[#FFFFFF14]'
+            : 'bg-white border-gray-300'
+        }`}
+      >
         {/* Header */}
-        <div className='border-b border-[#FFFFFF14] p-4 sm:p-6 flex items-center justify-between shrink-0'>
+        <div
+          className={`border-b p-4 sm:p-6 flex items-center justify-between shrink-0 ${
+            isDarkMode ? 'border-[#FFFFFF14]' : 'border-gray-200'
+          }`}
+        >
           <h2
             className={`text-xl sm:text-2xl font-bold ${
               isDarkMode ? 'text-white' : 'text-gray-900'
@@ -668,22 +722,46 @@ function SellModal({
           </h2>
           <button
             onClick={onClose}
-            className='w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors shrink-0'
+            className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors shrink-0 ${
+              isDarkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
+            }`}
           >
-            <span className='text-gray-400 text-2xl'>×</span>
+            <span
+              className={`text-2xl ${
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}
+            >
+              ×
+            </span>
           </button>
         </div>
 
         {/* Content - Scrollable */}
         <div className='p-4 sm:p-6 overflow-y-auto flex-1 sell-modal-scrollbar-transparent'>
           {/* Asset Summary */}
-          <div className='bg-white/5 border border-[#FFFFFF14] rounded-lg p-3 sm:p-4 mb-4 sm:mb-6'>
-            <h3 className='text-white font-semibold mb-2 sm:mb-3 text-sm sm:text-base'>
+          <div
+            className={`border rounded-lg p-3 sm:p-4 mb-4 sm:mb-6 ${
+              isDarkMode
+                ? 'bg-white/5 border-[#FFFFFF14]'
+                : 'bg-gray-50 border-gray-200'
+            }`}
+          >
+            <h3
+              className={`font-semibold mb-2 sm:mb-3 text-sm sm:text-base ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}
+            >
               Confirm Asset Details
             </h3>
             <div className='grid grid-cols-2 gap-3 sm:gap-4'>
               <div>
-                <p className='text-xs text-gray-500 mb-1'>Asset Name</p>
+                <p
+                  className={`text-xs mb-1 ${
+                    isDarkMode ? 'text-gray-500' : 'text-gray-600'
+                  }`}
+                >
+                  Asset Name
+                </p>
                 <p
                   className={`text-xs sm:text-sm ${
                     isDarkMode ? 'text-white' : 'text-gray-900'
@@ -693,7 +771,13 @@ function SellModal({
                 </p>
               </div>
               <div>
-                <p className='text-xs text-gray-500 mb-1'>Category</p>
+                <p
+                  className={`text-xs mb-1 ${
+                    isDarkMode ? 'text-gray-500' : 'text-gray-600'
+                  }`}
+                >
+                  Category
+                </p>
                 <p
                   className={`text-xs sm:text-sm ${
                     isDarkMode ? 'text-white' : 'text-gray-900'
@@ -703,13 +787,25 @@ function SellModal({
                 </p>
               </div>
               <div>
-                <p className='text-xs text-gray-500 mb-1'>Current Value</p>
+                <p
+                  className={`text-xs mb-1 ${
+                    isDarkMode ? 'text-gray-500' : 'text-gray-600'
+                  }`}
+                >
+                  Current Value
+                </p>
                 <p className='text-[#F1CB68] font-semibold text-xs sm:text-sm'>
                   {asset.estimatedValue}
                 </p>
               </div>
               <div>
-                <p className='text-xs text-gray-500 mb-1'>Condition</p>
+                <p
+                  className={`text-xs mb-1 ${
+                    isDarkMode ? 'text-gray-500' : 'text-gray-600'
+                  }`}
+                >
+                  Condition
+                </p>
                 <p
                   className={`text-xs sm:text-sm ${
                     isDarkMode ? 'text-white' : 'text-gray-900'
@@ -724,7 +820,11 @@ function SellModal({
           {/* Form */}
           <div className='space-y-3 sm:space-y-4 mb-4 sm:mb-6'>
             <div>
-              <label className='block text-white text-xs sm:text-sm font-medium mb-2'>
+              <label
+                className={`block text-xs sm:text-sm font-medium mb-2 ${
+                  isDarkMode ? 'text-white' : 'text-gray-900'
+                }`}
+              >
                 Target Price (Optional)
               </label>
               <input
@@ -743,7 +843,11 @@ function SellModal({
             </div>
 
             <div>
-              <label className='block text-white text-xs sm:text-sm font-medium mb-2'>
+              <label
+                className={`block text-xs sm:text-sm font-medium mb-2 ${
+                  isDarkMode ? 'text-white' : 'text-gray-900'
+                }`}
+              >
                 Sale Notes
               </label>
               <textarea
@@ -773,10 +877,18 @@ function SellModal({
         </div>
 
         {/* Actions - Fixed at bottom */}
-        <div className='border-t border-[#FFFFFF14] p-4 sm:p-6 flex gap-3 shrink-0'>
+        <div
+          className={`border-t p-4 sm:p-6 flex gap-3 shrink-0 ${
+            isDarkMode ? 'border-[#FFFFFF14]' : 'border-gray-200'
+          }`}
+        >
           <button
             onClick={onClose}
-            className='flex-1 bg-white/5 hover:bg-white/10 text-white py-2.5 sm:py-3 rounded-lg font-semibold transition-colors border border-[#FFFFFF14] text-sm sm:text-base'
+            className={`flex-1 py-2.5 sm:py-3 rounded-lg font-semibold transition-colors border text-sm sm:text-base ${
+              isDarkMode
+                ? 'bg-white/5 hover:bg-white/10 text-white border-[#FFFFFF14]'
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-900 border-gray-300'
+            }`}
           >
             Cancel
           </button>
@@ -822,9 +934,19 @@ function AppraisalModal({
           scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
         }
       `}</style>
-      <div className='bg-[#1A1A1D] border border-[#FFFFFF14] rounded-2xl max-w-2xl w-full my-auto max-h-[95vh] sm:max-h-[90vh] flex flex-col'>
+      <div
+        className={`border rounded-2xl max-w-2xl w-full my-auto max-h-[95vh] sm:max-h-[90vh] flex flex-col ${
+          isDarkMode
+            ? 'bg-[#1A1A1D] border-[#FFFFFF14]'
+            : 'bg-white border-gray-300'
+        }`}
+      >
         {/* Header */}
-        <div className='border-b border-[#FFFFFF14] p-4 sm:p-6 flex items-center justify-between shrink-0'>
+        <div
+          className={`border-b p-4 sm:p-6 flex items-center justify-between shrink-0 ${
+            isDarkMode ? 'border-[#FFFFFF14]' : 'border-gray-200'
+          }`}
+        >
           <h2
             className={`text-xl sm:text-2xl font-bold ${
               isDarkMode ? 'text-white' : 'text-gray-900'
@@ -834,16 +956,28 @@ function AppraisalModal({
           </h2>
           <button
             onClick={onClose}
-            className='w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/10 transition-colors shrink-0'
+            className={`w-8 h-8 flex items-center justify-center rounded-full transition-colors shrink-0 ${
+              isDarkMode ? 'hover:bg-white/10' : 'hover:bg-gray-100'
+            }`}
           >
-            <span className='text-gray-400 text-2xl'>×</span>
+            <span
+              className={`text-2xl ${
+                isDarkMode ? 'text-gray-400' : 'text-gray-600'
+              }`}
+            >
+              ×
+            </span>
           </button>
         </div>
 
         {/* Content - Scrollable */}
         <div className='p-4 sm:p-6 overflow-y-auto flex-1 modal-scrollbar-transparent'>
           {/* Asset Info */}
-          <div className='flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 pb-4 sm:pb-6 border-b border-[#FFFFFF14]'>
+          <div
+            className={`flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6 pb-4 sm:pb-6 border-b ${
+              isDarkMode ? 'border-[#FFFFFF14]' : 'border-gray-200'
+            }`}
+          >
             <img
               src={asset.image}
               alt={asset.name}
@@ -857,7 +991,11 @@ function AppraisalModal({
               >
                 {asset.name}
               </h3>
-              <p className='text-gray-400 text-xs sm:text-sm'>
+              <p
+                className={`text-xs sm:text-sm ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}
+              >
                 {asset.category} • {asset.location}
               </p>
               <p className='text-[#F1CB68] font-semibold mt-1 text-sm sm:text-base'>
@@ -868,7 +1006,11 @@ function AppraisalModal({
 
           {/* Appraisal Options */}
           <div className='mb-4 sm:mb-6'>
-            <h3 className='text-white font-semibold mb-3 sm:mb-4 text-sm sm:text-base'>
+            <h3
+              className={`font-semibold mb-3 sm:mb-4 text-sm sm:text-base ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}
+            >
               Choose Appraisal Method
             </h3>
 
@@ -881,7 +1023,9 @@ function AppraisalModal({
                   ${
                     selectedType === 'Concierge'
                       ? 'border-[#F1CB68] bg-[#F1CB68]/10'
-                      : 'border-[#FFFFFF14] hover:border-[#F1CB68]/50 bg-white/5'
+                      : isDarkMode
+                      ? 'border-[#FFFFFF14] hover:border-[#F1CB68]/50 bg-white/5'
+                      : 'border-gray-300 hover:border-[#F1CB68]/50 bg-gray-50'
                   }
                 `}
               >
@@ -895,17 +1039,33 @@ function AppraisalModal({
                     </div>
                   )}
                 </div>
-                <h4 className='text-white font-semibold mb-1 sm:mb-2 text-sm sm:text-base'>
+                <h4
+                  className={`font-semibold mb-1 sm:mb-2 text-sm sm:text-base ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}
+                >
                   Concierge Service
                 </h4>
-                <p className='text-gray-400 text-xs sm:text-sm mb-2 sm:mb-3'>
+                <p
+                  className={`text-xs sm:text-sm mb-2 sm:mb-3 ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}
+                >
                   Expert human appraisal with detailed report and
                   recommendations.
                 </p>
                 <div className='flex items-center gap-2 text-xs flex-wrap'>
                   <span className='text-[#F1CB68]'>⏱ 3-5 business days</span>
-                  <span className='text-gray-500'>•</span>
-                  <span className='text-gray-400'>Premium</span>
+                  <span
+                    className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}
+                  >
+                    •
+                  </span>
+                  <span
+                    className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}
+                  >
+                    Premium
+                  </span>
                 </div>
               </button>
 
@@ -917,7 +1077,9 @@ function AppraisalModal({
                   ${
                     selectedType === 'API'
                       ? 'border-[#F1CB68] bg-[#F1CB68]/10'
-                      : 'border-[#FFFFFF14] hover:border-[#F1CB68]/50 bg-white/5'
+                      : isDarkMode
+                      ? 'border-[#FFFFFF14] hover:border-[#F1CB68]/50 bg-white/5'
+                      : 'border-gray-300 hover:border-[#F1CB68]/50 bg-gray-50'
                   }
                 `}
               >
@@ -931,17 +1093,33 @@ function AppraisalModal({
                     </div>
                   )}
                 </div>
-                <h4 className='text-white font-semibold mb-1 sm:mb-2 text-sm sm:text-base'>
+                <h4
+                  className={`font-semibold mb-1 sm:mb-2 text-sm sm:text-base ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}
+                >
                   Automated Appraisal
                 </h4>
-                <p className='text-gray-400 text-xs sm:text-sm mb-2 sm:mb-3'>
+                <p
+                  className={`text-xs sm:text-sm mb-2 sm:mb-3 ${
+                    isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                  }`}
+                >
                   Instant AI-powered valuation using market data and comparable
                   sales.
                 </p>
                 <div className='flex items-center gap-2 text-xs flex-wrap'>
                   <span className='text-[#10B981]'>⚡ Instant</span>
-                  <span className='text-gray-500'>•</span>
-                  <span className='text-gray-400'>Standard</span>
+                  <span
+                    className={isDarkMode ? 'text-gray-500' : 'text-gray-400'}
+                  >
+                    •
+                  </span>
+                  <span
+                    className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}
+                  >
+                    Standard
+                  </span>
                 </div>
               </button>
             </div>
@@ -970,10 +1148,18 @@ function AppraisalModal({
         </div>
 
         {/* Actions - Fixed at bottom */}
-        <div className='border-t border-[#FFFFFF14] p-4 sm:p-6 flex gap-3 shrink-0'>
+        <div
+          className={`border-t p-4 sm:p-6 flex gap-3 shrink-0 ${
+            isDarkMode ? 'border-[#FFFFFF14]' : 'border-gray-200'
+          }`}
+        >
           <button
             onClick={onClose}
-            className='flex-1 bg-white/5 hover:bg-white/10 text-white py-2.5 sm:py-3 rounded-lg font-semibold transition-colors border border-[#FFFFFF14] text-sm sm:text-base'
+            className={`flex-1 py-2.5 sm:py-3 rounded-lg font-semibold transition-colors border text-sm sm:text-base ${
+              isDarkMode
+                ? 'bg-white/5 hover:bg-white/10 text-white border-[#FFFFFF14]'
+                : 'bg-gray-100 hover:bg-gray-200 text-gray-900 border-gray-300'
+            }`}
           >
             Cancel
           </button>
@@ -985,7 +1171,9 @@ function AppraisalModal({
               ${
                 selectedType
                   ? 'bg-[#F1CB68] hover:bg-[#BF9B30] text-[#101014]'
-                  : 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                  : isDarkMode
+                  ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                  : 'bg-gray-300 text-gray-500 cursor-not-allowed'
               }
             `}
           >

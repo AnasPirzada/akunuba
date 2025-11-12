@@ -36,7 +36,7 @@ export default function SettingsPage() {
         >
           Settings
         </h1>
-        <p className='text-gray-400'>
+        <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
           {activeTab === 'profile' && 'Manage your account preferences'}
           {activeTab === 'linked' &&
             'Connect external platforms to manage your assets, payments, or identity.'}
@@ -109,7 +109,9 @@ function ProfileSettings({
         </h2>
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>
           <div>
-            <label className='block text-gray-400 text-sm mb-2'>
+            <label className={`block text-sm mb-2 ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>
               Full Name
             </label>
             <input
@@ -123,7 +125,9 @@ function ProfileSettings({
             />
           </div>
           <div>
-            <label className='block text-gray-400 text-sm mb-2'>Email</label>
+            <label className={`block text-sm mb-2 ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>Email</label>
             <input
               type='email'
               defaultValue='john.doe@email.com'
@@ -135,7 +139,9 @@ function ProfileSettings({
             />
           </div>
           <div>
-            <label className='block text-gray-400 text-sm mb-2'>Phone</label>
+            <label className={`block text-sm mb-2 ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>Phone</label>
             <input
               type='tel'
               defaultValue='+1 (555) 123-4567'
@@ -147,7 +153,9 @@ function ProfileSettings({
             />
           </div>
           <div>
-            <label className='block text-gray-400 text-sm mb-2'>Country</label>
+            <label className={`block text-sm mb-2 ${
+              isDarkMode ? 'text-gray-400' : 'text-gray-600'
+            }`}>Country</label>
             <select
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#F1CB68] ${
                 isDarkMode
@@ -310,7 +318,9 @@ function ProfileSettings({
         }`}
       >
         <h2 className='text-lg font-semibold text-red-400 mb-2'>Danger Zone</h2>
-        <p className='text-gray-400 text-sm mb-4'>
+        <p className={`text-sm mb-4 ${
+          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+        }`}>
           These actions cannot be undone
         </p>
         <div className='flex flex-col sm:flex-row gap-3'>
@@ -412,7 +422,11 @@ function ServiceCard({ service, isDarkMode }) {
         </div>
 
         {/* Link Icon */}
-        <button className='text-gray-400 hover:text-gray-300 shrink-0'>
+        <button className={`shrink-0 transition-colors ${
+          isDarkMode 
+            ? 'text-gray-400 hover:text-gray-300' 
+            : 'text-gray-500 hover:text-gray-700'
+        }`}>
           <svg
             width='20'
             height='20'
@@ -436,17 +450,23 @@ function ServiceCard({ service, isDarkMode }) {
 
       {/* Date/Status Info */}
       {service.linkedDate && (
-        <p className='text-gray-400 ms-16 text-sm mb-4'>
+        <p className={`ms-16 text-sm mb-4 ${
+          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+        }`}>
           Linked on {service.linkedDate}
         </p>
       )}
       {service.status === 'pending' && (
-        <p className='text-gray-400 ms-16 text-sm mb-4'>
+        <p className={`ms-16 text-sm mb-4 ${
+          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+        }`}>
           Linking in progress...
         </p>
       )}
       {service.status === 'error' && (
-        <p className='text-gray-400 ms-16 text-sm mb-4'>Failed to link...</p>
+        <p className={`ms-16 text-sm mb-4 ${
+          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+        }`}>Failed to link...</p>
       )}
 
       {/* Action Buttons */}
@@ -509,7 +529,9 @@ function ToggleRow({ label, description, checked, onChange, isDarkMode }) {
         >
           {label}
         </p>
-        <p className='text-gray-400 text-sm'>{description}</p>
+        <p className={`text-sm ${
+          isDarkMode ? 'text-gray-400' : 'text-gray-600'
+        }`}>{description}</p>
       </div>
       <button
         onClick={onChange}

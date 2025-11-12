@@ -1,8 +1,10 @@
 'use client';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import GlassCard from '@/components/ui/GlassCard';
+import { useTheme } from '@/context/ThemeContext';
 
 export default function TransactionsPage() {
+  const { isDarkMode } = useTheme();
   const transactions = [
     { id: 1, type: 'buy', name: 'Tesla Inc.', amount: '+$2,450.00', date: 'Nov 1, 2024', time: '10:30 AM', status: 'completed' },
     { id: 2, type: 'sell', name: 'Apple Inc.', amount: '-$1,230.50', date: 'Oct 31, 2024', time: '3:45 PM', status: 'completed' },
@@ -15,10 +17,14 @@ export default function TransactionsPage() {
   return (
     <DashboardLayout>
       <div className='mb-8'>
-        <h1 className='text-2xl md:text-3xl font-bold text-white mb-2'>
+        <h1 className={`text-2xl md:text-3xl font-bold mb-2 ${
+          isDarkMode ? 'text-white' : 'text-gray-900'
+        }`}>
           Transactions
         </h1>
-        <p className='text-gray-400'>View your complete transaction history</p>
+        <p className={isDarkMode ? 'text-gray-400' : 'text-gray-600'}>
+          View your complete transaction history
+        </p>
       </div>
 
       <GlassCard className='p-6'>
@@ -26,12 +32,24 @@ export default function TransactionsPage() {
           <table className='w-full'>
             <thead>
               <tr className='border-b border-fullego-border'>
-                <th className='text-left text-gray-400 text-sm font-medium pb-4'>Type</th>
-                <th className='text-left text-gray-400 text-sm font-medium pb-4'>Asset</th>
-                <th className='text-left text-gray-400 text-sm font-medium pb-4'>Amount</th>
-                <th className='text-left text-gray-400 text-sm font-medium pb-4'>Date</th>
-                <th className='text-left text-gray-400 text-sm font-medium pb-4'>Time</th>
-                <th className='text-left text-gray-400 text-sm font-medium pb-4'>Status</th>
+                <th className={`text-left text-sm font-medium pb-4 ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}>Type</th>
+                <th className={`text-left text-sm font-medium pb-4 ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}>Asset</th>
+                <th className={`text-left text-sm font-medium pb-4 ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}>Amount</th>
+                <th className={`text-left text-sm font-medium pb-4 ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}>Date</th>
+                <th className={`text-left text-sm font-medium pb-4 ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}>Time</th>
+                <th className={`text-left text-sm font-medium pb-4 ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}>Status</th>
               </tr>
             </thead>
             <tbody>
@@ -46,14 +64,20 @@ export default function TransactionsPage() {
                       {transaction.type === 'buy' ? 'Buy' : 'Sell'}
                     </span>
                   </td>
-                  <td className='py-4 text-white font-medium'>{transaction.name}</td>
+                  <td className={`py-4 font-medium ${
+                    isDarkMode ? 'text-white' : 'text-gray-900'
+                  }`}>{transaction.name}</td>
                   <td className={`py-4 font-medium ${
                     transaction.type === 'buy' ? 'text-green-400' : 'text-red-400'
                   }`}>
                     {transaction.amount}
                   </td>
-                  <td className='py-4 text-gray-300'>{transaction.date}</td>
-                  <td className='py-4 text-gray-300'>{transaction.time}</td>
+                  <td className={`py-4 ${
+                    isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                  }`}>{transaction.date}</td>
+                  <td className={`py-4 ${
+                    isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                  }`}>{transaction.time}</td>
                   <td className='py-4'>
                     <span className={`px-3 py-1 rounded-full text-xs font-medium ${
                       transaction.status === 'completed' 

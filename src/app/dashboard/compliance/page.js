@@ -195,7 +195,9 @@ export default function CompliancePage() {
               <p className={`text-xs md:text-sm mb-4 ${card.changeColor}`}>
                 {card.change}
               </p>
-              <div className='w-full h-1 bg-white/10 rounded-full overflow-hidden'>
+              <div className={`w-full h-1 rounded-full overflow-hidden ${
+                isDarkMode ? 'bg-white/10' : 'bg-gray-200'
+              }`}>
                 <div
                   className='h-full bg-[#F1CB68] transition-all'
                   style={{ width: `${card.progress}%` }}

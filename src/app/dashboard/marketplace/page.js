@@ -1393,7 +1393,9 @@ function HeroSection({ isDarkMode }) {
 
       {/* Content */}
       <div className='relative h-full flex flex-col items-start justify-center px-4 z-10'>
-        <h1 className='text-2xl md:text-3xl font-bold text-white text-center mb-2'>
+        <h1 className={`text-2xl md:text-3xl font-bold text-center mb-2 ${
+          isDarkMode ? 'text-white' : 'text-gray-900'
+        }`}>
           {slides[currentSlide].title}
         </h1>
 
@@ -1408,8 +1410,10 @@ function HeroSection({ isDarkMode }) {
 
         <div className='flex gap-3'>
           <button
-            className={`px-4 py-1.5 text-sm rounded-full border-2 text-white font-medium transition-all hover:bg-white hover:text-gray-900 ${
-              isDarkMode ? 'border-white' : 'border-white'
+            className={`px-4 py-1.5 text-sm rounded-full border-2 font-medium transition-all ${
+              isDarkMode
+                ? 'text-white border-white hover:bg-white hover:text-gray-900'
+                : 'text-gray-900 border-gray-900 hover:bg-gray-900 hover:text-white'
             }`}
           >
             Explore Now
@@ -1445,7 +1449,11 @@ function HeroSection({ isDarkMode }) {
       <div className='absolute bottom-4 right-4 flex gap-2 z-20'>
         <button
           onClick={prevSlide}
-          className='w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/50 transition-all'
+          className={`w-10 h-10 rounded-full backdrop-blur-sm flex items-center justify-center transition-all ${
+            isDarkMode
+              ? 'bg-black/30 text-white hover:bg-black/50'
+              : 'bg-white/80 text-gray-900 hover:bg-white'
+          }`}
         >
           <svg
             width='20'
@@ -1459,7 +1467,11 @@ function HeroSection({ isDarkMode }) {
         </button>
         <button
           onClick={nextSlide}
-          className='w-10 h-10 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center text-white hover:bg-black/50 transition-all'
+          className={`w-10 h-10 rounded-full backdrop-blur-sm flex items-center justify-center transition-all ${
+            isDarkMode
+              ? 'bg-black/30 text-white hover:bg-black/50'
+              : 'bg-white/80 text-gray-900 hover:bg-white'
+          }`}
         >
           <svg
             width='20'
