@@ -31,12 +31,12 @@ export default function NewTicketModal({ isOpen, setIsOpen }) {
   return (
     <div
       onClick={() => setIsOpen(false)}
-      className='bg-black/60 backdrop-blur-sm p-2 md:p-4 lg:p-6 fixed inset-0 z-50 grid place-items-center overflow-y-auto cursor-pointer'
+      className='bg-black/60 backdrop-blur-sm p-2 sm:p-4 fixed inset-0 z-50 flex items-center justify-center overflow-y-auto cursor-pointer'
       style={{ animation: 'fadeIn 0.2s ease-out' }}
     >
       <div
         onClick={e => e.stopPropagation()}
-        className='w-full max-w-2xl cursor-default relative overflow-hidden rounded-2xl'
+        className='w-full max-w-2xl cursor-default relative overflow-hidden rounded-2xl my-auto max-h-[95vh] sm:max-h-[90vh] flex flex-col'
         style={{
           background:
             'linear-gradient(135deg, rgba(30, 30, 35, 0.98) 0%, rgba(20, 20, 25, 0.98) 100%)',
@@ -45,7 +45,7 @@ export default function NewTicketModal({ isOpen, setIsOpen }) {
         }}
       >
         {/* Header */}
-        <div className='flex items-center justify-between p-4 md:p-6 border-b border-white/10'>
+        <div className='flex items-center justify-between p-4 md:p-6 border-b border-white/10 shrink-0'>
           <h2 className='text-lg md:text-2xl font-bold text-white'>
             Create New Ticket
           </h2>
@@ -64,7 +64,7 @@ export default function NewTicketModal({ isOpen, setIsOpen }) {
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className='p-4 md:p-6 space-y-4 md:space-y-6'>
+        <form id='ticket-form' onSubmit={handleSubmit} className='p-4 md:p-6 space-y-4 md:space-y-6 overflow-y-auto flex-1 ticket-modal-scrollbar'>
           {/* Subject */}
           <div>
             <label className='block text-white text-sm font-medium mb-2'>
@@ -95,13 +95,7 @@ export default function NewTicketModal({ isOpen, setIsOpen }) {
                 onChange={e =>
                   setFormData({ ...formData, category: e.target.value })
                 }
-                className='w-full px-4 py-3 rounded-lg bg-transparent border border-white/10 text-white focus:outline-none focus:border-[#F1CB68] transition-colors cursor-pointer'
-                style={{
-                  backgroundImage: 'url(/icons/chevron-down.svg)',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 1rem center',
-                  backgroundSize: '16px',
-                }}
+                className='w-full'
               >
                 <option value='' className='bg-[#1a1a1d]'>
                   Select category
@@ -135,13 +129,7 @@ export default function NewTicketModal({ isOpen, setIsOpen }) {
                 onChange={e =>
                   setFormData({ ...formData, priority: e.target.value })
                 }
-                className='w-full px-4 py-3 rounded-lg bg-transparent border border-white/10 text-white focus:outline-none focus:border-[#F1CB68] transition-colors cursor-pointer'
-                style={{
-                  backgroundImage: 'url(/icons/chevron-down.svg)',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundPosition: 'right 1rem center',
-                  backgroundSize: '16px',
-                }}
+                className='w-full'
               >
                 <option value='' className='bg-[#1a1a1d]'>
                   Select priority
@@ -208,43 +196,48 @@ export default function NewTicketModal({ isOpen, setIsOpen }) {
               <p className='text-gray-500 text-xs'>PNG, JPG, PDF up to 10MB</p>
             </div>
           </div>
-
-          {/* Buttons */}
-          <div className='flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 pt-4'>
-            <button
-              type='button'
-              onClick={() => setIsOpen(false)}
-              className='px-6 py-2.5 md:py-3 rounded-full text-sm font-medium text-white hover:bg-white/10 transition-colors cursor-pointer order-2 sm:order-1'
-            >
-              Cancel
-            </button>
-            <button
-              type='submit'
-              className='px-8 py-2.5 md:py-3 rounded-full text-sm font-bold transition-all hover:opacity-90 cursor-pointer order-1 sm:order-2'
-              style={{
-                background: 'linear-gradient(90deg, #FFFFFF 0%, #F1CB68 100%)',
-                color: '#000000',
-              }}
-            >
-              Submit Ticket
-            </button>
-          </div>
         </form>
 
-        {/* Custom Scrollbar Styles */}
+        {/* Buttons */}
+        <div className='flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 p-4 md:p-6 border-t border-white/10 shrink-0'>
+          <button
+            type='button'
+            onClick={() => setIsOpen(false)}
+            className='px-6 py-2.5 md:py-3 rounded-full text-sm font-medium text-white hover:bg-white/10 transition-colors cursor-pointer order-2 sm:order-1'
+          >
+            Cancel
+          </button>
+          <button
+            type='submit'
+            form='ticket-form'
+            className='px-8 py-2.5 md:py-3 rounded-full text-sm font-bold transition-all hover:opacity-90 cursor-pointer order-1 sm:order-2'
+            style={{
+              background: 'linear-gradient(90deg, #FFFFFF 0%, #F1CB68 100%)',
+              color: '#000000',
+            }}
+          >
+            Submit Ticket
+          </button>
+        </div>
+
+        {/* Custom Styles and Animations */}
         <style jsx global>{`
-          .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
+          .ticket-modal-scrollbar::-webkit-scrollbar {
+            width: 8px;
           }
-          .custom-scrollbar::-webkit-scrollbar-track {
+          .ticket-modal-scrollbar::-webkit-scrollbar-track {
             background: transparent;
           }
-          .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(241, 203, 104, 0.3);
-            border-radius: 3px;
+          .ticket-modal-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
           }
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: rgba(241, 203, 104, 0.5);
+          .ticket-modal-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.2);
+          }
+          .ticket-modal-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
           }
           @keyframes fadeIn {
             from {

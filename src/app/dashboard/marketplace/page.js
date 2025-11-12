@@ -870,7 +870,7 @@ function ActiveOffersContent({ isDarkMode, router }) {
           }`}
         >
           <div className='overflow-x-auto'>
-            <table className='w-full'>
+            <table className='w-full text-nowrap'>
               <thead>
                 <tr
                   className={`border-b ${

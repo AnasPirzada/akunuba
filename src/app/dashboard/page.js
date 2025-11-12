@@ -450,7 +450,7 @@ function PerformanceAnalyticsCard() {
         </h3>
 
         {/* Right Side Controls */}
-        <div className='flex items-center gap-4'>
+        <div className='flex md:flex-row flex-col md:items-center items-start gap-4'>
           {/* Legend */}
           <div className='flex items-center gap-4'>
             <div className='flex items-center gap-2'>

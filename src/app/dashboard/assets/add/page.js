@@ -450,7 +450,7 @@ export default function AddAssetPage() {
               name={fieldKey}
               value={value}
               onChange={handleChange}
-              className='w-full px-4 py-3 rounded-lg bg-[#2A2A2D] border border-[#FFFFFF14] text-white focus:outline-none focus:border-[#F1CB68] transition-colors appearance-none cursor-pointer'
+              className="w-full"
             >
               {options.length > 0 ? (
                 options.map(option => (

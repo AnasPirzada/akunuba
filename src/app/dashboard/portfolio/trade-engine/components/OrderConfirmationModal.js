@@ -17,8 +17,27 @@ export default function OrderConfirmationModal({
       className='fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto'
       onClick={onClose}
     >
+      <style jsx>{`
+        .order-modal-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .order-modal-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .order-modal-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 4px;
+        }
+        .order-modal-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+        .order-modal-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+      `}</style>
       <div
-        className={`w-full max-w-2xl max-h-[96vh] my-auto rounded-2xl sm:rounded-3xl border shadow-2xl overflow-hidden ${
+        className={`w-full max-w-2xl max-h-[95vh] sm:max-h-[90vh] my-auto rounded-2xl sm:rounded-3xl border shadow-2xl overflow-hidden flex flex-col ${
           isDarkMode ? 'border-[#FFFFFF14]' : 'border-gray-200'
         }`}
         style={
@@ -31,8 +50,9 @@ export default function OrderConfirmationModal({
                 background: 'white',
               }
         }
+        onClick={e => e.stopPropagation()}
       >
-        <div className='p-4 sm:p-6 md:p-8 max-h-[96vh] overflow-y-auto custom-scrollbar'>
+        <div className='p-4 sm:p-6 md:p-8 overflow-y-auto flex-1 order-modal-scrollbar'>
           {/* Success Icon */}
           <div className='flex justify-center mb-4'>
             <div className='w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-[#36D399] flex items-center justify-center'>

@@ -2,16 +2,15 @@
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { useTheme } from '@/context/ThemeContext';
 import { useState } from 'react';
-import
-  {
-    Area,
-    AreaChart,
-    CartesianGrid,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-  } from 'recharts';
+import {
+  Area,
+  AreaChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
 export default function CashFlowPage() {
   const { isDarkMode } = useTheme();
@@ -287,18 +286,14 @@ export default function CashFlowPage() {
                 </button>
                 <button
                   className={`px-4 py-2 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
-                    isDarkMode
-                      ? 'text-gray-400 hover:text-white'
-                      : 'text-black'
+                    isDarkMode ? 'text-gray-400 hover:text-white' : 'text-black'
                   }`}
                 >
                   Weekly
                 </button>
                 <button
                   className={`px-4 py-2 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
-                    isDarkMode
-                      ? 'text-gray-400 hover:text-white'
-                      : 'text-black'
+                    isDarkMode ? 'text-gray-400 hover:text-white' : 'text-black'
                   }`}
                 >
                   Monthly
@@ -511,25 +506,13 @@ export default function CashFlowPage() {
             {/* Filters Row */}
             {showFilters && (
               <div className='mt-4 flex flex-wrap items-center gap-3'>
-                <select
-                  className={`px-4 py-2 rounded-lg text-sm ${
-                    isDarkMode
-                      ? 'bg-[#2C2C2E] text-white border-gray-700'
-                      : 'bg-gray-100 text-gray-900 border-gray-300'
-                  } border focus:outline-none focus:border-[#F1CB68]`}
-                >
+                <select className='text-sm'>
                   <option>Type: All</option>
                   <option>Inflow</option>
                   <option>Outflow</option>
                 </select>
 
-                <select
-                  className={`px-4 py-2 rounded-lg text-sm ${
-                    isDarkMode
-                      ? 'bg-[#2C2C2E] text-white border-gray-700'
-                      : 'bg-gray-100 text-gray-900 border-gray-300'
-                  } border focus:outline-none focus:border-[#F1CB68]`}
-                >
+                <select className='text-sm'>
                   <option>Amount: $10,000</option>
                   <option>$0 - $5,000</option>
                   <option>$5,000 - $10,000</option>
@@ -541,7 +524,7 @@ export default function CashFlowPage() {
 
           {/* Table */}
           <div className='overflow-x-auto'>
-            <table className='w-full'>
+            <table className='w-full text-nowrap'>
               <thead>
                 <tr
                   className={`border-b ${
@@ -1018,11 +1001,7 @@ function TransferModal({
                     onChange={e =>
                       handleInputChange('fromAccount', e.target.value)
                     }
-                    className={`w-full px-4 py-3 rounded-lg border ${
-                      isDarkMode
-                        ? 'bg-[#2C2C2E] border-gray-700 text-white'
-                        : 'bg-white border-gray-300 text-gray-900'
-                    } focus:outline-none focus:border-[#F1CB68]`}
+                    className='w-full'
                   >
                     <option value=''>Select Account</option>
                     <option value='checking'>
@@ -1055,11 +1034,7 @@ function TransferModal({
                       onChange={e =>
                         handleInputChange('toAccount', e.target.value)
                       }
-                      className={`w-full px-4 py-3 rounded-lg border ${
-                        isDarkMode
-                          ? 'bg-[#2C2C2E] border-gray-700 text-white'
-                          : 'bg-white border-gray-300 text-gray-900'
-                      } focus:outline-none focus:border-[#F1CB68]`}
+                      className='w-full'
                     >
                       <option value=''>Select Account</option>
                       <option value='investment'>Wallet - Investment</option>
@@ -1188,11 +1163,7 @@ function TransferModal({
                       onChange={e =>
                         handleInputChange('frequency', e.target.value)
                       }
-                      className={`w-full px-4 py-3 rounded-lg border ${
-                        isDarkMode
-                          ? 'bg-[#2C2C2E] border-gray-700 text-white'
-                          : 'bg-white border-gray-300 text-gray-900'
-                      } focus:outline-none focus:border-[#F1CB68]`}
+                      className='w-full'
                     >
                       <option value='one-time'>One time transfer</option>
                       <option value='daily'>Daily</option>

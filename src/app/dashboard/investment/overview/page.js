@@ -2,8 +2,7 @@
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { useTheme } from '@/context/ThemeContext';
 import Link from 'next/link';
-import { useState } from 'react';
-import { LineChart, Line, ResponsiveContainer } from 'recharts';
+import { Line, LineChart, ResponsiveContainer } from 'recharts';
 
 export default function InvestmentOverviewPage() {
   const { isDarkMode } = useTheme();
@@ -257,10 +256,10 @@ export default function InvestmentOverviewPage() {
                         <td className='px-6 py-4'>
                           <div className='flex items-center gap-3'>
                             <div
-                              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                              className={`w-10 h-7 rounded-full flex items-center justify-center ${
                                 activity.icon === 'bitcoin'
                                   ? isDarkMode
-                                    ? 'bg-orange-500/30'
+                                    ? 'bg-orange-500/30 '
                                     : 'bg-orange-500/20'
                                   : isDarkMode
                                   ? 'bg-blue-500/30'
@@ -491,8 +490,7 @@ function AssetCard({
       style={
         isGradient
           ? {
-              background:
-                'linear-gradient(135deg, #F1CB68 0%, #D4A017 100%)',
+              background: 'linear-gradient(135deg, #F1CB68 0%, #D4A017 100%)',
               border: 'none',
             }
           : {}
@@ -502,7 +500,11 @@ function AssetCard({
         <div>
           <span
             className={`text-4xl font-bold mb-2 block ${
-              isGradient ? 'text-white' : isDarkMode ? 'text-white' : 'text-gray-900'
+              isGradient
+                ? 'text-white'
+                : isDarkMode
+                ? 'text-white'
+                : 'text-gray-900'
             }`}
           >
             ${value}
@@ -728,10 +730,7 @@ function TraderProfileSidebar({ profile, isDarkMode }) {
         </h3>
         <div className='space-y-2'>
           {profile.assets.map((asset, index) => (
-            <div
-              key={index}
-              className='flex justify-between items-center'
-            >
+            <div key={index} className='flex justify-between items-center'>
               <span
                 className={`text-xs ${
                   isDarkMode ? 'text-gray-300' : 'text-gray-700'
@@ -773,4 +772,3 @@ function TraderProfileSidebar({ profile, isDarkMode }) {
     </div>
   );
 }
-

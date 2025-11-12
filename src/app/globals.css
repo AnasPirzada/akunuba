@@ -75,3 +75,86 @@ textarea {
   scrollbar-width: thin;
   scrollbar-color: rgba(241, 203, 104, 0.3) rgba(255, 255, 255, 0.05);
 }
+
+/* Global Select/Dropdown Styling */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23F1CB68' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  padding-right: 2.5rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* Mobile responsive select */
+@media (max-width: 640px) {
+  select {
+    padding: 0.625rem 2.25rem 0.625rem 0.875rem;
+    background-size: 0.875rem;
+    background-position: right 0.625rem center;
+    font-size: 0.8125rem;
+  }
+}
+
+/* Dark mode select styling - applied when html has .dark class */
+html.dark select {
+  background-color: rgba(42, 42, 45, 1) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #ffffff !important;
+}
+
+html.dark select:hover {
+  border-color: rgba(241, 203, 104, 0.5) !important;
+}
+
+html.dark select:focus {
+  outline: none !important;
+  border-color: #F1CB68 !important;
+  box-shadow: 0 0 0 3px rgba(241, 203, 104, 0.1) !important;
+}
+
+html.dark select option {
+  background-color: #1a1a1d !important;
+  color: #ffffff !important;
+}
+
+/* Light mode select styling (default) */
+html:not(.dark) select,
+html.light select {
+  background-color: #ffffff !important;
+  border-color: rgba(0, 0, 0, 0.1) !important;
+  color: #1a1a1d !important;
+}
+
+html:not(.dark) select:hover,
+html.light select:hover {
+  border-color: rgba(241, 203, 104, 0.5) !important;
+}
+
+html:not(.dark) select:focus,
+html.light select:focus {
+  outline: none !important;
+  border-color: #F1CB68 !important;
+  box-shadow: 0 0 0 3px rgba(241, 203, 104, 0.1) !important;
+}
+
+html:not(.dark) select option,
+html.light select option {
+  background-color: #ffffff !important;
+  color: #1a1a1d !important;
+}
+
+/* Disabled select state */
+select:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+}

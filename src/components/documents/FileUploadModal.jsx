@@ -69,7 +69,7 @@ const FileUploadModal = ({ isOpen, setIsOpen, onPreview }) => {
     <Modal isOpen={isOpen} setIsOpen={setIsOpen} maxWidth='max-w-2xl'>
       {/* Header */}
       <div
-        className='flex justify-between items-center px-4 md:px-6 py-3 md:py-4'
+        className='flex justify-between items-center px-4 md:px-6 py-3 md:py-4 shrink-0'
         style={{
           borderBottom: isDarkMode
             ? '1px solid rgba(241, 203, 104, 0.2)'
@@ -102,28 +102,7 @@ const FileUploadModal = ({ isOpen, setIsOpen, onPreview }) => {
       </div>
 
       {/* Content */}
-      <div
-        className='px-4 md:px-6 py-4 md:py-6 max-h-[calc(100vh-150px)] md:max-h-[calc(90vh-150px)] lg:max-h-[700px] overflow-y-auto custom-modal-scroll'
-        style={{
-          scrollbarWidth: 'thin',
-          scrollbarColor: 'transparent transparent',
-        }}
-      >
-        <style jsx>{`
-          .custom-modal-scroll::-webkit-scrollbar {
-            width: 6px;
-          }
-          .custom-modal-scroll::-webkit-scrollbar-track {
-            background: transparent;
-          }
-          .custom-modal-scroll::-webkit-scrollbar-thumb {
-            background: rgba(241, 203, 104, 0.3);
-            border-radius: 3px;
-          }
-          .custom-modal-scroll::-webkit-scrollbar-thumb:hover {
-            background: rgba(241, 203, 104, 0.5);
-          }
-        `}</style>
+      <div className='px-4 md:px-6 py-4 md:py-6 overflow-y-auto flex-1 modal-transparent-scrollbar'>
         {/* Upload Area */}
         <div
           onDragOver={handleDragOver}

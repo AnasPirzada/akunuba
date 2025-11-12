@@ -159,7 +159,7 @@ export default function GoalsTrackerPage() {
 
         {/* Marketplace Section */}
         <div>
-          <div className='flex items-center justify-between mb-6'>
+          <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6'>
             <h2
               className={`text-lg font-bold ${
                 isDarkMode ? 'text-white' : 'text-gray-900'
@@ -167,11 +167,11 @@ export default function GoalsTrackerPage() {
             >
               Marketplace
             </h2>
-            <div className='relative'>
+            <div className='relative w-full sm:w-auto'>
               <input
                 type='text'
                 placeholder='Search all assets'
-                className={`pl-10 pr-4 py-2 rounded-lg text-sm border ${
+                className={`w-full sm:w-auto pl-10 pr-4 py-2 rounded-lg text-sm border ${
                   isDarkMode
                     ? 'bg-[#2C2C2E] border-[#FFFFFF14] text-white placeholder-gray-500'
                     : 'bg-white border-gray-300 text-gray-900 placeholder-gray-400'
@@ -291,17 +291,17 @@ function MarketplaceAssetCard({ asset, isDarkMode }) {
 
   return (
     <div
-      className={`rounded-xl p-6 border ${
+      className={`rounded-xl p-4 sm:p-6 border ${
         isDarkMode
           ? 'bg-[#1C1C1E] border-[#FFFFFF14]'
           : 'bg-white border-gray-200'
       }`}
     >
-      <div className='flex items-center justify-between'>
-        <div className='flex items-center gap-4 flex-1'>
+      <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4'>
+        <div className='flex items-center gap-3 sm:gap-4 flex-1 w-full sm:w-auto'>
           {/* Index */}
           <span
-            className={`text-sm font-medium w-8 ${
+            className={`text-xs sm:text-sm font-medium w-6 sm:w-8 shrink-0 ${
               isDarkMode ? 'text-gray-400' : 'text-gray-600'
             }`}
           >
@@ -310,46 +310,46 @@ function MarketplaceAssetCard({ asset, isDarkMode }) {
 
           {/* Logo */}
           <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center font-bold ${asset.iconColor}`}
+            className={`w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-bold shrink-0 ${asset.iconColor}`}
           >
             {asset.icon === 'XRP' ? (
               <div className='flex items-center gap-1'>
-                <div className='w-2 h-2 rounded-full bg-blue-500' />
-                <div className='w-2 h-2 rounded-full bg-blue-500' />
-                <div className='w-2 h-2 rounded-full bg-blue-500' />
+                <div className='w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-500' />
+                <div className='w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-500' />
+                <div className='w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-blue-500' />
               </div>
             ) : (
-              <span className='text-lg'>{asset.icon}</span>
+              <span className='text-base sm:text-lg'>{asset.icon}</span>
             )}
           </div>
 
           {/* Asset Info */}
-          <div className='flex-1'>
-            <div className='flex items-center gap-2 mb-1'>
+          <div className='flex-1 min-w-0'>
+            <div className='flex items-center gap-2 mb-1 sm:mb-1'>
               <p
-                className={`text-base font-semibold ${
+                className={`text-sm sm:text-base font-semibold truncate ${
                   isDarkMode ? 'text-white' : 'text-gray-900'
                 }`}
               >
                 {asset.name}
               </p>
               <span
-                className={`text-xs ${
+                className={`text-xs shrink-0 ${
                   isDarkMode ? 'text-gray-400' : 'text-gray-600'
                 }`}
               >
                 {asset.symbol}
               </span>
             </div>
-            <div className='flex items-center gap-4'>
+            <div className='flex flex-wrap items-center gap-2 sm:gap-4'>
               <p
-                className={`text-sm font-medium ${
+                className={`text-xs sm:text-sm font-medium ${
                   isDarkMode ? 'text-white' : 'text-gray-900'
                 }`}
               >
                 {asset.price}
               </p>
-              <div className='w-16 h-8'>
+              <div className='w-12 h-6 sm:w-16 sm:h-8 shrink-0'>
                 <ResponsiveContainer width='100%' height='100%'>
                   <LineChart data={asset.chartData.map(v => ({ value: v }))}>
                     <Line
@@ -363,7 +363,7 @@ function MarketplaceAssetCard({ asset, isDarkMode }) {
                 </ResponsiveContainer>
               </div>
               <p
-                className={`text-sm font-medium ${
+                className={`text-xs sm:text-sm font-medium shrink-0 ${
                   asset.changeType === 'positive'
                     ? 'text-green-500'
                     : 'text-red-500'
@@ -372,7 +372,7 @@ function MarketplaceAssetCard({ asset, isDarkMode }) {
                 {asset.change}
               </p>
               <p
-                className={`text-sm ${
+                className={`text-xs sm:text-sm shrink-0 ${
                   isDarkMode ? 'text-white' : 'text-gray-900'
                 }`}
               >
@@ -383,9 +383,9 @@ function MarketplaceAssetCard({ asset, isDarkMode }) {
         </div>
 
         {/* Actions */}
-        <div className='flex items-center gap-3'>
+        <div className='flex items-center gap-2 sm:gap-3 w-full sm:w-auto'>
           <button
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+            className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
               asset.hasSell
                 ? isDarkMode
                   ? 'bg-[#F1CB68] text-black hover:bg-[#F1CB68]/90'
@@ -399,7 +399,7 @@ function MarketplaceAssetCard({ asset, isDarkMode }) {
           </button>
           {asset.hasSell ? (
             <button
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium transition-all whitespace-nowrap ${
                 isDarkMode
                   ? 'bg-[#2C2C2E] text-white hover:bg-[#3C3C3E]'
                   : 'bg-gray-800 text-white hover:bg-gray-900'
@@ -410,23 +410,25 @@ function MarketplaceAssetCard({ asset, isDarkMode }) {
           ) : (
             <button
               onClick={() => setIsSaved(!isSaved)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium border transition-all flex items-center gap-2 ${
+              className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-medium border transition-all flex items-center justify-center gap-1.5 sm:gap-2 ${
                 isDarkMode
                   ? 'border-[#FFFFFF14] hover:bg-white/5 text-gray-300'
                   : 'border-gray-300 hover:bg-gray-100 text-gray-700'
               }`}
             >
               <svg
-                width='16'
-                height='16'
+                width='14'
+                height='14'
                 viewBox='0 0 24 24'
                 fill={isSaved ? '#F1CB68' : 'none'}
                 stroke={isSaved ? '#F1CB68' : 'currentColor'}
                 strokeWidth='2'
+                className='shrink-0'
               >
                 <path d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z' />
               </svg>
-              Save to watchlist
+              <span className='hidden sm:inline'>Save to watchlist</span>
+              <span className='sm:hidden'>Save</span>
             </button>
           )}
         </div>

@@ -2,18 +2,17 @@
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { useTheme } from '@/context/ThemeContext';
 import { useState } from 'react';
-import
-  {
-    Area,
-    AreaChart,
-    Bar,
-    BarChart,
-    CartesianGrid,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis,
-  } from 'recharts';
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 
 export default function CryptoPortfolioPage() {
   const { isDarkMode } = useTheme();
@@ -680,7 +679,7 @@ export default function CryptoPortfolioPage() {
                       : isDarkMode
                       ? {
                           background: 'transparent',
-                          color: '#313035',
+                          color: '#FFFFFF',
                         }
                       : {
                           background: 'transparent',
@@ -716,7 +715,7 @@ export default function CryptoPortfolioPage() {
                       : isDarkMode
                       ? {
                           background: 'transparent',
-                          color: '#313035',
+                          color: '#FFFFFF',
                         }
                       : {
                           background: 'transparent',
@@ -1104,7 +1103,7 @@ function TabButton({ active, onClick, children, isDarkMode }) {
     return (
       <button
         onClick={onClick}
-        className={`px-4 py-2 text-xs font-medium rounded-full transition-all whitespace-nowrap ${
+        className={`px-4 py-2 text-xs  font-medium rounded-full transition-all whitespace-nowrap ${
           isDarkMode ? 'bg-[#313035] text-white' : 'bg-[#F1CB68] text-black'
         }`}
       >
@@ -1122,7 +1121,7 @@ function TabButton({ active, onClick, children, isDarkMode }) {
       style={
         isDarkMode
           ? {
-              color: '#313035',
+              color: '#F',
             }
           : {
               color: '#000',

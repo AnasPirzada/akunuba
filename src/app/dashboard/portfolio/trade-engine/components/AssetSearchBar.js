@@ -36,11 +36,7 @@ export default function AssetSearchBar({
           <select
             value={assetClass}
             onChange={e => setAssetClass(e.target.value)}
-            className={`w-full px-2 py-3 rounded-full border ${
-              isDarkMode
-                ? 'bg-[#101014] border-[#FFFFFF14] text-white'
-                : 'bg-white border-gray-300 text-gray-900'
-            } focus:outline-none focus:border-[#F1CB68]`}
+            className="w-full rounded-full"
           >
             <option value='stocks'>Stocks</option>
             <option value='crypto'>Crypto</option>

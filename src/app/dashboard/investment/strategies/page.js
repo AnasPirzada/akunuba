@@ -81,18 +81,19 @@ export default function StrategiesPage() {
             </div>
 
             {/* Action Buttons */}
-            <div className='flex items-center gap-3'>
+            <div className='flex items-center gap-2 sm:gap-3 flex-wrap'>
               {/* Add Strategy Button */}
               <button
-                className={`w-10 h-10 rounded-lg border-2 flex items-center justify-center transition-all ${
+                className={`w-9 h-9 sm:w-10 sm:h-10 rounded-lg border-2 flex items-center justify-center transition-all shrink-0 ${
                   isDarkMode
                     ? 'border-[#F1CB68] hover:bg-[#F1CB68]/10'
                     : 'border-[#F1CB68] hover:bg-[#F1CB68]/10'
                 }`}
               >
                 <svg
-                  width='20'
-                  height='20'
+                  width='18'
+                  height='18'
+                  className='sm:w-5 sm:h-5'
                   viewBox='0 0 24 24'
                   fill='none'
                   stroke={isDarkMode ? '#F1CB68' : '#F1CB68'}
@@ -105,17 +106,23 @@ export default function StrategiesPage() {
               {/* Strategies Filter Dropdown */}
               <div className='relative'>
                 <button
-                  onClick={() => setStrategiesFilter(strategiesFilter === 'all' ? 'my' : 'all')}
-                  className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all flex items-center gap-2 ${
+                  onClick={() =>
+                    setStrategiesFilter(
+                      strategiesFilter === 'all' ? 'my' : 'all'
+                    )
+                  }
+                  className={`px-3 sm:px-4 py-2 rounded-lg border-2 text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${
                     isDarkMode
                       ? 'border-[#F1CB68] text-black bg-[#F1CB68] hover:bg-[#F1CB68]/90'
                       : 'border-[#F1CB68] text-black bg-[#F1CB68] hover:bg-[#F1CB68]/90'
                   }`}
                 >
-                  Strategies
+                  <span className='hidden sm:inline'>Strategies</span>
+                  <span className='sm:hidden'>All</span>
                   <svg
-                    width='16'
-                    height='16'
+                    width='14'
+                    height='14'
+                    className='sm:w-4 sm:h-4'
                     viewBox='0 0 24 24'
                     fill='none'
                     stroke='currentColor'
@@ -129,7 +136,7 @@ export default function StrategiesPage() {
               {/* Open-source Only Toggle */}
               <button
                 onClick={() => setOpenSourceOnly(!openSourceOnly)}
-                className={`px-4 py-2 rounded-lg border-2 text-sm font-medium transition-all flex items-center gap-2 ${
+                className={`px-3 sm:px-4 py-2 rounded-lg border-2 text-xs sm:text-sm font-medium transition-all flex items-center gap-1.5 sm:gap-2 whitespace-nowrap ${
                   openSourceOnly
                     ? isDarkMode
                       ? 'border-[#F1CB68] text-black bg-[#F1CB68]'
@@ -140,8 +147,9 @@ export default function StrategiesPage() {
                 }`}
               >
                 <svg
-                  width='16'
-                  height='16'
+                  width='14'
+                  height='14'
+                  className='sm:w-4 sm:h-4 shrink-0'
                   viewBox='0 0 24 24'
                   fill='none'
                   stroke='currentColor'
@@ -150,7 +158,8 @@ export default function StrategiesPage() {
                   <rect x='3' y='11' width='18' height='11' rx='2' ry='2' />
                   <path d='M7 11V7a5 5 0 0110 0v4' />
                 </svg>
-                Open-source only
+                <span className='hidden sm:inline'>Open-source only</span>
+                <span className='sm:hidden'>Open</span>
               </button>
             </div>
           </div>
@@ -197,8 +206,12 @@ function StrategyCard({ strategy, isDarkMode }) {
             className='absolute inset-0'
           >
             {/* Chart Background */}
-            <rect width='400' height='200' fill={isDarkMode ? '#0A0A0A' : '#FFFFFF'} />
-            
+            <rect
+              width='400'
+              height='200'
+              fill={isDarkMode ? '#0A0A0A' : '#FFFFFF'}
+            />
+
             {/* Sample Chart Lines */}
             {strategy.chartType === 'candlestick' ? (
               <>

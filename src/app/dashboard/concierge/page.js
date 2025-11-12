@@ -685,33 +685,55 @@ function AppraisalDetailModal({
   ];
 
   return (
-    <div className='fixed inset-0 z-50 flex items-center justify-center p-4'>
-      {/* Overlay */}
+    <>
+      <style jsx>{`
+        .concierge-modal-scrollbar::-webkit-scrollbar {
+          width: 8px;
+        }
+        .concierge-modal-scrollbar::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .concierge-modal-scrollbar::-webkit-scrollbar-thumb {
+          background: rgba(255, 255, 255, 0.1);
+          border-radius: 4px;
+        }
+        .concierge-modal-scrollbar::-webkit-scrollbar-thumb:hover {
+          background: rgba(255, 255, 255, 0.2);
+        }
+        .concierge-modal-scrollbar {
+          scrollbar-width: thin;
+          scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+      `}</style>
       <div
-        className='absolute inset-0 bg-black/50'
+        className='fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-sm overflow-y-auto'
         onClick={onClose}
-      />
-
-      {/* Modal */}
-      <div
-        className={`relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-2xl border ${
-          isDarkMode
-            ? 'bg-[#1A1A1D] border-[#FFFFFF14]'
-            : 'bg-white border-gray-200'
-        }`}
       >
-        {/* Header */}
-        <div className='sticky top-0 z-10 flex items-center justify-between p-6 border-b border-[#FFFFFF14]'>
-          <div>
+        {/* Modal */}
+        <div
+          className={`relative w-full max-w-4xl max-h-[95vh] sm:max-h-[90vh] my-auto rounded-2xl border flex flex-col ${
+            isDarkMode
+              ? 'bg-[#1A1A1D] border-[#FFFFFF14]'
+              : 'bg-white border-gray-200'
+          }`}
+          onClick={e => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div
+            className={`flex items-center justify-between p-4 sm:p-6 border-b shrink-0 ${
+              isDarkMode ? 'border-[#FFFFFF14]' : 'border-gray-200'
+            }`}
+          >
+          <div className='flex-1 min-w-0'>
             <h2
-              className={`text-xl font-semibold mb-1 ${
+              className={`text-lg sm:text-xl font-semibold mb-1 truncate ${
                 isDarkMode ? 'text-white' : 'text-gray-900'
               }`}
             >
               {appraisal.assetName}
             </h2>
             <p
-              className={`text-sm ${
+              className={`text-xs sm:text-sm ${
                 isDarkMode ? 'text-gray-400' : 'text-gray-600'
               }`}
             >
@@ -720,15 +742,16 @@ function AppraisalDetailModal({
           </div>
           <button
             onClick={onClose}
-            className={`p-2 rounded-lg transition-all ${
+            className={`p-2 rounded-lg transition-all shrink-0 ${
               isDarkMode
                 ? 'hover:bg-white/10 text-gray-400'
                 : 'hover:bg-gray-100 text-gray-600'
             }`}
           >
             <svg
-              width='24'
-              height='24'
+              width='20'
+              height='20'
+              className='sm:w-6 sm:h-6'
               viewBox='0 0 24 24'
               fill='none'
               stroke='currentColor'
@@ -740,7 +763,7 @@ function AppraisalDetailModal({
         </div>
 
         {/* Content */}
-        <div className='p-6 space-y-6'>
+        <div className='p-4 sm:p-6 space-y-6 overflow-y-auto flex-1 concierge-modal-scrollbar'>
           {/* Asset Info */}
           <div className='flex items-start gap-4'>
             <img
@@ -1006,7 +1029,7 @@ function AppraisalDetailModal({
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 

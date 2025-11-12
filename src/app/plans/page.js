@@ -1,7 +1,7 @@
 'use client';
 
-import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
+import Navbar from '@/components/layout/Navbar';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 
@@ -55,7 +55,8 @@ const plans = [
     name: 'Concierge',
     monthlyCost: 'Custom ($1,000+/mo)',
     annualCost: 'Custom ($10,000+/yr)',
-    idealUser: 'High-net-worth individuals, family offices, institutional clients',
+    idealUser:
+      'High-net-worth individuals, family offices, institutional clients',
     features: [
       'All Premium features + bespoke wealth strategy design',
       'Private Marketplace access to exclusive deals & off-market assets',
@@ -73,14 +74,14 @@ export default function Plans() {
   const [billingCycle, setBillingCycle] = useState('monthly'); // 'monthly' or 'annual'
 
   return (
-    <div className="min-h-screen bg-[#0B0D12] text-brand-white relative overflow-hidden">
+    <div className='min-h-screen bg-[#0B0D12] text-brand-white relative overflow-hidden'>
       <Navbar />
-      
+
       {/* Background Grid Lines with Creative Angles */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className='absolute inset-0 overflow-hidden pointer-events-none'>
         {/* Center Grid Shape with Glow - Main */}
         <div
-          className="absolute"
+          className='absolute'
           style={{
             width: '546px',
             height: '506px',
@@ -90,7 +91,7 @@ export default function Plans() {
         >
           {/* Blurred Yellow Ellipse */}
           <div
-            className="absolute"
+            className='absolute'
             style={{
               width: '181px',
               height: '181px',
@@ -104,7 +105,7 @@ export default function Plans() {
 
           {/* Grid Lines Container */}
           <div
-            className="absolute"
+            className='absolute'
             style={{
               width: '546px',
               height: '546px',
@@ -114,7 +115,7 @@ export default function Plans() {
           >
             {/* Vertical Lines */}
             <div
-              className="absolute bg-white/10"
+              className='absolute bg-white/10'
               style={{
                 width: '546px',
                 height: '1px',
@@ -125,7 +126,7 @@ export default function Plans() {
               }}
             />
             <div
-              className="absolute bg-white/10"
+              className='absolute bg-white/10'
               style={{
                 width: '546px',
                 height: '1px',
@@ -136,7 +137,7 @@ export default function Plans() {
               }}
             />
             <div
-              className="absolute bg-white/10"
+              className='absolute bg-white/10'
               style={{
                 width: '546px',
                 height: '1px',
@@ -149,7 +150,7 @@ export default function Plans() {
 
             {/* Horizontal Lines */}
             <div
-              className="absolute bg-white/10"
+              className='absolute bg-white/10'
               style={{
                 width: '546px',
                 height: '1px',
@@ -158,7 +159,7 @@ export default function Plans() {
               }}
             />
             <div
-              className="absolute bg-white/10"
+              className='absolute bg-white/10'
               style={{
                 width: '546px',
                 height: '1px',
@@ -167,7 +168,7 @@ export default function Plans() {
               }}
             />
             <div
-              className="absolute bg-white/10"
+              className='absolute bg-white/10'
               style={{
                 width: '546px',
                 height: '1px',
@@ -180,7 +181,7 @@ export default function Plans() {
 
         {/* Angled Grid Pattern - Top Left */}
         <div
-          className="absolute"
+          className='absolute'
           style={{
             width: '400px',
             height: '400px',
@@ -190,7 +191,7 @@ export default function Plans() {
           }}
         >
           <div
-            className="absolute bg-white/5"
+            className='absolute bg-white/5'
             style={{
               width: '400px',
               height: '1px',
@@ -199,7 +200,7 @@ export default function Plans() {
             }}
           />
           <div
-            className="absolute bg-white/5"
+            className='absolute bg-white/5'
             style={{
               width: '400px',
               height: '1px',
@@ -208,7 +209,7 @@ export default function Plans() {
             }}
           />
           <div
-            className="absolute bg-white/5"
+            className='absolute bg-white/5'
             style={{
               width: '400px',
               height: '1px',
@@ -217,7 +218,7 @@ export default function Plans() {
             }}
           />
           <div
-            className="absolute bg-white/5"
+            className='absolute bg-white/5'
             style={{
               width: '400px',
               height: '1px',
@@ -228,7 +229,7 @@ export default function Plans() {
             }}
           />
           <div
-            className="absolute bg-white/5"
+            className='absolute bg-white/5'
             style={{
               width: '400px',
               height: '1px',
@@ -239,7 +240,7 @@ export default function Plans() {
             }}
           />
           <div
-            className="absolute bg-white/5"
+            className='absolute bg-white/5'
             style={{
               width: '400px',
               height: '1px',
@@ -253,7 +254,7 @@ export default function Plans() {
 
         {/* Angled Grid Pattern - Bottom Right */}
         <div
-          className="absolute"
+          className='absolute'
           style={{
             width: '400px',
             height: '400px',
@@ -263,7 +264,7 @@ export default function Plans() {
           }}
         >
           <div
-            className="absolute bg-white/5"
+            className='absolute bg-white/5'
             style={{
               width: '400px',
               height: '1px',
@@ -272,7 +273,7 @@ export default function Plans() {
             }}
           />
           <div
-            className="absolute bg-white/5"
+            className='absolute bg-white/5'
             style={{
               width: '400px',
               height: '1px',
@@ -281,7 +282,7 @@ export default function Plans() {
             }}
           />
           <div
-            className="absolute bg-white/5"
+            className='absolute bg-white/5'
             style={{
               width: '400px',
               height: '1px',
@@ -290,7 +291,7 @@ export default function Plans() {
             }}
           />
           <div
-            className="absolute bg-white/5"
+            className='absolute bg-white/5'
             style={{
               width: '400px',
               height: '1px',
@@ -301,7 +302,7 @@ export default function Plans() {
             }}
           />
           <div
-            className="absolute bg-white/5"
+            className='absolute bg-white/5'
             style={{
               width: '400px',
               height: '1px',
@@ -312,7 +313,7 @@ export default function Plans() {
             }}
           />
           <div
-            className="absolute bg-white/5"
+            className='absolute bg-white/5'
             style={{
               width: '400px',
               height: '1px',
@@ -326,7 +327,7 @@ export default function Plans() {
 
         {/* Additional Blurred Ellipse - Top Right */}
         <div
-          className="absolute"
+          className='absolute'
           style={{
             width: '250px',
             height: '250px',
@@ -341,74 +342,102 @@ export default function Plans() {
       </div>
 
       {/* Hero Section */}
-      <section id="plans" className="relative min-h-screen flex items-center overflow-hidden py-20">
-        <div className="container mx-auto px-4 md:px-6 lg:px-8 relative z-10">
+      <section
+        id='plans'
+        className='relative min-h-screen flex items-center overflow-hidden py-20'
+      >
+        <div className='container mx-auto px-4 md:px-6 lg:px-8 relative z-10'>
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: -30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center mb-16"
+            className='text-center mb-16'
           >
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6">
+            <h1
+              className='text-5xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6'
+              style={{
+                background:
+                  'linear-gradient(to right, #FFFFFF 0%, #F1CB68 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}
+            >
               Choose Your
               <br />
-              <span className="text-[#F1CB68]">Plan</span>
+              <span className='text-[#F1CB68]'>Plan</span>
             </h1>
-            <p className="text-brand-muted text-lg md:text-xl max-w-2xl mx-auto mb-8">
-              Select the perfect plan for your wealth management journey. All plans include Marketplace access and asset valuation features.
+            <p className='text-white text-lg md:text-xl max-w-2xl mx-auto mb-8'>
+              Select the perfect plan for your wealth management journey. All
+              plans include Marketplace access and asset valuation features.
             </p>
 
             {/* Billing Toggle */}
-            <div className="flex items-center justify-center gap-4 mb-12">
-              <span className={`text-sm font-medium ${billingCycle === 'monthly' ? 'text-white' : 'text-brand-muted'}`}>
+            <div className='flex items-center justify-center gap-4 mb-12'>
+              <span
+                className={`text-sm font-medium ${
+                  billingCycle === 'monthly' ? 'text-white' : 'text-white'
+                }`}
+              >
                 Monthly
               </span>
               <button
-                onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'annual' : 'monthly')}
-                className="relative w-14 h-8 rounded-full transition-colors"
+                onClick={() =>
+                  setBillingCycle(
+                    billingCycle === 'monthly' ? 'annual' : 'monthly'
+                  )
+                }
+                className='relative w-14 h-8 rounded-full transition-colors'
                 style={{
-                  background: billingCycle === 'monthly' 
-                    ? 'linear-gradient(90deg, #FFFFFF 0%, #F1CB68 100%)'
-                    : 'rgba(255, 255, 255, 0.1)',
+                  background:
+                    billingCycle === 'monthly'
+                      ? 'linear-gradient(90deg, #FFFFFF 0%, #F1CB68 100%)'
+                      : 'rgba(255, 255, 255, 0.1)',
                 }}
               >
                 <motion.div
-                  className="absolute top-1 left-1 w-6 h-6 rounded-full bg-[#0B0D12] shadow-lg"
+                  className='absolute top-1 left-1 w-6 h-6 rounded-full bg-[#0B0D12] shadow-lg'
                   animate={{
                     x: billingCycle === 'monthly' ? 0 : 24,
                   }}
                   transition={{ type: 'spring', stiffness: 500, damping: 30 }}
                 />
               </button>
-              <span className={`text-sm font-medium ${billingCycle === 'annual' ? 'text-white' : 'text-brand-muted'}`}>
+              <span
+                className={`text-sm font-medium ${
+                  billingCycle === 'annual' ? 'text-white' : 'text-white'
+                }`}
+              >
                 Annual
-                <span className="ml-2 text-[#F1CB68] text-xs">(Save up to 20%)</span>
+                <span className='ml-2 text-[#F1CB68] text-xs'>
+                  (Save up to 20%)
+                </span>
               </span>
             </div>
           </motion.div>
 
           {/* Plans Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto">
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 max-w-7xl mx-auto'>
             {plans.map((plan, index) => (
               <motion.div
                 key={plan.name}
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ 
+                transition={{
                   duration: 0.6,
                   delay: index * 0.1,
                   type: 'spring',
                   stiffness: 100,
                 }}
-                whileHover={{ 
+                whileHover={{
                   y: -10,
                   scale: 1.02,
-                  transition: { duration: 0.3 }
+                  transition: { duration: 0.3 },
                 }}
-                className={`relative bg-[#1a1a24]/60 backdrop-blur-xl rounded-2xl border p-6 lg:p-8 transition-all duration-300 ${
-                  plan.popular 
-                    ? 'border-[#F1CB68] shadow-lg shadow-[#F1CB68]/20 lg:scale-105' 
+                className={`relative bg-[#1a1a24]/60 backdrop-blur-xl rounded-2xl border text-white p-6 lg:p-8 transition-all duration-300 ${
+                  plan.popular
+                    ? 'border-[#F1CB68] shadow-lg shadow-[#F1CB68]/20 lg:scale-105'
                     : 'border-[#FFFFFF1A] hover:border-[#F1CB68]/50'
                 }`}
               >
@@ -418,9 +447,10 @@ export default function Plans() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.3, type: 'spring' }}
-                    className="absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-semibold text-[#0B0D12]"
+                    className='absolute -top-4 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-semibold text-[#0B0D12]'
                     style={{
-                      background: 'linear-gradient(90deg, #FFFFFF 0%, #F1CB68 100%)',
+                      background:
+                        'linear-gradient(90deg, #FFFFFF 0%, #F1CB68 100%)',
                     }}
                   >
                     Most Popular
@@ -428,52 +458,58 @@ export default function Plans() {
                 )}
 
                 {/* Plan Header */}
-                <div className="mb-6">
-                  <h3 className="text-2xl lg:text-3xl font-bold mb-2">{plan.name}</h3>
-                  <div className="mb-4">
-                    <div className="text-3xl lg:text-4xl font-bold text-[#F1CB68] mb-1">
-                      {billingCycle === 'monthly' ? plan.monthlyCost : plan.annualCost}
+                <div className='mb-6'>
+                  <h3 className='text-2xl lg:text-3xl font-bold mb-2'>
+                    {plan.name}
+                  </h3>
+                  <div className='mb-4'>
+                    <div className='text-3xl lg:text-4xl font-bold text-[#F1CB68] mb-1'>
+                      {billingCycle === 'monthly'
+                        ? plan.monthlyCost
+                        : plan.annualCost}
                     </div>
-                    <div className="text-sm text-brand-muted">
+                    <div className='text-sm text-white'>
                       {billingCycle === 'monthly' ? 'per month' : 'per year'}
                     </div>
                   </div>
-                  <p className="text-sm text-brand-muted">{plan.idealUser}</p>
+                  <p className='text-sm text-white'>{plan.idealUser}</p>
                 </div>
 
                 {/* Features List */}
-                <div className="space-y-3 mb-8 min-h-[300px]">
+                <div className='space-y-3 mb-8 min-h-[300px]'>
                   {plan.features.map((feature, featureIndex) => (
                     <motion.div
                       key={featureIndex}
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ 
-                        delay: 0.4 + (index * 0.1) + (featureIndex * 0.05),
-                        duration: 0.4
+                      transition={{
+                        delay: 0.4 + index * 0.1 + featureIndex * 0.05,
+                        duration: 0.4,
                       }}
-                      className="flex items-start gap-3"
+                      className='flex items-start gap-3'
                     >
                       <motion.svg
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
-                        transition={{ 
-                          delay: 0.5 + (index * 0.1) + (featureIndex * 0.05),
-                          type: 'spring'
+                        transition={{
+                          delay: 0.5 + index * 0.1 + featureIndex * 0.05,
+                          type: 'spring',
                         }}
-                        className="w-5 h-5 text-[#F1CB68] flex-shrink-0 mt-0.5"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
+                        className='w-5 h-5 text-[#F1CB68] flex-shrink-0 mt-0.5'
+                        fill='none'
+                        viewBox='0 0 24 24'
+                        stroke='currentColor'
                       >
                         <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                          strokeLinecap='round'
+                          strokeLinejoin='round'
                           strokeWidth={2}
-                          d="M5 13l4 4L19 7"
+                          d='M5 13l4 4L19 7'
                         />
                       </motion.svg>
-                      <span className="text-sm text-gray-300 leading-relaxed">{feature}</span>
+                      <span className='text-sm text-gray-300 leading-relaxed'>
+                        {feature}
+                      </span>
                     </motion.div>
                   ))}
                 </div>
@@ -483,9 +519,7 @@ export default function Plans() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   className={`w-full rounded-full px-6 py-3 font-semibold transition-all shadow-lg ${
-                    plan.popular
-                      ? 'text-[#0B0D12]'
-                      : 'text-[#0B0D12]'
+                    plan.popular ? 'text-[#0B0D12]' : 'text-[#0B0D12]'
                   }`}
                   style={{
                     background: plan.popular
@@ -505,23 +539,32 @@ export default function Plans() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, delay: 0.5 }}
-            className="mt-16 text-center"
+            className='mt-16 text-center'
           >
-            <p className="text-brand-muted text-sm mb-4">
-              All plans include Marketplace access and asset valuation features. 
-              <span className="text-[#F1CB68]"> Need help choosing? Contact our team.</span>
+            <p className='text-white text-sm mb-4'>
+              All plans include Marketplace access and asset valuation features.
+              <span className='text-[#F1CB68]'>
+                {' '}
+                Need help choosing? Contact our team.
+              </span>
             </p>
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="inline-flex items-center gap-2 rounded-full px-8 py-3 text-[#0B0D12] font-semibold hover:brightness-110 transition-all shadow-lg"
+              className='inline-flex items-center gap-2 rounded-full px-8 py-3 text-[#0B0D12] font-semibold hover:brightness-110 transition-all shadow-lg'
               style={{
                 background: 'linear-gradient(90deg, #FFFFFF 0%, #F1CB68 100%)',
               }}
             >
               Contact Sales Team
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg width='20' height='20' viewBox='0 0 20 20' fill='none'>
+                <path
+                  d='M7.5 15L12.5 10L7.5 5'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                />
               </svg>
             </motion.button>
           </motion.div>

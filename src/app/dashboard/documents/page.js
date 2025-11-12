@@ -489,11 +489,11 @@ export default function DocumentsPage() {
           />
         </div>
 
-        <div className='flex gap-4 items-center'>
+        <div className='flex gap-2 sm:gap-4 items-center flex-wrap'>
           <div className='relative' ref={filterMenuRef}>
             <button
               onClick={() => setShowFilterMenu(!showFilterMenu)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-full text-sm font-medium transition-all cursor-pointer border ${
+              className={`flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-medium transition-all cursor-pointer border shrink-0 ${
                 isDarkMode ? '' : ''
               }`}
               style={
@@ -513,14 +513,15 @@ export default function DocumentsPage() {
               <Image
                 src='/icons/grid.svg'
                 alt='Filter'
-                width={16}
-                height={16}
+                width={14}
+                height={14}
+                className='sm:w-4 sm:h-4'
               />
-              Filter
+              <span className='hidden sm:inline'>Filter</span>
             </button>
             {showFilterMenu && (
               <div
-                className={`absolute top-full mt-2 right-0 w-48 rounded-lg p-2 z-10 border ${
+                className={`absolute top-full mt-2 left-0 md:left-auto md:right-0 w-48 max-w-[calc(100vw-2rem)] rounded-lg p-2 z-50 border ${
                   isDarkMode ? '' : ''
                 }`}
                 style={
@@ -585,7 +586,7 @@ export default function DocumentsPage() {
 
           <button
             onClick={handleUpload}
-            className='flex items-center gap-2 px-6 py-3 rounded-full text-sm font-bold transition-all hover:opacity-90 cursor-pointer'
+            className='flex items-center gap-1.5 sm:gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-full text-xs sm:text-sm font-bold transition-all hover:opacity-90 cursor-pointer whitespace-nowrap shrink-0'
             style={{
               background: 'linear-gradient(90deg, #FFFFFF 0%, #F1CB68 100%)',
               color: '#000000',
@@ -594,10 +595,12 @@ export default function DocumentsPage() {
             <Image
               src='/icons/upload-arrow.svg'
               alt='Upload'
-              width={16}
-              height={16}
+              width={14}
+              height={14}
+              className='sm:w-4 sm:h-4'
             />
-            Upload New Document
+            <span className='hidden sm:inline'>Upload New Document</span>
+            <span className='sm:hidden'>Upload</span>
           </button>
         </div>
       </div>

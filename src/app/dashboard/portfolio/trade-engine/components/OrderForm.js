@@ -283,11 +283,7 @@ export default function OrderForm({
             <select
               value={brokerageAccount}
               onChange={e => setBrokerageAccount(e.target.value)}
-              className={`w-full px-4 py-3 rounded-lg border ${
-                isDarkMode
-                  ? 'bg-gradiend-to-r border-[#FFFFFF14] from-[#222126] to-[#111116] text-white'
-                  : 'bg-white border-gray-300 text-gray-900'
-              } focus:outline-none focus:border-[#F1CB68]`}
+              className="w-full"
             >
               <option value='****4321'>Brokerage Account (****4321)</option>
               <option value='****5678'>Brokerage Account (****5678)</option>

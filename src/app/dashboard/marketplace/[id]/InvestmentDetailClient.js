@@ -154,87 +154,111 @@ export default function InvestmentDetailClient() {
 
             {/* Tabs */}
             <div
-              className={`flex gap-6 mb-6 border-b ${
+              className={`mb-6 border-b ${
                 isDarkMode ? 'border-gray-800' : 'border-gray-200'
               }`}
             >
-              {['overview', 'performance', 'documents', 'faq'].map(tab => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`pb-3 px-2 text-sm font-medium transition-all relative ${
-                    activeTab === tab
-                      ? isDarkMode
-                        ? 'text-white'
-                        : 'text-gray-900'
-                      : isDarkMode
-                      ? 'text-gray-400 hover:text-white'
-                      : 'text-gray-600 hover:text-gray-900'
-                  }`}
-                >
-                  <span className='flex items-center gap-2'>
-                    {tab === 'overview' && (
-                      <svg
-                        width='16'
-                        height='16'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        stroke='currentColor'
-                      >
-                        <circle cx='12' cy='12' r='10' strokeWidth='2' />
-                      </svg>
-                    )}
-                    {tab === 'performance' && (
-                      <svg
-                        width='16'
-                        height='16'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        stroke='currentColor'
-                      >
-                        <polyline
-                          points='22 12 18 12 15 21 9 3 6 12 2 12'
-                          strokeWidth='2'
-                        />
-                      </svg>
-                    )}
-                    {tab === 'documents' && (
-                      <svg
-                        width='16'
-                        height='16'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        stroke='currentColor'
-                      >
-                        <path
-                          d='M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z'
-                          strokeWidth='2'
-                        />
-                      </svg>
-                    )}
-                    {tab === 'faq' && (
-                      <svg
-                        width='16'
-                        height='16'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        stroke='currentColor'
-                      >
-                        <circle cx='12' cy='12' r='10' strokeWidth='2' />
-                        <path
-                          d='M9 9a3 3 0 0 1 6 0c0 2-3 3-3 3'
-                          strokeWidth='2'
-                        />
-                        <line x1='12' y1='17' x2='12' y2='17' strokeWidth='2' />
-                      </svg>
-                    )}
-                    {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                  </span>
-                  {activeTab === tab && (
-                    <div className='absolute bottom-0 left-0 right-0 h-0.5 bg-[#F1CB68]' />
-                  )}
-                </button>
-              ))}
+              <style jsx>{`
+                .scrollbar-hide::-webkit-scrollbar {
+                  display: none;
+                }
+                .scrollbar-hide {
+                  -ms-overflow-style: none;
+                  scrollbar-width: none;
+                  scroll-behavior: smooth;
+                }
+              `}</style>
+              <div className='overflow-x-auto scrollbar-hide -mx-4 md:mx-0 px-4 md:px-0'>
+                <div className='flex gap-4 md:gap-6 min-w-max md:min-w-0'>
+                  {['overview', 'performance', 'documents', 'faq'].map(tab => (
+                    <button
+                      key={tab}
+                      onClick={() => setActiveTab(tab)}
+                      className={`pb-3 px-2 sm:px-3 text-xs sm:text-sm font-medium transition-all relative shrink-0 whitespace-nowrap ${
+                        activeTab === tab
+                          ? isDarkMode
+                            ? 'text-white'
+                            : 'text-gray-900'
+                          : isDarkMode
+                          ? 'text-gray-400 hover:text-white'
+                          : 'text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      <span className='flex items-center gap-1.5 sm:gap-2'>
+                        {tab === 'overview' && (
+                          <svg
+                            width='14'
+                            height='14'
+                            className='sm:w-4 sm:h-4 shrink-0'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                          >
+                            <circle cx='12' cy='12' r='10' strokeWidth='2' />
+                          </svg>
+                        )}
+                        {tab === 'performance' && (
+                          <svg
+                            width='14'
+                            height='14'
+                            className='sm:w-4 sm:h-4 shrink-0'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                          >
+                            <polyline
+                              points='22 12 18 12 15 21 9 3 6 12 2 12'
+                              strokeWidth='2'
+                            />
+                          </svg>
+                        )}
+                        {tab === 'documents' && (
+                          <svg
+                            width='14'
+                            height='14'
+                            className='sm:w-4 sm:h-4 shrink-0'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                          >
+                            <path
+                              d='M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z'
+                              strokeWidth='2'
+                            />
+                          </svg>
+                        )}
+                        {tab === 'faq' && (
+                          <svg
+                            width='14'
+                            height='14'
+                            className='sm:w-4 sm:h-4 shrink-0'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                          >
+                            <circle cx='12' cy='12' r='10' strokeWidth='2' />
+                            <path
+                              d='M9 9a3 3 0 0 1 6 0c0 2-3 3-3 3'
+                              strokeWidth='2'
+                            />
+                            <line
+                              x1='12'
+                              y1='17'
+                              x2='12'
+                              y2='17'
+                              strokeWidth='2'
+                            />
+                          </svg>
+                        )}
+                        {tab.charAt(0).toUpperCase() + tab.slice(1)}
+                      </span>
+                      {activeTab === tab && (
+                        <div className='absolute bottom-0 left-0 right-0 h-0.5 bg-[#F1CB68]' />
+                      )}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
             {/* Content Area */}

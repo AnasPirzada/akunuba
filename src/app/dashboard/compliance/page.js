@@ -331,21 +331,40 @@ export default function CompliancePage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={handleCloseModal}
-            className='fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto'
+            className='fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto'
           >
+            <style jsx>{`
+              .compliance-modal-scrollbar::-webkit-scrollbar {
+                width: 8px;
+              }
+              .compliance-modal-scrollbar::-webkit-scrollbar-track {
+                background: transparent;
+              }
+              .compliance-modal-scrollbar::-webkit-scrollbar-thumb {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 4px;
+              }
+              .compliance-modal-scrollbar::-webkit-scrollbar-thumb:hover {
+                background: rgba(255, 255, 255, 0.2);
+              }
+              .compliance-modal-scrollbar {
+                scrollbar-width: thin;
+                scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+              }
+            `}</style>
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               onClick={(e) => e.stopPropagation()}
-              className={`w-full max-w-4xl rounded-2xl border ${
+              className={`w-full max-w-4xl rounded-2xl border my-auto max-h-[95vh] sm:max-h-[90vh] flex flex-col ${
                 isDarkMode
                   ? 'bg-[#1A1A1D] border-[#FFFFFF14]'
                   : 'bg-white border-gray-200'
               }`}
             >
               {/* Modal Header */}
-              <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-4 md:p-6 border-b border-white/10'>
+              <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-4 p-4 md:p-6 border-b border-white/10 shrink-0'>
                 <h2
                   className={`text-2xl md:text-3xl font-bold ${
                     isDarkMode ? 'text-white' : 'text-gray-900'
@@ -393,7 +412,7 @@ export default function CompliancePage() {
               </div>
 
               {/* Modal Content */}
-              <div className='p-4 md:p-6'>
+              <div className='p-4 md:p-6 overflow-y-auto flex-1 compliance-modal-scrollbar'>
                 {/* Key Details - Two Column Layout */}
                 <div className='grid grid-cols-1 md:grid-cols-2 gap-6 mb-6'>
                   {/* Left Column */}
