@@ -59,10 +59,10 @@ export default function Navbar({ onMenuClick }) {
           </div>
 
           {/* Right Section */}
-          <div className='flex items-center gap-2'>
-            {/* Theme Toggle - Desktop Only */}
+          <div className='flex items-center gap-1.5 md:gap-2'>
+            {/* Theme Toggle - Visible on all screens */}
             <div
-              className={`hidden lg:flex w-[110px] h-[56px] items-center justify-between px-[10px] rounded-[40px] transition-colors duration-300 ${
+              className={`flex w-[90px] md:w-[110px] h-[44px] md:h-[56px] items-center justify-between px-[8px] md:px-[10px] rounded-[40px] transition-colors duration-300 ${
                 isDarkMode
                   ? 'bg-gradient-to-r from-[#222126] to-[#111116] border border-white/10'
                   : 'bg-gray-100 border border-gray-200'
@@ -71,7 +71,7 @@ export default function Navbar({ onMenuClick }) {
               {/* Moon (Dark Mode) */}
               <button
                 onClick={() => setIsDarkMode(true)}
-                className={`w-[36px] h-[36px] flex items-center justify-center transition-all duration-300 
+                className={`w-[28px] md:w-[36px] h-[28px] md:h-[36px] flex items-center justify-center transition-all duration-300 
     ${isDarkMode ? 'bg-white rounded-full' : 'bg-transparent'}`}
               >
                 <Image
@@ -79,6 +79,7 @@ export default function Navbar({ onMenuClick }) {
                   alt='Dark Mode'
                   width={18}
                   height={18}
+                  className='w-4 h-4 md:w-[18px] md:h-[18px]'
                   style={{
                     filter: isDarkMode ? 'none' : 'brightness(0.3)',
                   }}
@@ -88,7 +89,7 @@ export default function Navbar({ onMenuClick }) {
               {/* Sun (Light Mode) */}
               <button
                 onClick={() => setIsDarkMode(false)}
-                className={`w-[36px] h-[36px] flex items-center justify-center transition-all duration-300
+                className={`w-[28px] md:w-[36px] h-[28px] md:h-[36px] flex items-center justify-center transition-all duration-300
     ${!isDarkMode ? 'bg-[#F1CB68] rounded-full' : 'bg-transparent'}`}
               >
                 <Image
@@ -96,6 +97,7 @@ export default function Navbar({ onMenuClick }) {
                   alt='Light Mode'
                   width={36}
                   height={36}
+                  className='w-7 h-7 md:w-9 md:h-9'
                   style={{
                     filter: !isDarkMode
                       ? 'brightness(0) saturate(100%) invert(8%) sepia(6%) saturate(1097%) hue-rotate(202deg) brightness(95%) contrast(93%)'
@@ -105,17 +107,17 @@ export default function Navbar({ onMenuClick }) {
               </button>
             </div>
 
-            {/* Vertical Divider Line */}
+            {/* Vertical Divider Line - Desktop Only */}
             <div
               className={`hidden lg:block w-[30px] h-0 border-t rotate-90 transition-colors duration-300 ${
                 isDarkMode ? 'border-white/10' : 'border-gray-200'
               }`}
             ></div>
 
-            {/* Messages/Support */}
+            {/* Messages/Support - Visible on all screens */}
             <button
               onClick={() => router.push('/dashboard/support-dashboard')}
-              className='flex items-center justify-center rounded-full relative cursor-pointer hover:opacity-80 transition-opacity'
+              className='flex items-center justify-center rounded-full relative cursor-pointer hover:opacity-80 transition-opacity w-11 h-11 md:w-14 md:h-14'
             >
               <Image
                 src={
@@ -126,6 +128,7 @@ export default function Navbar({ onMenuClick }) {
                 alt='Messages'
                 width={56}
                 height={56}
+                className='w-full h-full'
               />
             </button>
 

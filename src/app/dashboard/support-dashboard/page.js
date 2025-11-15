@@ -16,9 +16,21 @@ export default function SupportDashboardPage() {
   const [messageInput, setMessageInput] = useState('');
   const [messages, setMessages] = useState({});
   const messagesEndRef = useRef(null);
+  const [showChatView, setShowChatView] = useState(false); // For mobile/tablet view control
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+
+    // Check if mobile/tablet
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   // Mock data for tickets and chats
@@ -239,12 +251,25 @@ export default function SupportDashboardPage() {
     return matchesFilter && matchesSearch;
   });
 
-  // Select first item by default
+  // Select first item by default (desktop only)
   useEffect(() => {
-    if (filteredItems.length > 0 && !selectedItem) {
+    if (filteredItems.length > 0 && !selectedItem && !isMobile) {
       setSelectedItem(filteredItems[0]);
     }
-  }, [filteredItems, selectedItem]);
+  }, [filteredItems, selectedItem, isMobile]);
+
+  // Handle item selection - show chat view on mobile/tablet
+  const handleItemSelect = item => {
+    setSelectedItem(item);
+    if (isMobile) {
+      setShowChatView(true);
+    }
+  };
+
+  // Handle back to list on mobile/tablet
+  const handleBackToList = () => {
+    setShowChatView(false);
+  };
 
   if (!mounted) {
     return null;
@@ -314,7 +339,9 @@ export default function SupportDashboardPage() {
             <div className='flex-1 flex overflow-hidden'>
               {/* Left Panel - Ticket/Chat List */}
               <div
-                className={`w-80 border-r flex flex-col ${
+                className={`${
+                  showChatView ? 'hidden lg:flex' : 'flex'
+                } w-full lg:w-80 border-r flex-col ${
                   isDarkMode
                     ? 'border-white/10 bg-[#1A1A1F]'
                     : 'border-gray-200 bg-white'
@@ -403,7 +430,7 @@ export default function SupportDashboardPage() {
                   {filteredItems.map(item => (
                     <div
                       key={item.id}
-                      onClick={() => setSelectedItem(item)}
+                      onClick={() => handleItemSelect(item)}
                       className={`p-4 border-b cursor-pointer transition-colors ${
                         selectedItem?.id === item.id
                           ? isDarkMode
@@ -511,19 +538,39 @@ export default function SupportDashboardPage() {
               </div>
 
               {/* Center Panel - Conversation */}
-              <div className='flex-1 flex flex-col'>
+              <div
+                className={`${
+                  showChatView ? 'flex' : 'hidden lg:flex'
+                } flex-1 flex-col`}
+              >
                 {selectedItem ? (
                   <>
                     {/* Conversation Header */}
                     <div
-                      className={`p-4 border-b flex items-center justify-between ${
+                      className={`p-3 md:p-4 border-b flex items-center justify-between ${
                         isDarkMode
                           ? 'border-white/10 bg-[#1A1A1F]'
                           : 'border-gray-200 bg-white'
                       }`}
                     >
-                      <div className='flex items-center gap-3'>
-                        <div className='w-10 h-10 rounded-full overflow-hidden bg-[#F1CB68] flex items-center justify-center'>
+                      <div className='flex items-center gap-2 md:gap-3 flex-1 min-w-0'>
+                        {/* Back Button - Mobile/Tablet Only */}
+                        <button
+                          onClick={handleBackToList}
+                          className='lg:hidden p-1.5 -ml-1 rounded-lg transition-colors hover:bg-white/10 shrink-0'
+                        >
+                          <svg
+                            width='20'
+                            height='20'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke={isDarkMode ? '#FFFFFF' : '#000000'}
+                            strokeWidth='2'
+                          >
+                            <path d='M19 12H5M12 19l-7-7 7-7' />
+                          </svg>
+                        </button>
+                        <div className='w-9 h-9 md:w-10 md:h-10 rounded-full overflow-hidden bg-[#F1CB68] flex items-center justify-center shrink-0'>
                           <Image
                             src={selectedItem.userAvatar}
                             alt={selectedItem.userName}
@@ -532,16 +579,16 @@ export default function SupportDashboardPage() {
                             className='w-full h-full object-cover'
                           />
                         </div>
-                        <div>
+                        <div className='flex-1 min-w-0'>
                           <p
-                            className={`font-medium ${
+                            className={`font-medium text-sm md:text-base truncate ${
                               isDarkMode ? 'text-white' : 'text-gray-900'
                             }`}
                           >
                             {selectedItem.userName}
                           </p>
                           <p
-                            className={`text-xs ${
+                            className={`text-xs truncate ${
                               isDarkMode ? 'text-gray-400' : 'text-gray-500'
                             }`}
                           >
@@ -552,10 +599,10 @@ export default function SupportDashboardPage() {
                           </p>
                         </div>
                       </div>
-                      <div className='flex items-center gap-2'>
+                      <div className='flex items-center gap-2 shrink-0'>
                         {selectedItem.type === 'chat' && (
                           <span
-                            className={`text-xs px-2 py-1 rounded ${
+                            className={`hidden sm:inline-block text-xs px-2 py-1 rounded ${
                               isDarkMode
                                 ? 'bg-white/10 text-white'
                                 : 'bg-gray-100 text-gray-700'
@@ -574,7 +621,7 @@ export default function SupportDashboardPage() {
 
                     {/* Messages */}
                     <div
-                      className={`flex-1 overflow-y-auto p-4 custom-scrollbar space-y-4 ${
+                      className={`flex-1 overflow-y-auto p-3 md:p-4 custom-scrollbar space-y-3 md:space-y-4 ${
                         isDarkMode ? 'bg-[#1A1A1F]' : 'bg-white'
                       }`}
                     >
@@ -588,7 +635,7 @@ export default function SupportDashboardPage() {
                           }`}
                         >
                           <div
-                            className={`max-w-[70%] rounded-2xl px-4 py-2 ${
+                            className={`max-w-[85%] md:max-w-[70%] rounded-2xl px-3 md:px-4 py-2 text-sm ${
                               message.sender === 'user'
                                 ? isDarkMode
                                   ? 'bg-white/10 text-white'
@@ -624,7 +671,7 @@ export default function SupportDashboardPage() {
 
                     {/* Message Input */}
                     <div
-                      className={`p-4 border-t ${
+                      className={`p-3 md:p-4 border-t ${
                         isDarkMode
                           ? 'border-white/10 bg-[#1A1A1F]'
                           : 'border-gray-200 bg-white'
@@ -632,7 +679,7 @@ export default function SupportDashboardPage() {
                     >
                       <div className='flex items-center gap-2'>
                         <button
-                          className={`p-2 rounded-lg transition-colors ${
+                          className={`p-2 rounded-lg transition-colors shrink-0 ${
                             isDarkMode
                               ? 'hover:bg-white/10'
                               : 'hover:bg-gray-100'
@@ -656,7 +703,7 @@ export default function SupportDashboardPage() {
                           value={messageInput}
                           onChange={e => setMessageInput(e.target.value)}
                           onKeyPress={handleKeyPress}
-                          className={`flex-1 px-4 py-2 rounded-lg text-sm border transition-colors ${
+                          className={`flex-1 px-3 md:px-4 py-2 rounded-lg text-sm border transition-colors ${
                             isDarkMode
                               ? 'bg-transparent border-white/10 text-white placeholder-gray-500 focus:border-[#F1CB68]'
                               : 'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-400 focus:border-[#F1CB68]'
@@ -665,7 +712,7 @@ export default function SupportDashboardPage() {
                         <button
                           onClick={handleSendMessage}
                           disabled={!messageInput.trim()}
-                          className='px-4 py-2 rounded-lg text-sm font-medium transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed'
+                          className='px-3 md:px-4 py-2 rounded-lg text-sm font-medium transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed shrink-0'
                           style={{
                             background:
                               'linear-gradient(90deg, #FFFFFF 0%, #F1CB68 100%)',
@@ -683,15 +730,19 @@ export default function SupportDashboardPage() {
                       isDarkMode ? 'text-gray-400' : 'text-gray-500'
                     }`}
                   >
-                    <p>Select a conversation to view messages</p>
+                    <p className='text-sm md:text-base'>
+                      {isMobile
+                        ? 'Select a conversation to start chatting'
+                        : 'Select a conversation to view messages'}
+                    </p>
                   </div>
                 )}
               </div>
 
-              {/* Right Panel - Context & Actions */}
+              {/* Right Panel - Context & Actions - Desktop Only */}
               {selectedItem && (
                 <div
-                  className={`w-80 border-l flex flex-col ${
+                  className={`hidden xl:flex w-80 border-l flex-col ${
                     isDarkMode
                       ? 'border-white/10 bg-[#1A1A1F]'
                       : 'border-gray-200 bg-white'
