@@ -143,11 +143,20 @@ export default function ForgotPasswordPage() {
     }
 
     try {
-      await verifyOTP(email, otpCode);
+      // For password reset flow, include purpose so OTP isn't cleared after verification
+      // This allows the OTP to be used again in the reset-password step
+      const purpose = isVerificationFlow ? null : 'password_reset';
+      await verifyOTP(email, otpCode, purpose);
       
       // Clear pending verification email
       if (typeof window !== 'undefined') {
         sessionStorage.removeItem('pending_verification_email');
+        
+        // Store email and OTP for password reset flow
+        if (!isVerificationFlow) {
+          sessionStorage.setItem('reset_password_email', email);
+          sessionStorage.setItem('reset_password_otp', otpCode);
+        }
       }
 
       // Redirect based on flow type

@@ -32,7 +32,8 @@ export default function ResetPasswordPage() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const [resetToken, setResetToken] = useState('');
+  const [email, setEmail] = useState('');
+  const [otpCode, setOtpCode] = useState('');
 
   // Auto-rotate carousel
   useEffect(() => {
@@ -43,19 +44,18 @@ export default function ResetPasswordPage() {
     return () => clearInterval(timer);
   }, []);
 
-  // Get reset token from URL params
+  // Get email and OTP from sessionStorage (set after OTP verification in forgot-password)
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const params = new URLSearchParams(window.location.search);
-      const token = params.get('token');
-      if (token) {
-        setResetToken(token);
+      const storedEmail = sessionStorage.getItem('reset_password_email');
+      const storedOtp = sessionStorage.getItem('reset_password_otp');
+      
+      if (storedEmail && storedOtp) {
+        setEmail(storedEmail);
+        setOtpCode(storedOtp);
       } else {
-        // If no token in URL, check if it was stored (e.g., from forgot-password flow)
-        const storedToken = sessionStorage.getItem('reset_token');
-        if (storedToken) {
-          setResetToken(storedToken);
-        }
+        // If no email/OTP found, redirect to forgot-password
+        window.location.href = '/forgot-password';
       }
     }
   }, []);
@@ -80,18 +80,22 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    if (!resetToken) {
-      setError('Reset token is missing. Please request a new password reset.');
+    if (!email || !otpCode) {
+      setError('Session expired. Please request a new password reset.');
+      if (typeof window !== 'undefined') {
+        window.location.href = '/forgot-password';
+      }
       return;
     }
 
     setIsLoading(true);
 
     try {
-      await resetPassword(resetToken, password);
-      // Clear stored token
+      await resetPassword(email, otpCode, password);
+      // Clear stored email and OTP
       if (typeof window !== 'undefined') {
-        sessionStorage.removeItem('reset_token');
+        sessionStorage.removeItem('reset_password_email');
+        sessionStorage.removeItem('reset_password_otp');
       }
       // Only redirect on success
       window.location.href = '/login';
@@ -131,12 +135,6 @@ export default function ResetPasswordPage() {
             {error && (
               <div className='bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-xl text-sm'>
                 {error}
-              </div>
-            )}
-
-            {!resetToken && (
-              <div className='bg-yellow-500/10 border border-yellow-500/50 text-yellow-400 px-4 py-3 rounded-xl text-sm'>
-                No reset token found. Please use the link from your email or request a new password reset.
               </div>
             )}
 
@@ -250,7 +248,7 @@ export default function ResetPasswordPage() {
             {/* Reset Button */}
             <button
               type='submit'
-              disabled={isLoading || !resetToken}
+              disabled={isLoading || !email || !otpCode}
               className='w-full bg-[#F1CB68] hover:bg-[#D6A738] disabled:opacity-50 disabled:cursor-not-allowed text-[#0B0D12] font-semibold py-3 rounded-full transition-colors'
             >
               {isLoading ? 'Resetting Password...' : 'Reset Password'}

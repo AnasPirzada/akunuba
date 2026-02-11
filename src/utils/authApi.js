@@ -106,13 +106,23 @@ export const requestOTP = async (email) => {
 /**
  * 5. Verify OTP
  * POST /api/v1/auth/verify-otp
+ * @param {string} email - User email
+ * @param {string} otpCode - OTP code to verify
+ * @param {string} purpose - Optional purpose (e.g., "password_reset", "email_verification")
  */
-export const verifyOTP = async (email, otpCode) => {
+export const verifyOTP = async (email, otpCode, purpose = null) => {
   try {
-    const response = await apiPost(API_ENDPOINTS.AUTH.VERIFY_OTP, {
+    const requestBody = {
       email,
       otp_code: otpCode,
-    });
+    };
+    
+    // Add purpose if provided (e.g., "password_reset" to keep OTP available for reset step)
+    if (purpose) {
+      requestBody.purpose = purpose;
+    }
+    
+    const response = await apiPost(API_ENDPOINTS.AUTH.VERIFY_OTP, requestBody);
     return response;
   } catch (error) {
     throw error;
@@ -130,12 +140,14 @@ export const requestPasswordReset = async (email) => {
 };
 
 /**
- * 7. Reset Password
+ * 7. Reset Password (OTP-based)
  * POST /api/v1/auth/reset-password
+ * Uses OTP code from email instead of reset token
  */
-export const resetPassword = async (token, newPassword) => {
+export const resetPassword = async (email, otpCode, newPassword) => {
   return await apiPost(API_ENDPOINTS.AUTH.RESET_PASSWORD, {
-    token,
+    email,
+    otp_code: otpCode,
     new_password: newPassword,
   });
 };
