@@ -3,7 +3,7 @@
  * Handles all compliance-related API calls
  */
 
-import { API_ENDPOINTS } from '@/config/api';
+import { API_ENDPOINTS, API_BASE_URL } from '@/config/api';
 import { apiGet, apiPost, apiPatch, apiDelete } from '@/lib/api/client';
 
 /**
@@ -342,7 +342,7 @@ export const getComplianceReport = async (reportId) => {
 export const downloadComplianceReport = async (reportId) => {
   const endpoint = API_ENDPOINTS.COMPLIANCE.DOWNLOAD_REPORT(reportId);
   // This will return a blob/file, so we need to handle it differently
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/api/v1${endpoint}`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1${endpoint}`, {
     method: 'GET',
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -404,7 +404,7 @@ export const createCompliancePolicy = async (policyData) => {
   if (policyData.entityId) formData.append('entity_id', policyData.entityId);
   if (policyData.description) formData.append('description', policyData.description);
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000'}/api/v1${endpoint}`, {
+  const response = await fetch(`${API_BASE_URL}/api/v1${endpoint}`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
