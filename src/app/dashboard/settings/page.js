@@ -1,7 +1,7 @@
 'use client';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { useTheme } from '@/context/ThemeContext';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   getUserProfile,
@@ -18,11 +18,14 @@ import {
   deactivateAccount,
   deleteAccount,
   clearTokens,
+  isAuthenticated,
 } from '@/utils/authApi';
 import {
   getBankAccounts,
   unlinkBankAccount,
   getBankTransactions,
+  createBankLinkToken,
+  linkBankAccount,
 } from '@/utils/bankingApi';
 import {
   getPaymentMethods,
@@ -36,7 +39,16 @@ import {
 
 export default function SettingsPage() {
   const { isDarkMode } = useTheme();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('profile');
+  
+  // Check authentication on mount
+  useEffect(() => {
+    if (!isAuthenticated()) {
+      // Redirect to login if not authenticated
+      router.push('/login');
+    }
+  }, [router]);
 
   const [notifications, setNotifications] = useState({
     emailAlerts: true,
@@ -1524,6 +1536,7 @@ function ProfileSettings({
 
 // Linked Accounts Tab
 function LinkedAccounts({ isDarkMode }) {
+  // All hooks must be at the top and in the same order every render
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -1531,25 +1544,43 @@ function LinkedAccounts({ isDarkMode }) {
   const [transactions, setTransactions] = useState([]);
   const [loadingTransactions, setLoadingTransactions] = useState(false);
   const [transactionsError, setTransactionsError] = useState(null);
+  const [linkingAccount, setLinkingAccount] = useState(false);
+  const [linkError, setLinkError] = useState(null);
 
-  useEffect(() => {
-    const fetchAccounts = async () => {
+  // Fetch accounts function - memoized with useCallback
+  const fetchAccounts = useCallback(async () => {
       try {
         setLoading(true);
         setError(null);
+      
+      // Check authentication before making request
+      if (typeof window !== 'undefined') {
+        const accessToken = localStorage.getItem('access_token');
+        if (!accessToken) {
+          setError('Please log in to view linked accounts.');
+          setLoading(false);
+          return;
+        }
+      }
+      
         const response = await getBankAccounts();
         const data = Array.isArray(response) ? response : response.data || [];
         setAccounts(data);
       } catch (err) {
         console.error('Error fetching linked accounts:', err);
+      if (err.status === 401 || err.message?.includes('authentication') || err.message?.includes('Unauthorized')) {
+        setError('Authentication failed. Please log out and log in again.');
+      } else {
         setError(err.message || 'Failed to load linked accounts.');
+      }
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchAccounts();
   }, []);
+
+  useEffect(() => {
+    fetchAccounts();
+  }, [fetchAccounts]);
 
   const handleDisconnect = async (accountId) => {
     try {
@@ -1588,9 +1619,89 @@ function LinkedAccounts({ isDarkMode }) {
     }
   };
 
+  const handleAddAccount = async () => {
+    try {
+      setLinkingAccount(true);
+      setLinkError(null);
+      
+      // Check if user is authenticated
+      if (typeof window !== 'undefined') {
+        const accessToken = localStorage.getItem('access_token');
+        if (!accessToken) {
+          setLinkError('You must be logged in to link accounts. Please log in and try again.');
+          setLinkingAccount(false);
+          return;
+        }
+      }
+      
+      // Step 1: Get Plaid Link Token
+      const tokenResponse = await createBankLinkToken();
+      const linkToken = tokenResponse.data?.linkToken || tokenResponse.linkToken || tokenResponse.data?.link_token;
+      
+      if (!linkToken) {
+        throw new Error('Failed to get link token from server');
+      }
+
+      // TODO: Integrate Plaid Link UI here
+      // For now, we'll show a message that Plaid Link integration is needed
+      // You need to install: npm install react-plaid-link
+      // Then use usePlaidLink hook with the linkToken
+      
+      alert(`Link token received: ${linkToken.substring(0, 20)}...\n\nTo complete the integration, you need to:\n1. Install: npm install react-plaid-link\n2. Use usePlaidLink hook with this token\n3. On success, call linkBankAccount({ public_token })`);
+      
+      // Example of what the Plaid Link integration would look like:
+      // const { open, ready } = usePlaidLink({
+      //   token: linkToken,
+      //   onSuccess: async (publicToken) => {
+      //     await linkBankAccount({ public_token: publicToken });
+      //     await fetchAccounts(); // Refresh the list
+      //   },
+      // });
+      // if (ready) open();
+      
+    } catch (err) {
+      console.error('Error linking account:', err);
+      
+      // Extract detailed error message from backend
+      let errorMessage = err.message || 'Failed to initialize account linking. Please try again.';
+      
+      // Check if backend sent detailed error in response
+      if (err.data) {
+        if (typeof err.data === 'string') {
+          errorMessage = err.data;
+        } else if (err.data.detail) {
+          if (Array.isArray(err.data.detail)) {
+            errorMessage = err.data.detail.map(d => typeof d === 'string' ? d : d.msg || JSON.stringify(d)).join('; ');
+          } else if (typeof err.data.detail === 'string') {
+            errorMessage = err.data.detail;
+          } else {
+            errorMessage = JSON.stringify(err.data.detail);
+          }
+        } else if (err.data.message) {
+          errorMessage = err.data.message;
+        } else if (err.data.error) {
+          errorMessage = err.data.error;
+        }
+      }
+      
+      if (err.status === 401 || err.message?.includes('authentication') || err.message?.includes('Unauthorized')) {
+        setLinkError('Authentication failed. Please log out and log in again, then try linking your account.');
+      } else if (err.status === 403) {
+        setLinkError('Banking integration requires Annual subscription. Please upgrade your plan.');
+      } else if (err.status === 400) {
+        setLinkError(`Bad Request: ${errorMessage}. This might be a backend configuration issue. Please check if Plaid is properly configured on the backend.`);
+      } else {
+        setLinkError(errorMessage);
+      }
+    } finally {
+      setLinkingAccount(false);
+    }
+  };
+
   return (
     <div className='space-y-6'>
       <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6'>
+        <div>
         <h2
           className={`text-xl font-semibold ${
             isDarkMode ? 'text-white' : 'text-gray-900'
@@ -1598,10 +1709,54 @@ function LinkedAccounts({ isDarkMode }) {
         >
           Linked Accounts
         </h2>
-        <p className={isDarkMode ? 'text-gray-400 text-sm' : 'text-gray-600 text-sm'}>
-          Manage your connected banking accounts. Linking new accounts is handled via Plaid in a separate flow.
-        </p>
+          <p className={`mt-1 text-sm ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+            Manage your connected banking accounts
+          </p>
+        </div>
+        <button
+          onClick={handleAddAccount}
+          disabled={linkingAccount}
+          className={`px-4 py-2.5 rounded-lg font-medium text-sm transition-all ${
+            linkingAccount
+              ? 'opacity-50 cursor-not-allowed'
+              : 'hover:opacity-90'
+          } ${
+            isDarkMode
+              ? 'bg-[linear-gradient(94.02deg,#222126_0%,#111116_100%)] text-white border border-[#FFFFFF14]'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
+          }`}
+        >
+          {linkingAccount ? (
+            <span className='flex items-center gap-2'>
+              <span className='w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin' />
+              Connecting...
+            </span>
+          ) : (
+            <span className='flex items-center gap-2'>
+              <svg
+                className='w-5 h-5'
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M12 4v16m8-8H4'
+                />
+              </svg>
+              Add Account
+            </span>
+          )}
+        </button>
       </div>
+
+      {linkError && (
+        <div className='rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-400'>
+          {linkError}
+        </div>
+      )}
 
       {error && (
         <div className='rounded-xl border border-red-500/40 bg-red-500/10 p-4 text-sm text-red-400'>
@@ -1631,11 +1786,56 @@ function LinkedAccounts({ isDarkMode }) {
         </div>
       ) : accounts.length === 0 ? (
         <div
-          className={`rounded-2xl p-6 border text-sm ${
-            isDarkMode ? 'bg-[#1A1A1D] border-[#FFFFFF14] text-gray-400' : 'bg-white border-gray-200 text-gray-600'
+          className={`rounded-2xl p-8 md:p-12 border text-center ${
+            isDarkMode ? 'bg-[#1A1A1D] border-[#FFFFFF14]' : 'bg-white border-gray-200'
           }`}
         >
-          No linked accounts found.
+          <div className='max-w-md mx-auto'>
+            <div
+              className={`w-16 h-16 rounded-full mx-auto mb-4 flex items-center justify-center ${
+                isDarkMode ? 'bg-white/5' : 'bg-gray-100'
+              }`}
+            >
+              <svg
+                className={`w-8 h-8 ${isDarkMode ? 'text-gray-400' : 'text-gray-400'}`}
+                fill='none'
+                stroke='currentColor'
+                viewBox='0 0 24 24'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z'
+                />
+              </svg>
+            </div>
+            <h3
+              className={`text-lg font-semibold mb-2 ${
+                isDarkMode ? 'text-white' : 'text-gray-900'
+              }`}
+            >
+              No linked accounts yet
+            </h3>
+            <p className={`text-sm mb-6 ${isDarkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+              Connect your bank accounts to track balances and transactions
+            </p>
+            <button
+              onClick={handleAddAccount}
+              disabled={linkingAccount}
+              className={`px-6 py-3 rounded-lg font-medium text-sm transition-all ${
+                linkingAccount
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'hover:opacity-90'
+              } ${
+                isDarkMode
+                  ? 'bg-[linear-gradient(94.02deg,#222126_0%,#111116_100%)] text-white border border-[#FFFFFF14]'
+                  : 'bg-blue-600 text-white hover:bg-blue-700'
+              }`}
+            >
+              {linkingAccount ? 'Connecting...' : 'Add Your First Account'}
+            </button>
+          </div>
         </div>
       ) : (
         <div className='grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6'>

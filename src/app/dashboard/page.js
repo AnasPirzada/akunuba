@@ -177,7 +177,7 @@ function DashboardContent({
           }`}
         >
           {isLoadingProfile ? (
-            'Loading...'
+            'Olá, User'
           ) : userProfile ? (
             `Olá, ${userProfile.first_name || userProfile.email?.split('@')[0] || 'User'}`
           ) : (

@@ -209,10 +209,13 @@ export const apiGet = (endpoint, options = {}) => {
  * @returns {Promise} Response data
  */
 export const apiPost = (endpoint, data = {}, options = {}) => {
+  // If data is undefined or null, don't send a body
+  const body = data === undefined || data === null ? undefined : JSON.stringify(data);
+  
   return apiRequest(endpoint, {
     ...options,
     method: 'POST',
-    body: JSON.stringify(data),
+    body: body,
   });
 };
 

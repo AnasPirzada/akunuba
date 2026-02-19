@@ -9,7 +9,7 @@
  * Defaults to production backend if no env variable is set
  */
 export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://akunuba-backend.onrender.com';
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/';
 /**
  * API Version
  */
@@ -276,11 +276,17 @@ export const API_ENDPOINTS = {
   },
   BANKING: {
     BASE: '/banking',
+    // Plaid Link Integration
     LINK_TOKEN: '/banking/link-token',
     LINK: '/banking/link',
+    // Account Management
     LIST_ACCOUNTS: '/banking/accounts',
     GET_ACCOUNT: (id) => `/banking/accounts/${id}`,
     DELETE_ACCOUNT: (id) => `/banking/accounts/${id}`,
+    // Account Operations
+    REFRESH_BALANCE: (id) => `/banking/accounts/${id}/refresh`,
+    SYNC_TRANSACTIONS: (id) => `/banking/sync/${id}`,
+    // Transactions & Balance
     GET_TRANSACTIONS: (id) => `/banking/accounts/${id}/transactions`,
     GET_BALANCE: (id) => `/banking/accounts/${id}/balance`,
   },

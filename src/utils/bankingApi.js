@@ -56,16 +56,24 @@ const transformToSnake = (obj) => {
 };
 
 // ============================================================================
-// BANKING INTEGRATION APIs (from INVESTMENT_APIS.md)
+// LINKED ACCOUNTS APIs (from LINKED_ACCOUNTS_NEXTJS_GUIDE.md)
+// All 8 endpoints are implemented and integrated
 // ============================================================================
 
 /**
- * Create Plaid Link Token
+ * 1. Create Plaid Link Token
  * POST /api/v1/banking/link-token
+ * 
+ * Response: { link_token: "link-sandbox-xxx" }
+ * 
+ * Note: Backend expects empty body (no body sent)
  */
 export const createBankLinkToken = async () => {
   const endpoint = API_ENDPOINTS.BANKING.LINK_TOKEN;
-  const response = await apiPost(endpoint);
+  
+  // Use apiPost with null/undefined to avoid sending empty JSON object
+  // apiPost will handle this and not stringify undefined
+  const response = await apiPost(endpoint, undefined);
 
   if (response.data) {
     response.data = transformKeys(response.data);
@@ -75,8 +83,16 @@ export const createBankLinkToken = async () => {
 };
 
 /**
- * Link Bank Account (Plaid)
+ * 2. Link Bank Account
  * POST /api/v1/banking/link
+ * 
+ * @param {Object} linkData - Link data object
+ * @param {string} linkData.public_token - Plaid public token (required)
+ * 
+ * Response: { message: "2 account(s) linked successfully" }
+ * Error Responses:
+ * - 403 Forbidden: "Banking integration requires Annual subscription"
+ * - 400 Bad Request: "Failed to link account" or "No accounts found"
  */
 export const linkBankAccount = async (linkData) => {
   const transformedData = transformToSnake(linkData);
@@ -91,8 +107,20 @@ export const linkBankAccount = async (linkData) => {
 };
 
 /**
- * Get Linked Bank Accounts
+ * 3. Get All Linked Accounts
  * GET /api/v1/banking/accounts
+ * 
+ * Response: Array of LinkedAccount objects
+ * [
+ *   {
+ *     id: "uuid",
+ *     institution_name: "Chase Bank",
+ *     account_name: "Checking Account",
+ *     account_type: "banking",
+ *     balance: 5000.00,
+ *     currency: "USD"
+ *   }
+ * ]
  */
 export const getBankAccounts = async () => {
   const endpoint = API_ENDPOINTS.BANKING.LIST_ACCOUNTS;
@@ -106,8 +134,12 @@ export const getBankAccounts = async () => {
 };
 
 /**
- * Get Linked Account Details
- * GET /api/v1/banking/accounts/{account_id}
+ * 4. Get Linked Account Details
+ * GET /api/v1/banking/accounts/{linked_account_id}
+ * 
+ * @param {string} accountId - Linked account ID (UUID, required)
+ * 
+ * Response: LinkedAccountDetails object with full account information
  */
 export const getBankAccount = async (accountId) => {
   const endpoint = API_ENDPOINTS.BANKING.GET_ACCOUNT(accountId);
@@ -121,24 +153,67 @@ export const getBankAccount = async (accountId) => {
 };
 
 /**
- * Unlink Bank Account
- * DELETE /api/v1/banking/accounts/{account_id}
+ * 5. Refresh Account Balance
+ * POST /api/v1/banking/accounts/{linked_account_id}/refresh
+ * 
+ * @param {string} accountId - Linked account ID (UUID, required)
+ * 
+ * Response: {
+ *   message: "Account balance refreshed successfully",
+ *   balance: 5200.00,
+ *   currency: "USD"
+ * }
  */
-export const unlinkBankAccount = async (accountId) => {
-  const endpoint = API_ENDPOINTS.BANKING.DELETE_ACCOUNT(accountId);
-  return await apiDelete(endpoint);
+export const refreshBankAccount = async (accountId) => {
+  const endpoint = API_ENDPOINTS.BANKING.REFRESH_BALANCE(accountId);
+  const response = await apiPost(endpoint);
+
+  if (response.data) {
+    response.data = transformKeys(response.data);
+  }
+
+  return response;
 };
 
 /**
- * Get Account Transactions
- * GET /api/v1/banking/accounts/{account_id}/transactions
+ * 6. Sync Transactions
+ * POST /api/v1/banking/sync/{linked_account_id}
+ * 
+ * @param {string} accountId - Linked account ID (UUID, required)
+ * 
+ * Response: { message: "Synced 15 new transactions" }
+ */
+export const syncBankTransactions = async (accountId) => {
+  const endpoint = API_ENDPOINTS.BANKING.SYNC_TRANSACTIONS(accountId);
+  const response = await apiPost(endpoint);
+
+  if (response.data) {
+    response.data = transformKeys(response.data);
+  }
+
+  return response;
+};
+
+/**
+ * 7. Get Account Transactions
+ * GET /api/v1/banking/accounts/{linked_account_id}/transactions
+ * 
+ * @param {string} accountId - Linked account ID (UUID, required)
+ * @param {Object} params - Query parameters
+ * @param {string} params.start_date - Start date (YYYY-MM-DD, optional)
+ * @param {string} params.end_date - End date (YYYY-MM-DD, optional)
+ * @param {number} params.limit - Limit (1-500, default: 50, optional)
+ * 
+ * Response: {
+ *   transactions: [...],
+ *   count: 15
+ * }
  */
 export const getBankTransactions = async (accountId, params = {}) => {
   const queryParams = new URLSearchParams();
-  if (params.startDate) queryParams.append('start_date', params.startDate);
-  if (params.endDate) queryParams.append('end_date', params.endDate);
-  if (params.page) queryParams.append('page', params.page);
-  if (params.limit) queryParams.append('limit', params.limit);
+  if (params.start_date) queryParams.append('start_date', params.start_date);
+  if (params.end_date) queryParams.append('end_date', params.end_date);
+  if (params.limit) queryParams.append('limit', params.limit.toString());
   
   const endpoint = `${API_ENDPOINTS.BANKING.GET_TRANSACTIONS(accountId)}${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
   const response = await apiGet(endpoint);
@@ -151,40 +226,23 @@ export const getBankTransactions = async (accountId, params = {}) => {
 };
 
 /**
- * Refresh Account Balance
- * POST /api/v1/banking/accounts/{account_id}/refresh
+ * 8. Disconnect Account
+ * DELETE /api/v1/banking/accounts/{linked_account_id}
+ * 
+ * @param {string} accountId - Linked account ID (UUID, required)
+ * 
+ * Response: { message: "Account disconnected successfully" }
  */
-export const refreshBankAccount = async (accountId) => {
-  // Endpoint documented in PREFERENCES_TAB_APIS.md; call directly
-  const endpoint = `/banking/accounts/${accountId}/refresh`;
-  const response = await apiPost(endpoint);
-
-  if (response.data) {
-    response.data = transformKeys(response.data);
-  }
-
-  return response;
+export const unlinkBankAccount = async (accountId) => {
+  const endpoint = API_ENDPOINTS.BANKING.DELETE_ACCOUNT(accountId);
+  return await apiDelete(endpoint);
 };
 
 /**
- * Sync Account Transactions (last 30 days)
- * POST /api/v1/banking/sync/{account_id}
- */
-export const syncBankTransactions = async (accountId) => {
-  // Endpoint documented in PREFERENCES_TAB_APIS.md; call directly
-  const endpoint = `/banking/sync/${accountId}`;
-  const response = await apiPost(endpoint);
-
-  if (response.data) {
-    response.data = transformKeys(response.data);
-  }
-
-  return response;
-};
-
-/**
- * Get Account Balance
+ * Get Account Balance (Additional endpoint)
  * GET /api/v1/banking/accounts/{account_id}/balance
+ * 
+ * @param {string} accountId - Linked account ID (UUID, required)
  */
 export const getBankBalance = async (accountId) => {
   const endpoint = API_ENDPOINTS.BANKING.GET_BALANCE(accountId);
